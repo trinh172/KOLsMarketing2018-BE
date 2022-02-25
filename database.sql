@@ -25,6 +25,7 @@ START 10
   "follows" int4,
   "introduce" varchar(500),
 	"create_time" timestamp NOT NULL,
+  "state" char NOT NULL DEFAULT '1',
 	"otp" int4,
 	PRIMARY KEY ("id")
 )
@@ -48,6 +49,7 @@ START 10
   "address" varchar(150),
   "phone" varchar(15),
 	"create_time" timestamp,
+  "state" char NOT NULL DEFAULT '1',
 	"otp" int4,
 	PRIMARY KEY ("id")
 )
@@ -65,7 +67,7 @@ CREATE TABLE "posts" (
     ),
   "title" varchar(255) NOT NULL,
   "id_writer" int4 NOT NULL,
-  "state" int4 NOT NULL DEFAULT '0',
+  "state" char NOT NULL DEFAULT '0',
   "content" varchar NOT NULL,
   "abstract" varchar(1000) NOT NULL,
   "write_time" timestamp NOT NULL,
@@ -104,6 +106,7 @@ CREATE TABLE "recruitment" (
   "id_kols" int4 NOT NULL,
   "id_brands" int4 NOT NULL,
   "content" varchar(1000) NOT NULL,
+  "state" char NOT NULL DEFAULT '1',
   PRIMARY KEY ("id"),
   UNIQUE ("id_post","id_kols", "id_brands"),
   CONSTRAINT "recruit_kols" FOREIGN KEY ("id_kols") REFERENCES "kols" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
@@ -134,7 +137,7 @@ CREATE TABLE "image_recruitment" (
     ),
   "id_recruitment" int4 NOT NULL,
   "url" varchar(150) NOT NULL,
-  "type" bit NOT NULL DEFAULT '1',
+  "type" char NOT NULL DEFAULT '1',
   PRIMARY KEY ("id"),
   CONSTRAINT "recruit_image" FOREIGN KEY ("id_recruitment") REFERENCES "recruitment" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 ) 
@@ -151,7 +154,7 @@ CREATE TABLE "image_post" (
     ),
   "id_post" int4 NOT NULL,
   "url" varchar(150) NOT NULL,
-  "type" bit NOT NULL DEFAULT '1',
+  "type" char NOT NULL DEFAULT '1',
   PRIMARY KEY ("id"),
   CONSTRAINT "post_image" FOREIGN KEY ("id_post") REFERENCES "posts" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 ) 
