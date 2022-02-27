@@ -1,13 +1,51 @@
+/*var express = require('express')
+const http = require("http");
+var app = express();
+const server = http.createServer(app);
+
+const socketIo = require("socket.io")(server, {
+    cors: {
+        origin: "*",
+    }
+  }); 
+  //Thêm cors để tránh exception
+
+
+socketIo.on("connection", (socket) => { ///Handle khi có connect từ client tới
+  console.log("New client connected" + socket.id); 
+
+  socket.on("sendDataClient", function(data) { // Handle khi có sự kiện tên là sendDataClient từ phía client
+    socketIo.emit("sendDataServer", { data });// phát sự kiện  có tên sendDataServer cùng với dữ liệu tin nhắn từ phía server
+  })
+
+  socket.on("disconnect", () => {
+    console.log("Client disconnected"); // Khi client disconnect thì log ra terminal.
+  });
+});
+
+server.listen(3000, () => {
+    console.log('Server đang chay tren cong 3000');
+});*/
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const cors = require('cors');
+require('dotenv').config();
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var authen_author = require('./routes/authen.rootes'); 
+var kolsRouter = require('./routes/kols.routes'); 
+
+const AuthMiddleWare = require("./middleware/auth_middleware");
+const { DOMAIN_FE } = require('./config/const.config')
+const https_or_not = DOMAIN_FE[4]=='s'? 'https' : 'http';
 
 var app = express();
+
+console.log('process.env.PORT', process.env.PORT);
+// const io_router = require('./socket/index')(io);
+// app.use(io_router);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -19,8 +57,17 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+// app.use(cors({
+//   credentials: true, 
+//   origin: DOMAIN_FE.substring(0, DOMAIN_FE.length - 1)
+// }));
+app.use(cors());
+
+app.use('/', authen_author);
+app.use(AuthMiddleWare.isAuthor);
+app.use('/kols', kolsRouter);
+/*app.use('/classes', classesRouter);
+app.use('/admins', AuthMiddleWare.isAdmin, adminsRouter);*/
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

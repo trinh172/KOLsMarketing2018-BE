@@ -17,7 +17,7 @@ START 10
 ),
   "full_name" varchar(255),
   "email" varchar(100) COLLATE "pg_catalog"."default" NOT NULL,
-  "password" varchar(30) COLLATE "pg_catalog"."default" NOT NULL,
+  "password" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
   "nick_name" varchar(50),
   "address" varchar(150),
   "phone" varchar(15),
@@ -43,7 +43,7 @@ MAXVALUE 2147483647
 START 10
 ),
   "email" varchar(100) COLLATE "pg_catalog"."default" NOT NULL,
-  "password" varchar(30) COLLATE "pg_catalog"."default" NOT NULL,
+  "password" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
   "full_name" varchar(255),
   "brand_name" varchar(50),
   "address" varchar(150),
