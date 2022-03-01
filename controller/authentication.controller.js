@@ -48,15 +48,18 @@ exports.is_available = async (req, res)=>{
     const email = req.body.email;
 
     if(email == '')
-        return res.json ({message: 'Email không được trống'});
-    
-    const rowsEmailKOLs = await kols_db.findKOLByEmail(email);
-    const rowsEmailBrands = await brands_db.findBrandByEmail(email);
+        return res.json ({message: 'Email không hợp lệ!'});
+    if(req.body.password == '')
+        return res.json ({message: 'Bạn chưa nhập password'});
+    if(req.body.fullname == '')
+        return res.json ({message: 'Bạn chưa nhập họ tên'});
+    const rowsEmailKOLs = await kols_db.findKOLsByEmail(email);
+    const rowsEmailBrands = await brands_db.findBrandsByEmail(email);
 
     if (rowsEmailKOLs !== null)  
-        return res.json({message: 'Invalid Email!'});
+        return res.json({message: 'Email không hợp lệ!'});
     if (rowsEmailBrands !== null)  
-        return res.json({message: 'Invalid Email!'});
+        return res.json({message: 'Email không hợp lệ!'});
 
     return res.json(true);
 }
@@ -155,19 +158,27 @@ exports.brands_signin = async (req, res) => {
 }
 
 //TODO: Update login google later
-/*
-exports.kols_google_signin = async (req, res) => {
+
+exports.google_signin = async (req, res) => {
+    
     console.log("signin:", req.body);
-    let row_user = await user_db.findUserByUsername(req.body.username);
+    let row_user = await kols_db.findKOLsByEmail(req.body.email);
     console.log("row_user:",row_user);
     if (row_user == null) {
-        const new_user = req.body;
-        new_user.password = bcrypt.hashSync(req.body.password, 10);
-        await user_db.addNewUser(new_user);
+        let hash = bcrypt.hashSync(req.body.password, 10);
+        const new_user ={
+            password: hash,
+            full_name: req.body.fullname,
+            email: req.body.email,
+            create_time: moment().add(7, 'hours'),
+            otp: -1
+        };
+        await kols_db.createKOLs(new_user);
     }
-    row_user = await user_db.findUserByUsername(req.body.username);
-    return handle_login_successfully(row_user, req, res, true, false);
+    row_user = await kols_db.findKOLsByEmail(req.body.email);
+    return handle_login_successfully(row_user, req, res, true, false, 1);
 }
+/*
 exports.brand_google_signin = async (req, res) => {
     console.log("signin:", req.body);
     let row_user = await user_db.findUserByUsername(req.body.username);

@@ -26,8 +26,11 @@ let isAuthor = async (req, res, next) => {
             return res.status(400).json('400');
         }
     } else {
-        console.log('error 401 isAuthor')
-        return res.status(401).json('401');
+        req.jwtDecoded = {};
+        req.jwtDecoded.data = null;
+        next();
+        /*console.log('error 401 isAuthor')
+        return res.status(401).json('401');*/
     };
 }
 /*
