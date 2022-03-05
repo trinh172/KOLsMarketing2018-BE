@@ -21,7 +21,7 @@ START 10
   "nick_name" varchar(50),
   "address" varchar(150),
   "phone" varchar(15),
-  "gender" int4,
+  "gender" char,
   "follows" int4,
   "introduce" varchar(500),
 	"create_time" timestamp NOT NULL,
@@ -49,6 +49,7 @@ START 10
   "address" varchar(150),
   "phone" varchar(15),
 	"create_time" timestamp,
+  "gender" char,
   "state" char NOT NULL DEFAULT '1',
 	"otp" int4,
 	PRIMARY KEY ("id")

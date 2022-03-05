@@ -28,11 +28,16 @@ exports.kols_register = async function(req, res) {
 
 exports.brands_register = async function(req, res) {
     //Get infor from form at FE 
+    //Gender 1: Nam, 2: Nữ, 3: Khác
     const hash = bcrypt.hashSync(req.body.password, 10);
     const user = {
         password: hash,
         full_name: req.body.fullname,
         email: req.body.email,
+        phone: req.body.phone,
+        gender: req.body.gender,
+        address: req.body.address,
+        brand_name: req.body.brandname,
         create_time: moment().add(7, 'hours'),
         otp: -1
     }
