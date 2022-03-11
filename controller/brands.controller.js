@@ -2,10 +2,7 @@ const brands_db = require('../model/brands.model');
 const bcrypt = require('bcryptjs');
 const jwtHelper = require("../utils/jwt.helper");
 const nodemailer = require('nodemailer');
-const moment = require('moment')
-const accessTokenLife = process.env.ACCESS_TOKEN_LIFE;
-const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
-
+const moment = require('moment');
 
 exports.brands_profile_detail = async function(req, res) {
     //Get infor from form at FE 

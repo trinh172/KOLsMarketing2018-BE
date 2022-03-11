@@ -68,7 +68,7 @@ CREATE TABLE "posts" (
     ),
   "title" varchar(255) NOT NULL,
   "id_writer" int4 NOT NULL,
-  "state" char NOT NULL DEFAULT '0',
+  "state" char NOT NULL DEFAULT '1',
   "content" varchar NOT NULL,
   "abstract" varchar(1000) NOT NULL,
   "write_time" timestamp NOT NULL,
