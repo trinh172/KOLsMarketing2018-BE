@@ -37,6 +37,7 @@ require('dotenv').config();
 var authen_author = require('./routes/authen.rootes'); 
 var kolsRouter = require('./routes/kols.routes'); 
 var brandRouter = require('./routes/brands.routes'); 
+var postRouter = require('./routes/posts.routes'); 
 
 const AuthMiddleWare = require("./middleware/auth_middleware");
 const { DOMAIN_FE } = require('./config/const.config')
@@ -68,6 +69,7 @@ app.use('/', authen_author);
 app.use(AuthMiddleWare.isAuthor);
 app.use('/kols', kolsRouter);
 app.use('/brands', brandRouter);
+app.use('/posts', postRouter);
 /*app.use('/classes', classesRouter);
 app.use('/admins', AuthMiddleWare.isAdmin, adminsRouter);*/
 
