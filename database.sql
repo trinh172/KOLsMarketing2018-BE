@@ -67,9 +67,16 @@ CREATE TABLE "posts" (
     START 10
     ),
   "title" varchar(255) NOT NULL,
+  "gender" varchar(50),
   "id_writer" int4 NOT NULL,
+  "amount" int4,
+  "min_cast" varchar(50) NOT NULL,
+  "max_cast" varchar(50),
   "state" char NOT NULL DEFAULT '1',
   "content" varchar NOT NULL,
+  "requirement" varchar,
+  "benefit" varchar,
+  "address" varchar(50),
   "abstract" varchar(1000) NOT NULL,
   "write_time" timestamp NOT NULL,
   "views" int4 NOT NULL DEFAULT '0',
@@ -180,3 +187,14 @@ CREATE TABLE "image_user" (
 
 ALTER TABLE "posts" ADD CONSTRAINT "UniqueTitle" UNIQUE ("title","id_writer");
 ALTER TABLE "posts" ADD CONSTRAINT "PostBrands" FOREIGN KEY ("id_writer") REFERENCES "brands" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- ----------------------------
+-- Records of categories
+-- ----------------------------
+BEGIN;
+INSERT INTO categories VALUES (1, 'Video');
+INSERT INTO categories VALUES (2, 'PR');
+INSERT INTO categories VALUES (3, 'Chụp ảnh');
+INSERT INTO categories VALUES (4, 'Livestream');
+COMMIT;
+

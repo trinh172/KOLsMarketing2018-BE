@@ -2,7 +2,17 @@ const db = require('../utils/connectDB')
 const moment = require('moment');
 module.exports = {
     async all(){
-        let items = await db('brands');
+        let items = await db('posts');
+        for(let i = 0; i<items.length; i++){
+            items[i].create_time = moment(items[i].create_time).format("DD/MM/YYYY HH:mm:ss");
+        }
+        return items
+    },
+
+    async allActivePosts(){
+        let items = await db('posts').where({
+            'state': 1
+        });
         for(let i = 0; i<items.length; i++){
             items[i].create_time = moment(items[i].create_time).format("DD/MM/YYYY HH:mm:ss");
         }
@@ -66,6 +76,53 @@ module.exports = {
             .limit(10);
         //console.log(rows);
         return rows;
+    },
+
+    async findPostInListCategories(list_categories){
+        let post = await db.select('id_post').from('post_categories')
+            .whereIn('id_cate', list_categories)
+        if(post.length > 0){
+            let result = Array.from(new Set(post));
+            return result
+        }
+        return null;
+    },
+    async findListActivePostByID(list_id, list_address){
+        if(list_id.length == 0){
+            return null;
+        }
+        let list_post = []
+        if(list_address.length > 0){
+            for(i =0 ; i < list_id.length; i++){
+                let post = await db('posts').where({
+                    state: 1,
+                    id: list_id[i]
+                }).whereIn('address', list_address);
+                if(post.length > 0)
+                    list_post.push(post[0])
+            }
+        }
+        if(list_address.length == 0){
+            for(i =0 ; i < list_id.length; i++){
+                let post = await db('posts').where({
+                    state: 1,
+                    id: list_id[i]
+                });
+                if(post.length > 0)
+                    list_post.push(post[0])
+            }
+        }
+        
+        return list_post;
+    },
+
+    async findPostActiveInListAddress(list_address){
+        let post = await db('posts')
+            .whereIn('address', list_address);
+        if(post.length == 0){
+            return false
+        }
+        return post;
     },
 
     //Find new post (1 month) by Category --> từng chuyên mục
