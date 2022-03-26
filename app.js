@@ -35,6 +35,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 var authen_author = require('./routes/authen.rootes'); 
+var searchRouter = require('./routes/search.routes'); 
 var kolsRouter = require('./routes/kols.routes'); 
 var brandRouter = require('./routes/brands.routes'); 
 var postRouter = require('./routes/posts.routes'); 
@@ -66,10 +67,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
 app.use('/', authen_author);
+app.use('/search', searchRouter);
 app.use(AuthMiddleWare.isAuthor);
 app.use('/kols', kolsRouter);
-app.use('/brands', brandRouter);
 app.use('/posts', postRouter);
+
+app.use(AuthMiddleWare.isBrand);
+app.use('/brands', brandRouter);
+
 /*app.use('/classes', classesRouter);
 app.use('/admins', AuthMiddleWare.isAdmin, adminsRouter);*/
 
