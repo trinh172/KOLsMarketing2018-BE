@@ -8,7 +8,15 @@ module.exports = {
         }
         return items
     },
-
+    async addImagePosts(image){
+        try {
+            await db('image_post').insert(image)
+            return true
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
     async findPostsByID(ID){
         let items = await db('posts').where('id', ID);
         if (items.length==0)

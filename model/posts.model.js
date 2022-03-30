@@ -155,7 +155,7 @@ module.exports = {
 
     async createPosts(post) {
         try {
-            await db('brands').insert(user)
+            await db('posts').insert(post)
             return true
         } catch (e) {
             console.log(e);
@@ -164,5 +164,14 @@ module.exports = {
     },
     delete_post(id_post){
         return db('posts').where("id", id_post).del();
+    },
+    async findPostByBrandTitle(iduser, title){
+        let items = await db('posts').where({
+            'id_writer': iduser,
+            'title': title
+        });
+        if (items.length==0)
+            return null;
+        return items[0];
     },
 }
