@@ -151,7 +151,7 @@ CREATE TABLE "image_recruitment" (
 ) 
 ;
 -- ----------------------------
--- Table structure for Image_Post
+-- Table structure for Image_Post, type = 2: cover, type = 1: detail picture
 -- ----------------------------
 CREATE TABLE "image_post" (
   "id" int4 NOT NULL GENERATED ALWAYS AS IDENTITY (

@@ -8,6 +8,7 @@ const nodemailer = require('nodemailer');
 const moment = require('moment');
 
 exports.add_post = async function(req, res) {
+    console.log("Check many-images already upload: ", req.file);
     //Get infor from form at FE 
     let new_post = {
         title: req.body.title,
@@ -24,14 +25,17 @@ exports.add_post = async function(req, res) {
         write_time: moment().add(7, 'hours')
     };
     let flag = await post_db.createPosts(new_post);
-    console.log("Image URL: ", "/public/images/posts/" + req.file?.filename)
+    
     let added_post = await post_db.findPostByBrandTitle(req.jwtDecoded.data.id, req.body.title);
     if (added_post){
-        const new_image = {
-              "id_post": added_post.id,
-              "url": "/public/" + req.file?.filename,
-              "type": '1',
+        if(req.file?.length>0){
+            const new_image = {
+                "id_post": added_post.id,
+                "url": "/public/images/posts/" + req.file[0].filename,
+                "type": '2',
+          }
         }
+        
         let result_addimage = await image_db.addImagePosts(new_image);
         if (result_addimage)
             return res.status(200).json(added_post);

@@ -5,18 +5,31 @@ const posts = require('../controller/posts.controller')
 var multer  = require('multer');
 const fs = require('fs');
 
-//upload image
+//Init const for save image
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, `./public/images/posts/`);
-    },
-    filename: function (req, file, cb) {
-      cb(null, `${new Date().getTime()}-${Math.random()}.jpg`);
+  // Định nghĩa nơi file upload sẽ được lưu lại
+  destination: (req, file, callback) => {
+    callback(null, `./public/images/posts/`);
+  },
+  filename: (req, file, callback) => {
+    // Edit file name
+    // Only allow upload png and jgeg
+    let math = ["image/png", "image/jpeg"];
+    if (math.indexOf(file.mimetype) === -1) {
+      let errorMess = `The file <strong>${file.originalname}</strong> is invalid. Only allowed to upload image jpeg or png.`;
+      return callback(errorMess, null);
     }
-})   
-const upload = multer({ storage: storage });
 
-router.post('/create-post', upload.single('cover'),posts.add_post);
+    // Add label time to make filename not duplicate
+    let filename = `${new Date().getTime()}-${Math.random()}`;
+    callback(null, filename);
+  }
+});
+
+// .array() truyền vào name của thẻ input, ở đây mình đặt là "many-files", max images is 10
+const uploadManyFiles = multer({storage: storage});
+
+router.post('/create-post', uploadManyFiles.array("many-files", 10),posts.add_post);
 router.post('/delete-post/:id',posts.delete_post);
 router.get('/get-post-in-month',posts.findPostInMonthHomepage);
 router.get('/get-top-post',posts.findTop9PostHomepage);
