@@ -31,7 +31,9 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var fs = require('fs');
 const cors = require('cors');
+
 require('dotenv').config();
 
 var authen_author = require('./routes/authen.rootes'); 
@@ -58,7 +60,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'))); //FE show ảnh src="localhost://3000/public/images/posts/name.jpg"
 
 // app.use(cors({
 //   credentials: true, 
@@ -71,7 +73,9 @@ app.use('/search', searchRouter);
 app.use(AuthMiddleWare.isAuthor);
 app.use('/kols', kolsRouter);
 app.use('/posts', postRouter);
-
+if (!fs.existsSync("./public/images/posts")) {
+  fs.mkdirSync("./public/images/posts");
+}
 app.use(AuthMiddleWare.isBrand);
 app.use('/brands', brandRouter);
 
