@@ -41,6 +41,7 @@ var searchRouter = require('./routes/search.routes');
 var kolsRouter = require('./routes/kols.routes'); 
 var brandRouter = require('./routes/brands.routes'); 
 var postRouter = require('./routes/posts.routes'); 
+var cateRouter = require('./routes/categories.routes'); 
 
 const AuthMiddleWare = require("./middleware/auth_middleware");
 const { DOMAIN_FE } = require('./config/const.config')
@@ -70,6 +71,7 @@ app.use(cors());
 
 app.use('/', authen_author);
 app.use('/search', searchRouter);
+app.use('/categories', cateRouter);
 app.use(AuthMiddleWare.isAuthor);
 app.use('/kols', kolsRouter);
 app.use('/posts', postRouter);
