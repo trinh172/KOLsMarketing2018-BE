@@ -23,6 +23,21 @@ module.exports = {
         let items = await db('posts').where('id', ID);
         if (items.length==0)
             return null;
+        let image_detail = await db('image_post').where({
+            'id_post': ID,
+            'type': '1'
+        })
+        let image_cover = await db('image_post').where({
+            'id_post': ID,
+            'type': '2'
+        })
+        if(image_cover.length > 0){
+            items[0].image_cover = image_cover[0]
+        }
+        if(image_detail.length > 0){
+            items[0].image_detail = image_detail
+        }
+        console.log("Detail Post model: ", items[0]);
         return items[0];
     },
 
@@ -62,6 +77,23 @@ module.exports = {
             .andWhere('write_time', '>=', day_ago)
             .orderBy('views', 'desc')
             .limit(9)
+        if(rows.length <= 0)
+            return null;
+        for (i = 0; i< rows.length; i++){
+            let image_cover = await db('image_post')
+                                    .where({
+                                        'id_post': rows[i].id,
+                                        'type': '2'
+                                    })
+            if(image_cover.length > 0){
+                rows[i].image_cover = image_cover[0].url;
+            }
+            let brand = await db('brands')
+                                .where({
+                                    id: rows[i].id_writer,
+                                });
+            rows[i].brand = brand[0];
+        }
         return rows;
     },
     //All post in month --> bài viết trên trang
@@ -75,6 +107,23 @@ module.exports = {
             .orderBy('write_time', 'desc')
             .limit(10);
         //console.log(rows);
+        if(rows.length <= 0)
+            return null;
+        for (i = 0; i< rows.length; i++){
+            let image_cover = await db('image_post')
+                                    .where({
+                                        'id_post': rows[i].id,
+                                        'type': '2'
+                                    })
+            if(image_cover.length > 0){
+                rows[i].image_cover = image_cover[0].url;
+            }
+            let brand = await db('brands')
+                                .where({
+                                    id: rows[i].id_writer,
+                                });
+            rows[i].brand = brand[0];
+        }
         return rows;
     },
 
@@ -112,7 +161,23 @@ module.exports = {
                     list_post.push(post[0])
             }
         }
-        
+        if(list_post.length <= 0)
+            return null;
+        for (i = 0; i< list_post.length; i++){
+            let image_cover = await db('image_post')
+                                    .where({
+                                        'id_post': list_post[i].id,
+                                        'type': '2'
+                                    })
+            if(image_cover.length > 0){
+                list_post[i].image_cover = image_cover[0].url;
+            }
+            let brand = await db('brands')
+                                .where({
+                                    id: list_post[i].id_writer,
+                                });
+            list_post[i].brand = brand[0];
+        }
         return list_post;
     },
 
@@ -121,6 +186,21 @@ module.exports = {
             .whereIn('address', list_address);
         if(post.length == 0){
             return false
+        }
+        for (i = 0; i< post.length; i++){
+            let image_cover = await db('image_post')
+                                    .where({
+                                        'id_post': post[i].id,
+                                        'type': '2'
+                                    })
+            if(image_cover.length > 0){
+                post[i].image_cover = image_cover[0].url;
+            }
+            let brand = await db('brands')
+                                .where({
+                                    id: post[i].id_writer,
+                                });
+            post[i].brand = brand[0];
         }
         return post;
     },
@@ -143,11 +223,19 @@ module.exports = {
                 if(item[0].write_time >= day_ago){
                     let brand = await db('brands')
                                 .where({
-                                    id: id_writer,
+                                    id: item[0].id_writer,
                                 });
-                    item.brand = brand;
+                    item[0].brand = brand;
+                    let image_cover = await db('image_post')
+                                    .where({
+                                        'id_post': item[0].id,
+                                        'type': '2'
+                                    })
+                    if(image_cover.length > 0){
+                        item[0].image_cover = image_cover[0].url;
+                    }
                 }
-                result.push(item);
+                result.push(item[0]);
             }
         }
         return result;

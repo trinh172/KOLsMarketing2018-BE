@@ -35,5 +35,6 @@ router.get('/get-post-in-month',posts.findPostInMonthHomepage);
 router.get('/get-top-post',posts.findTop9PostHomepage);
 router.get('/get-new-post-by-cate',posts.findNewPostByCateHomepage);
 router.post('/is-available-title', posts.checkAvailableTittle);
+router.post('/get-detail-post/:id', posts.getDetailPost);
 
 module.exports = router;
