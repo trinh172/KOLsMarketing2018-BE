@@ -2,13 +2,15 @@ const brands_db = require('../model/brands.model');
 const post_db = require('../model/posts.model');
 const image_db = require('../model/images.model');
 const categories_db = require('../model/categories.model');
+const cate_post_db = require("../model/cate_post.model")
 const bcrypt = require('bcryptjs');
 const jwtHelper = require("../utils/jwt.helper");
 const nodemailer = require('nodemailer');
 const moment = require('moment');
 
 exports.add_post = async function(req, res) {
-    console.log("Check many-images already upload: ", req.file);
+    console.log("Check many-images already upload: ", req.files);
+    console.log("Check title already upload: ", req.body.title);
     //Get infor from form at FE 
     let new_post = {
         title: req.body.title,
@@ -20,25 +22,40 @@ exports.add_post = async function(req, res) {
         content: req.body.content,
         requirement: req.body.requirement,
         benefit: req.body.benefit,
-        address: req.body.address,
-        abstract: req.body.abstract,
+        address: req.body.selectedAddress,
         write_time: moment().add(7, 'hours')
     };
     let flag = await post_db.createPosts(new_post);
     
     let added_post = await post_db.findPostByBrandTitle(req.jwtDecoded.data.id, req.body.title);
     if (added_post){
-        if(req.file?.length>0){
+        //Xử lý post_categories
+        console.log("List cate of post: ", req.body.categories)
+        let cate_post = {
+            "id_cate":req.body.categories,
+            "id_post": added_post.id
+        }
+        await cate_post_db.add(cate_post)
+        //Xử lý post_images
+        if(req.files?.length>0){
             const new_image = {
                 "id_post": added_post.id,
-                "url": "/public/images/posts/" + req.file[0].filename,
+                "url": "/public/images/posts/" + req.files[0].filename,
                 "type": '2',
-          }
+            }
+            let result_addimage = await image_db.addImagePosts(new_image);
+            for(let i = 1; i<req.files.length; i++){
+                let new_imagedetail = {
+                    "id_post": added_post.id,
+                    "url": "/public/images/posts/" + req.files[i].filename,
+                    "type": '1',
+                }
+                await image_db.addImagePosts(new_imagedetail);
+            }
+            
+            if (result_addimage)
+                return res.status(200).json(added_post);
         }
-        
-        let result_addimage = await image_db.addImagePosts(new_image);
-        if (result_addimage)
-            return res.status(200).json(added_post);
     }
     
     res.status(400).json(false);
