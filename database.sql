@@ -77,7 +77,6 @@ CREATE TABLE "posts" (
   "requirement" varchar,
   "benefit" varchar,
   "address" varchar(50),
-  "abstract" varchar(1000) NOT NULL,
   "write_time" timestamp NOT NULL,
   "views" int4 NOT NULL DEFAULT '0',
   PRIMARY KEY ("id")
@@ -192,9 +191,9 @@ ALTER TABLE "posts" ADD CONSTRAINT "PostBrands" FOREIGN KEY ("id_writer") REFERE
 -- Records of categories
 -- ----------------------------
 BEGIN;
-INSERT INTO categories VALUES (1, 'Video');
-INSERT INTO categories VALUES (2, 'PR');
-INSERT INTO categories VALUES (3, 'Chụp ảnh');
-INSERT INTO categories VALUES (4, 'Livestream');
+INSERT INTO categories OVERRIDING SYSTEM VALUE VALUES (1, 'Video');
+INSERT INTO categories OVERRIDING SYSTEM VALUE VALUES (2, 'PR');
+INSERT INTO categories OVERRIDING SYSTEM VALUE VALUES (3, 'Chụp ảnh');
+INSERT INTO categories OVERRIDING SYSTEM VALUE VALUES (4, 'Livestream');
 COMMIT;
 
