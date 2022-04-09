@@ -33,6 +33,9 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var fs = require('fs');
 const cors = require('cors');
+const { Server } =  require("socket.io");
+const mySocket =  require("./socket/socket") ;
+const http = require("http");
 
 require('dotenv').config();
 
@@ -48,6 +51,7 @@ const { DOMAIN_FE } = require('./config/const.config')
 const https_or_not = DOMAIN_FE[4]=='s'? 'https' : 'http';
 
 var app = express();
+const server = new http.Server(app);
 
 console.log('process.env.PORT', process.env.PORT);
 // const io_router = require('./socket/index')(io);
@@ -61,6 +65,20 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+//Init io
+/*const io = new Server(server, {
+  cors: {
+      origin: '*',
+  }
+});
+
+//require socket
+mySocket(io);
+
+//set io for app
+app.set("io", io);*/
+
 app.use(express.static(path.join(__dirname, 'public'))); //FE show ảnh src="localhost://3000/public/images/posts/name.jpg"
 
 // app.use(cors({
@@ -81,9 +99,6 @@ if (!fs.existsSync("./public/images/posts")) {
 app.use(AuthMiddleWare.isBrand);
 app.use('/brands', brandRouter);
 
-/*app.use('/classes', classesRouter);
-app.use('/admins', AuthMiddleWare.isAdmin, adminsRouter);*/
-
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
@@ -99,5 +114,11 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+server.listen(process.env.PORT, () => {
+  console.log(`Server is listening at PORT ${process.env.PORT}`);
+});
 
-module.exports = app;
+let io = require('socket.io')(server);
+
+// initialize my socketio module and pass it the io instance
+require('./socket/socket')(io);
