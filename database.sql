@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS image_post;
 DROP TABLE IF EXISTS image_user;
 DROP TABLE IF EXISTS recruitment;
 DROP TABLE IF EXISTS posts;
+DROP TABLE IF EXISTS message;
 -- ----------------------------
 -- Table structure for KOLs/Influencers
 -- ----------------------------
@@ -184,8 +185,50 @@ CREATE TABLE "image_user" (
 ) 
 ;
 
+-- ----------------------------
+-- Table structure for room
+-- ----------------------------
+-- role 1: kol, 2: brand
+DROP TABLE IF EXISTS "room";
+CREATE TABLE "room" (
+  "id" int4 NOT NULL GENERATED ALWAYS AS IDENTITY (
+    INCREMENT 1
+    MINVALUE  1
+    MAXVALUE 2147483647
+    START 10
+    ),
+  "id_user1" int4 NOT NULL,
+  "role1"  char NOT NULL DEFAULT '1',
+  "id_user2" int4 NOT NULL,
+  "role2" char NOT NULL DEFAULT '1',
+  PRIMARY KEY ("id")
+) 
+;
+
+-- ----------------------------
+-- Table structure for message
+-- ----------------------------
+-- role 1: kol, 2: brand
+CREATE TABLE "message" (
+   "id" int4 NOT NULL GENERATED ALWAYS AS IDENTITY (
+    INCREMENT 1
+    MINVALUE  1
+    MAXVALUE 2147483647
+    START 10
+    ),
+  "id_room" int4 NOT NULL,
+  "id_user" int4 NOT NULL,
+  "role" char NOT NULL DEFAULT '1',
+  "content" varchar(500) NOT NULL,
+  "create_time" timestamp NOT NULL,
+  PRIMARY KEY ("id")
+) 
+;
+
 ALTER TABLE "posts" ADD CONSTRAINT "UniqueTitle" UNIQUE ("title","id_writer");
 ALTER TABLE "posts" ADD CONSTRAINT "PostBrands" FOREIGN KEY ("id_writer") REFERENCES "brands" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "message" ADD CONSTRAINT "message_room" FOREIGN KEY ("id_room") REFERENCES "room" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- ----------------------------
 -- Records of categories
