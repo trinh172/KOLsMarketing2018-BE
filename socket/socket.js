@@ -4,6 +4,7 @@ var app = require('express');
 var router = app.Router();
 const kols_db = require("../model/kols.model");
 const brands_db = require("../model/brands.model");
+const mess_db = require("../model/message.model");
 const jwtHelper = require("../utils/jwt.helper");
 
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
@@ -60,11 +61,41 @@ module.exports = function(io) {
                 if(decoded_user.role == 1){
                     addNewUser(decoded_user.user?.id, "kols", socket.id);
                 }
+                //User login sẽ tham gia phòng chat
+                /*
+                let list_room = await mess_db.findAllRoomOf1User(decoded_user.user?.id, decoded_user.role);
+                for(i = 0; i<list_room.length; i++){
+                    let name = "room" + list_room[i].id;
+                    socket.join(name);
+                }*/
                 console.log('onlineUsers update', onlineUsers);
             }
             
         });
+        //bên kia sẽ emit("sendChat", {access_token, iduser, role, content}); iduser là người sẽ nhận tin, role dạng kols, brands
+        socket.on('sendChat', async ({access_token, idroom, iduser, role, content}) => {
+            console.log('Socket sendChatFromUser');
+            const decoded_user = await tokenToUser(access_token);
+            console.log('socket decoded_user', decoded_user);
+            const create_time = moment().add(7, 'hours');
+            let new_message = {
+                id_room: idroom,
+                id_user: decoded_user.user?.id,
+                role: decoded_user.role,
+                content: content,
+                create_time: create_time
+            }
+            console.log('new message', new_message);
 
+            await mess_db.addMessage(new_message);
+            
+            receiver = getUser(iduser, role);
+            if (receiver){
+                let added_message = await mess_db.getMessageByIdroomCreatetime(idroom,create_time);
+                io.to(receiver.socketId).emit("getNewMessage", added_message);
+            }
+
+        })
 
         socket.on("disconnect", () => {
             console.log('disconnect socket: ', socket.id);
