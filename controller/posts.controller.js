@@ -9,7 +9,7 @@ const nodemailer = require('nodemailer');
 const moment = require('moment');
 
 exports.add_post = async function(req, res) {
-    console.log("Check many-images already upload: ", req.files);
+    console.log("Check many-images already upload: ", req.body.files);
     console.log("Check title already upload: ", req.body.title);
     //Get infor from form at FE 
     let new_post = {
@@ -30,30 +30,31 @@ exports.add_post = async function(req, res) {
     let added_post = await post_db.findPostByBrandTitle(req.jwtDecoded.data.id, req.body.title);
     if (added_post){
         //Xử lý post_categories
-        console.log("List cate of post: ", req.body.categories)
+        console.log("List cate of post: ", req.body.selectedCate)
         let cate_post = {
-            "id_cate":req.body.categories,
+            "id_cate":req.body.selectedCate,
             "id_post": added_post.id
         }
         await cate_post_db.add(cate_post)
         //Xử lý post_images
-        if(req.files?.length>0){
+        if(req.body.files.length>0){
             const new_image = {
                 "id_post": added_post.id,
-                "url": "/public/images/posts/" + req.files[0].filename,
+                "url": req.body.files[0],
                 "type": '2',
             }
             let result_addimage = await image_db.addImagePosts(new_image);
-            for(let i = 1; i<req.files.length; i++){
+            for(let i = 1; i<req.body.files.length; i++){
                 let new_imagedetail = {
                     "id_post": added_post.id,
-                    "url": "/public/images/posts/" + req.files[i].filename,
+                    "url": req.body.files[i],
                     "type": '1',
                 }
                 await image_db.addImagePosts(new_imagedetail);
             }
             
             if (result_addimage)
+                console.log("Added post and image success: ", added_post);
                 return res.status(200).json(added_post);
         }
     }
