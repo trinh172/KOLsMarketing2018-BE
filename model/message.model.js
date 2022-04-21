@@ -2,6 +2,54 @@ const db = require('../utils/connectDB')
 const moment = require('moment');
 
 module.exports = {
+    async getUserInfo(iduser, role){
+        if(role == 1){
+            const item = await db('kols').where({
+                id: iduser
+            });
+            if(item.length>0){
+                let result = {};
+                result.email = item[0].email;
+                result.name = item[0].full_name;
+                result.id = item[0].id;
+                result.avatar = '';
+                let url_avatar = await db("image_user").where({
+                    id_user: iduser,
+                    role: '1',
+                    type: 1
+                });
+                if(url_avatar.length > 0){
+                    result.avatar = url_avatar[0].url;
+                }
+                result.role = '1';
+                return result
+            }
+        }
+        if(role == 2){
+            const item = await db('brands').where({
+                id: iduser
+            });
+            if(item.length>0){
+                let result = {};
+                result.email = item[0].email;
+                result.name = item[0].brand_name;
+                result.id = item[0].id;
+                result.avatar = '';
+                let url_avatar = await db("image_user").where({
+                    id_user: iduser,
+                    role: '2',
+                    type: 1
+                });
+                if(url_avatar.length > 0){
+                    result.avatar = url_avatar[0].url;
+                }
+                result.role = '2';
+                return result
+            }
+        }
+        return null;
+    },
+
     async findRoomBy2User(user1, role1, user2, role2){
         const case1 = await db('room').where({
             id_user1: user1,
@@ -22,7 +70,7 @@ module.exports = {
         if (case2.length > 0)
           return case2[0];
 
-        return false;
+        return null;
     },
 
     async findAllRoomOf1User(user, role){
@@ -37,42 +85,34 @@ module.exports = {
         let result = [];
         for(i=0; i<case1.length; i++){
             let item = {};
-            item.id = case1[i].id;
+            item.id_room = case1[i].id;
             if(case1[i].role2 == 1){
-                let userInfo = await db('kols').where({
-                    id: case1[i].id_user2
-                });
-                item.userInfo = userInfo[0];
+                let userInfo = await this.getUserInfo(case1[i].id_user2, 1)
+                item.userInfo = userInfo;
             }
             if(case1[i].role2 == 2){
-                let userInfo = await db('brands').where({
-                    id: case1[i].id_user2
-                });
-                item.userInfo = userInfo[0];
+                let userInfo = await this.getUserInfo(case1[i].id_user2, 2)
+                item.userInfo = userInfo;
             }
             result.push(item);
         }
         for(i=0; i<case2.length; i++){
             let item = {};
-            item.roomid = case2[i].id;
+            item.id_room = case2[i].id;
             if(case2[i].role1 == 1){
-                let userInfo = await db('kols').where({
-                    id: case2[i].id_user1
-                });
-                item.userInfo = userInfo[0];
+                let userInfo = await this.getUserInfo(case2[i].id_user1, 1)
+                item.userInfo = userInfo;
             }
             if(case2[i].role1 == 2){
-                let userInfo = await db('brands').where({
-                    id: case2[i].id_user1
-                });
-                item.userInfo = userInfo[0];
+                let userInfo = await this.getUserInfo(case2[i].id_user1, 2)
+                item.userInfo = userInfo;
             }
             result.push(item);
         }
 
         if (result.length > 0)
           return result;
-        return null;
+        return [];
     },
 
     async getMessageInRoom(roomid){
@@ -86,7 +126,8 @@ module.exports = {
 
     async addRoom2User(user1, role1, user2, role2){
         try {
-            db('room').insert({
+            console.log("nay la trong model add room: ", user1, role1, user2, role2)
+            await db('room').insert({
                 id_user1: user1,
                 role1: role1,
                 id_user2: user2,
@@ -108,23 +149,7 @@ module.exports = {
             return false;
         }
     },
-    async getUserInfo(iduser, role){
-        if(role == 1){
-            const item = await db('kols').where({
-                id: iduser
-            });
-            if(item.length>0)
-                return item[0]
-        }
-        if(role == 2){
-            const item = await db('brands').where({
-                id: iduser
-            });
-            if(item.length>0)
-                return item[0]
-        }
-        return null;
-    },
+    
     async messageByIDRoom(idroom){
         let items = await db('message').where('id_room', idroom);
         for (let i = 0; i < items.length; i++){

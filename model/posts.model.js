@@ -21,8 +21,19 @@ module.exports = {
 
     async findPostsByID(ID){
         let items = await db('posts').where('id', ID);
-        if (items.length==0)
+        if (items.length == 0)
             return null;
+        
+        let brand = await db('brands').where('id', items[0].id_writer);
+        if(brand.length > 0){
+            items[0].brand_name = brand[0].brand_name;
+            items[0].brand_introduce = brand[0].introduce;
+        }
+        else{
+            items[0].brand_name = '';
+            items[0].brand_introduce = '';
+        }
+
         let image_detail = await db('image_post').where({
             'id_post': ID,
             'type': '1'
@@ -32,12 +43,65 @@ module.exports = {
             'type': '2'
         })
         if(image_cover.length > 0){
-            items[0].image_cover = image_cover[0]
+            items[0].image_cover = image_cover[0].url;
         }
         if(image_detail.length > 0){
             items[0].image_detail = image_detail
         }
+        let list_cate = [];
+        let category = await db('post_categories').where({
+            'id_post': ID
+        })
+        for(i = 0; i < category.length; i++){
+            let detailCate = await db('categories').where({
+                'id': category[i].id_cate
+            })
+            list_cate.push(detailCate[0]);
+        }
+        items[0].list_categories = list_cate;
         console.log("Detail Post model: ", items[0]);
+        return items[0];
+    },
+
+    async findPostAndBrandByIDPost(ID){
+        let items = await db('posts').where('id', ID);
+        if (items.length == 0)
+            return null;
+        
+        let brand = await db('brands').where('id', items[0].id_writer);
+        if(brand.length > 0){
+            items[0].brand = brand[0];
+        }
+        else{
+            items[0].brand = null;
+        }
+
+        let image_detail = await db('image_post').where({
+            'id_post': ID,
+            'type': '1'
+        })
+        let image_cover = await db('image_post').where({
+            'id_post': ID,
+            'type': '2'
+        })
+        if(image_cover.length > 0){
+            items[0].image_cover = image_cover[0].url;
+        }
+        if(image_detail.length > 0){
+            items[0].image_detail = image_detail
+        }
+        let list_cate = [];
+        let category = await db('post_categories').where({
+            'id_post': ID
+        })
+        for(i = 0; i < category.length; i++){
+            let detailCate = await db('categories').where({
+                'id': category[i].id_cate
+            })
+            list_cate.push(detailCate[0]);
+        }
+        items[0].list_categories = list_cate;
+        console.log("Detail Post and brand in model: ", items[0]);
         return items[0];
     },
 
