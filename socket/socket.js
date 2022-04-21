@@ -17,7 +17,13 @@ module.exports = function(io) {
     };
 
     const removeDupUser = (id, role) => {
-        onlineUsers = onlineUsers.filter((user) => user.id !== id && user.role !== role);
+
+        let dup = onlineUsers.filter((user) => user.id == id && user.role == role);
+        console.log("Dup user socket: ", dup)
+        if(dup.length > 0){
+            removeUser(dup[0].socketId);
+        }
+        
     };
 
     const removeUser = (socketID) => {
