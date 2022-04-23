@@ -6,7 +6,7 @@ const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
  
 let isAuthor = async (req, res, next) => {
     const tokenFromClient = req.headers["x-access-token"];
-    console.log(tokenFromClient);
+    console.log("Token from client isAuthor: ", tokenFromClient);
     if (tokenFromClient && tokenFromClient!='null') {
         try {
             const decoded = await jwtHelper.verifyToken(tokenFromClient, accessTokenSecret);
@@ -35,7 +35,7 @@ let isAuthor = async (req, res, next) => {
 }
 let isBrand = async (req, res, next) => {
     const tokenFromClient = req.headers["x-access-token"];
-    console.log(tokenFromClient);
+    console.log("Token from client isBrand, ", tokenFromClient);
     if (tokenFromClient && tokenFromClient!='null') {
         try {
             const decoded = await jwtHelper.verifyToken(tokenFromClient, accessTokenSecret);
@@ -56,6 +56,32 @@ let isBrand = async (req, res, next) => {
         }
     } else {
         console.log('error 401 isBrand')
+        return res.status(401).json('401');
+    };
+}
+let isKOLs = async (req, res, next) => {
+    const tokenFromClient = req.headers["x-access-token"];
+    console.log("Token from client isKOLs, ", tokenFromClient);
+    if (tokenFromClient && tokenFromClient!='null') {
+        try {
+            const decoded = await jwtHelper.verifyToken(tokenFromClient, accessTokenSecret);
+            req.jwtDecoded = {};
+            if(decoded.data.role == 1){
+                req.jwtDecoded.data = await kols_db.findKOLsByID(decoded.data.id);
+                req.jwtDecoded.data.is_social_login = decoded.data.is_social_login;
+                req.jwtDecoded.data.role = decoded.data.role;
+                next();
+            }
+            else{
+                console.log('error 401 isKOLs')
+                return res.status(401).json('401');
+            }
+        } catch (error) {
+            console.log(error)
+            return res.status(400).json('400');
+        }
+    } else {
+        console.log('error 401 isKOLs')
         return res.status(401).json('401');
     };
 }
@@ -80,5 +106,6 @@ let isAuthen = async (req, res, next) => {
 */
 module.exports = {
     isAuthor: isAuthor,
-    isBrand: isBrand
+    isBrand: isBrand,
+    isKOLs: isKOLs
 };
