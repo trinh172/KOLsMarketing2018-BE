@@ -16,6 +16,25 @@ module.exports = {
         return items[0];
     },
 
+    async getKOLsProfile(ID){
+        let items = await db('kols').where('id', ID);
+        if (items.length==0)
+            return null;
+        items[0].password = 'has-password';
+        items[0].avatar = '';
+        let url_avatar = await db("image_user").where({
+            id_user: ID,
+            role: '1',
+            type: 1
+        });
+        if(url_avatar.length > 0){
+            items[0].avatar = url_avatar[0].url;
+        }
+        items[0].role = '1';
+        
+        return items[0];
+    },
+
     async findKOLsByEmail(email){
         let items = await db('kols').where('email', email);
         if (items.length==0)
