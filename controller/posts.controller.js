@@ -8,6 +8,15 @@ const jwtHelper = require("../utils/jwt.helper");
 const nodemailer = require('nodemailer');
 const moment = require('moment');
 
+var shuffle = function(array, n) {
+    temp = [];
+    originalLength = array.length;
+    for (var i = 0; i < n; i++) {
+      temp.push(array.splice(Math.floor(Math.random()*array.length),1));
+    }
+    return temp;
+ };
+
 exports.add_post = async function(req, res) {
     console.log("Check many-images already upload: ", req.body.files);
     console.log("Check title already upload: ", req.body.title);
@@ -53,9 +62,13 @@ exports.add_post = async function(req, res) {
                 await image_db.addImagePosts(new_imagedetail);
             }
             
-            if (result_addimage)
-                console.log("Added post and image success: ", added_post);
-                return res.status(200).json(added_post);
+            if (result_addimage){
+                /*let detailPost = await post_db.findPostAndBrandByIDPost(added_post.id);
+                if(detailPost){
+                    return res.status(200).json(detailPost);
+                }*/
+                return res.status(200).json({id: added_post.id});
+            }
         }
     }
     
@@ -91,25 +104,69 @@ exports.findPostInMonthHomepage = async function(req, res) {
     return res.status(400).json(false);
 }
 exports.findNewPostByCateHomepage = async function(req, res) {
-    let idCate = req.body.id_cate;
+    let idCate = req.params.id_cate;
     if(idCate){
         let flag = await post_db.findNewPostByCategory(idCate);
         if (flag){
-            return res.status(200).json(flag);
+            if(flag.length <= 12)
+                return res.status(200).json(flag);
+            let result = await shuffle(flag, 12);
+            return res.status(200).json(result);
         }
+    }
+    return res.status(400).json(false);
+}
+
+exports.findNewPostByCateMore = async function(req, res) {
+    let idCate = req.params.id_cate;
+    if(idCate){
+        let flag = await post_db.findNewPostByCategory(idCate);
+        if (flag){
+            if(flag.length <= 60)
+                return res.status(200).json(flag);
+            let result = await shuffle(flag, 60);
+            return res.status(200).json(result);
+        }
+    }
+    return res.status(400).json(false);
+}
+
+exports.find60NewestPost = async function(req, res) {
+    let flag = await post_db.find60NewestPostModel();
+    if (flag){
+        return res.status(200).json(flag);
     }
     
     return res.status(400).json(false);
 }
 
-exports.addNewImage = async function(req, res) {
-    try {
-        console.log("URL of new image: ", req.file?.filename)
-        
-    } catch (err) {
-        res.status(400).json("Some thing went wrong!");
+exports.find120NewestPost = async function(req, res) {
+    let flag = await post_db.find120NewestPostModel();
+    if (flag){
+        return res.status(200).json(flag);
     }
+    
+    return res.status(400).json(false);
 }
+
+exports.findHighestCastPost = async function(req, res) {
+    let flag = await post_db.find6HighestCastPostModel();
+    if (flag){
+        return res.status(200).json(flag);
+    }
+    
+    return res.status(400).json(false);
+}
+
+exports.findHighestCastPostMore = async function(req, res) {
+    let flag = await post_db.find30HighestCastPostModel();
+    if (flag){
+        return res.status(200).json(flag);
+    }
+    
+    return res.status(400).json(false);
+}
+
 exports.checkAvailableTittle = async function(req, res) {
     let iduser = req.jwtDecoded.data.id;
     let title = req.body.title;
@@ -122,12 +179,54 @@ exports.checkAvailableTittle = async function(req, res) {
 exports.getDetailPost = async function(req, res) {
     let id_post = req.body.id_post;
     if(id_post){
-        let flag = await post_db.findPostsByID(id_post);
+        let flag = await post_db.findPostAndBrandByIDPost(id_post);
         if (flag){
             console.log("Check detail info of post in controller: ", flag);
             return res.json(flag);
         }
     }
     
+    return res.status(400).json(false);
+}
+
+exports.kolsLikePost = async function(req, res) {
+    let id_post = req.body.id_post;
+    if(id_post){
+        let flag = await post_db.kolsLikePost(req.jwtDecoded.data.id, id_post);
+        if (flag){
+            console.log("Check like successfully: ", flag);
+            return res.json(flag);
+        }
+    }
+    return res.status(400).json(false);
+}
+
+exports.getAllPostKolsLikes = async function(req, res) {
+    let flag = await post_db.findAllPostsKolsLike(req.jwtDecoded.data.id);
+    if (flag){
+        console.log("getAllPostKolsLikes: ", flag);
+        return res.json(flag);
+    }
+    return res.status(400).json(false);
+}
+
+exports.getAllPostKolsRecruitment = async function(req, res) {
+    let flag = await post_db.findAllPostsKolsRecruitment(req.jwtDecoded.data.id);
+    if (flag){
+        console.log("getAllPostKols Recruitment: ", flag);
+        return res.json(flag);
+    }
+    return res.status(400).json(false);
+}
+
+exports.kolsUnlikePost = async function(req, res) {
+    let id_post = req.body.id_post;
+    if(id_post){
+        let flag = await post_db.kolsUnlikePost(req.jwtDecoded.data.id, id_post);
+        if (flag){
+            console.log("Check unlike successfully: ", flag);
+            return res.json(flag);
+        }
+    }
     return res.status(400).json(false);
 }
