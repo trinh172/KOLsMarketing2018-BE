@@ -98,7 +98,7 @@ app.use('/posts', postRouter);
 if (!fs.existsSync("./public/images/posts")) {
   fs.mkdirSync("./public/images/posts");
 }
-app.use(AuthMiddleWare.isBrand);
+//app.use(AuthMiddleWare.isBrand);
 app.use('/brands', brandRouter);
 
 // catch 404 and forward to error handler
