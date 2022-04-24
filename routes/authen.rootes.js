@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const authentication = require('../controller/authentication.controller');
-const brands_db = require('../controller/brands.controller');
+const brands_ct = require('../controller/brands.controller');
+const address_ct = require('../controller/address.controller');
 
 router.post('/is-available',authentication.is_available);
 router.post('/is-available-email',authentication.is_available_email);
@@ -14,6 +15,9 @@ router.post('/kols-login', authentication.kols_signin);
 router.post('/brands-login', authentication.brands_signin);
 router.post('/google-login', authentication.google_signin);
 
-router.get('/list-brands', brands_db.get15Brands);
-router.get('/list-brands-more', brands_db.get60Brands);
+router.get('/list-brands', brands_ct.get15Brands);
+router.get('/list-brands-more', brands_ct.get60Brands);
+
+router.get('/list-province-vn', address_ct.list_province_vn);
+
 module.exports = router;
