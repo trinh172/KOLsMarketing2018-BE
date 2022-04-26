@@ -4,12 +4,13 @@ const knex_local= require('knex')({
         host : 'localhost',
         port : 5432,
         user : 'postgres',
-        password : 'root',
+        password : 'dt040100',
         database : 'kolsmarketing'
     }
 });
+//const connectionString = 'postgres://qaikjuzosgngng:b6f082bf72bd9b027e804a583ad5700fe6bed5d055b120410eba16298e040b52@ec2-3-232-22-121.compute-1.amazonaws.com:5432/dcr2rbcrk9vd8l';
+const connectionString = '1234';
 
-const connectionString = 'postgres://qaikjuzosgngng:b6f082bf72bd9b027e804a583ad5700fe6bed5d055b120410eba16298e040b52@ec2-3-232-22-121.compute-1.amazonaws.com:5432/dcr2rbcrk9vd8l';
 
 const knex = require('knex')({
     client: 'pg',

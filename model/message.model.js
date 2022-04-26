@@ -142,7 +142,7 @@ module.exports = {
 
     async addMessage(newMessage){
         try {
-            db('message').insert(newMessage);
+            await db('message').insert(newMessage);
             return true
         } catch (e) {
             console.log(e);
