@@ -289,8 +289,9 @@ COMMIT;
 -- ----------------------------
 BEGIN;
 INSERT INTO kols OVERRIDING SYSTEM VALUE VALUES (1, 'kols1', 'kol1@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', null, null, null, null, null, null, '2022-04-21 13:15:42.579', '1', -1);
+INSERT INTO kols OVERRIDING SYSTEM VALUE VALUES (2, 'kols2', 'kol2@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', null, null, null, null, null, null, '2022-04-21 13:15:42.579', '1', -1);
 INSERT INTO brands OVERRIDING SYSTEM VALUE VALUES (1,'brand1@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', 'brand1', 'Brand 1', 'Thành phố Hồ Chí Minh', '123123123',  '2022-04-21 13:15:42.579', '1', null, '1', -1);
-
+INSERT INTO brands OVERRIDING SYSTEM VALUE VALUES (3,'brand3@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', 'brand3', 'Brand 3', 'Hà Nội', '5656565656',  '2022-04-21 13:15:42.579', '1', null, '1', -1);
 COMMIT;
 
 -- ----------------------------
@@ -298,9 +299,17 @@ COMMIT;
 -- ----------------------------
 BEGIN;
 INSERT INTO room OVERRIDING SYSTEM VALUE VALUES (1, 1, 1, 1, 2);
+INSERT INTO room OVERRIDING SYSTEM VALUE VALUES (2, 1, 1, 3, 2);
+INSERT INTO room OVERRIDING SYSTEM VALUE VALUES (3, 1, 1, 2, 1);
+INSERT INTO room OVERRIDING SYSTEM VALUE VALUES (4, 2, 1, 3, 2);
 INSERT INTO message OVERRIDING SYSTEM VALUE VALUES (1, 1, 1, 1, 'đây là tin nhắn của id 1 role 1', '2022-04-21 13:15:42.579');
 INSERT INTO message OVERRIDING SYSTEM VALUE VALUES (2, 1, 1, 2, 'đây là tin nhắn thứ nhất của id 1 role 2', '2022-04-21 13:15:42.579');
 INSERT INTO message OVERRIDING SYSTEM VALUE VALUES (3, 1, 1, 2, 'đây là tin nhắn thứ 2 của id 1 role 2', '2022-04-21 13:15:42.579');
+
+INSERT INTO message OVERRIDING SYSTEM VALUE VALUES (4, 2, 1, 1, 'đây là tin nhắn thứ 2 của id 1 role 1', '2022-04-21 13:15:42.579');
+INSERT INTO message OVERRIDING SYSTEM VALUE VALUES (5, 2, 3, 2, 'đây là tin nhắn thứ 2 của id 3 role 2', '2022-04-21 13:15:42.579');
+
+INSERT INTO message OVERRIDING SYSTEM VALUE VALUES (6, 3, 1, 1, 'đây là tin nhắn thứ 2 của id 1 role 1', '2022-04-21 13:15:42.579');
 COMMIT;
 
 DROP TABLE IF EXISTS "vn_tinhthanhpho";
