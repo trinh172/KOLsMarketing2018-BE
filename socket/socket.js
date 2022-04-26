@@ -94,8 +94,12 @@ module.exports = function(io) {
             console.log('new message', new_message);
 
             await mess_db.addMessage(new_message);
+            let receiver = null;
+            if (role == 1){
+                receiver = await getUser(iduser, "kols");
+            }
+            else receiver = await getUser(iduser, "brands");
             
-            receiver = getUser(iduser, role);
             if (receiver){
                 let added_message = await mess_db.getMessageByIdroomCreatetime(idroom,create_time);
                 io.to(receiver.socketId).emit("getNewMessage", added_message);

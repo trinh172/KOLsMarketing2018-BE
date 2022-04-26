@@ -4,7 +4,7 @@ const knex_local= require('knex')({
         host : 'localhost',
         port : 5432,
         user : 'postgres',
-        password : 'dt040100',
+        password : 'root',
         database : 'kolsmarketing'
     }
 });
