@@ -29,7 +29,18 @@ module.exports = {
         });
         if(url_avatar.length > 0){
             items[0].avatar = url_avatar[0].url;
+        };
+
+        if (items[0].address != null){
+            let address = await db("vn_tinhthanhpho").where({
+                id: items[0].address
+            });
+            if(address.length > 0){
+                items[0].address = address[0].name;
+            };
         }
+        
+        items[0].create_time = moment(items[0].create_time).format("DD/MM/YYYY HH:mm:ss");
         items[0].role = '1';
         
         return items[0];
