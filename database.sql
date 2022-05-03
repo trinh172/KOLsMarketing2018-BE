@@ -23,7 +23,7 @@ START 10
   "email" varchar(100) COLLATE "pg_catalog"."default" NOT NULL,
   "password" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
   "nick_name" varchar(50),
-  "address" varchar(50),
+  "address" varchar(5),
   "phone" varchar(15),
   "gender" char,
   "follows" int4,
@@ -50,7 +50,7 @@ START 10
   "password" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
   "full_name" varchar(255),
   "brand_name" varchar(50),
-  "address" varchar(150),
+  "address" varchar(5),
   "phone" varchar(15),
 	"create_time" timestamp,
   "gender" char,
@@ -106,6 +106,25 @@ CREATE TABLE "categories" (
 ;
 
 -- ----------------------------
+-- Table structure for bio_url
+-- ----------------------------
+DROP TABLE IF EXISTS "bio_url";
+CREATE TABLE "bio_url" (
+  "id" int4 NOT NULL GENERATED ALWAYS AS IDENTITY (
+    INCREMENT 1
+    MINVALUE  1
+    MAXVALUE 2147483647
+    START 10
+    ),
+  "id_user" int4 NOT NULL,
+  "role" char NOT NULL DEFAULT '1',
+  "url" varchar(255) NOT NULL,
+  "type" char NOT NULL DEFAULT '1',
+  PRIMARY KEY ("id")
+) 
+;
+
+-- ----------------------------
 -- Table structure for Recruitment
 -- ----------------------------
 CREATE TABLE "recruitment" (
@@ -149,7 +168,7 @@ CREATE TABLE "image_recruitment" (
     START 10
     ),
   "id_recruitment" int4 NOT NULL,
-  "url" varchar(150) NOT NULL,
+  "url" varchar(255) NOT NULL,
   "type" char NOT NULL DEFAULT '1',
   PRIMARY KEY ("id"),
   CONSTRAINT "recruit_image" FOREIGN KEY ("id_recruitment") REFERENCES "recruitment" ("id") ON DELETE CASCADE ON UPDATE CASCADE
@@ -166,7 +185,7 @@ CREATE TABLE "image_post" (
     START 10
     ),
   "id_post" int4 NOT NULL,
-  "url" varchar(150) NOT NULL,
+  "url" varchar(255) NOT NULL,
   "type" char NOT NULL DEFAULT '1',
   PRIMARY KEY ("id"),
   CONSTRAINT "post_image" FOREIGN KEY ("id_post") REFERENCES "posts" ("id") ON DELETE CASCADE ON UPDATE CASCADE
@@ -221,7 +240,7 @@ CREATE TABLE "image_user" (
     ),
   "id_user" int4 NOT NULL,
   "role" char NOT NULL DEFAULT '1',
-  "url" varchar(150) NOT NULL,
+  "url" varchar(255) NOT NULL,
   "type" char NOT NULL DEFAULT '2',
   PRIMARY KEY ("id")
 ) 
@@ -290,8 +309,8 @@ COMMIT;
 BEGIN;
 INSERT INTO kols OVERRIDING SYSTEM VALUE VALUES (1, 'kols1', 'kol1@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', null, null, null, null, null, null, '2022-04-21 13:15:42.579', '1', -1);
 INSERT INTO kols OVERRIDING SYSTEM VALUE VALUES (2, 'kols2', 'kol2@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', null, null, null, null, null, null, '2022-04-21 13:15:42.579', '1', -1);
-INSERT INTO brands OVERRIDING SYSTEM VALUE VALUES (1,'brand1@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', 'brand1', 'Brand 1', 'Thành phố Hồ Chí Minh', '123123123',  '2022-04-21 13:15:42.579', '1', null, '1', -1);
-INSERT INTO brands OVERRIDING SYSTEM VALUE VALUES (3,'brand3@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', 'brand3', 'Brand 3', 'Hà Nội', '5656565656',  '2022-04-21 13:15:42.579', '1', null, '1', -1);
+INSERT INTO brands OVERRIDING SYSTEM VALUE VALUES (1,'brand1@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', 'brand1', 'Brand 1', '79', '123123123',  '2022-04-21 13:15:42.579', '1', null, '1', -1);
+INSERT INTO brands OVERRIDING SYSTEM VALUE VALUES (3,'brand3@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', 'brand3', 'Brand 3', '01', '5656565656',  '2022-04-21 13:15:42.579', '1', null, '1', -1);
 COMMIT;
 
 -- ----------------------------
@@ -387,3 +406,5 @@ INSERT INTO "vn_tinhthanhpho" ("id", "name", "type", "slug") VALUES
 ('95',	'Tỉnh Bạc Liêu',	'Tỉnh',	'BACLIEU'),
 ('96',	'Tỉnh Cà Mau',	'Tỉnh',	'CAMAU');
 COMMIT;
+ALTER TABLE "kols" ADD CONSTRAINT "KolsAddress" FOREIGN KEY ("address") REFERENCES "vn_tinhthanhpho" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "brands" ADD CONSTRAINT "BrandsAddress" FOREIGN KEY ("address") REFERENCES "vn_tinhthanhpho" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
