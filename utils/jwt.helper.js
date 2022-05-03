@@ -31,7 +31,14 @@ let verifyToken = (token, secretKey) => {
   return new Promise((resolve, reject) => {
     jwt.verify(token, secretKey, (error, decoded) => {
       if (error) {
-        return reject(error);
+        console.log("Error cua jwt ",error);
+        if(error.name === 'TokenExpiredError') {
+          const payload = jwt.verify(token, secretKey, {ignoreExpiration: true} );
+          resolve("expired");
+          // your code
+        }
+        else
+            return reject(error);
       }
       resolve(decoded);
     });

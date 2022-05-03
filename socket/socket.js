@@ -38,6 +38,9 @@ module.exports = function(io) {
     const tokenToUser = async (token) => {
         decodedToken = await jwtHelper.verifyToken(token, process.env.ACCESS_TOKEN_SECRET);
         console.log('decodedToken', decodedToken);
+        if(decodedToken === "expired"){
+            return decodedToken;
+        }
         data_result = {};
         if(decodedToken.data.role == 1){
             data_result.user = await kols_db.findKOLsByID(decodedToken.data.id);
@@ -61,19 +64,15 @@ module.exports = function(io) {
                 decoded_user = await tokenToUser(access_token);
                 console.log('socket decoded_user', decoded_user);
                 console.log('onlineUsers old', onlineUsers);
-                if(decoded_user.role == 2){
+                if(decoded_user?.role == 2){
                     addNewUser(decoded_user.user?.id, "brands", socket.id);
                 }
-                if(decoded_user.role == 1){
+                if(decoded_user?.role == 1){
                     addNewUser(decoded_user.user?.id, "kols", socket.id);
                 }
-                //User login sẽ tham gia phòng chat
-                /*
-                let list_room = await mess_db.findAllRoomOf1User(decoded_user.user?.id, decoded_user.role);
-                for(i = 0; i<list_room.length; i++){
-                    let name = "room" + list_room[i].id;
-                    socket.join(name);
-                }*/
+                if(decoded_user === "expired"){
+                    io.to(socket.id).emit("expireddate");
+                }
                 console.log('onlineUsers update', onlineUsers);
             }
             
