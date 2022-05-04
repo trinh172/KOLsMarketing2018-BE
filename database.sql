@@ -28,6 +28,7 @@ START 10
   "gender" char,
   "follows" int4,
   "introduce" varchar(500),
+  "birthday" timestamp,
 	"create_time" timestamp NOT NULL,
   "state" char NOT NULL DEFAULT '1',
 	"otp" int4,

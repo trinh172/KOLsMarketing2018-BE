@@ -62,7 +62,98 @@ module.exports = {
             return false;
         }
     },
+
+    async addBioUrl(bio_url, id){
+        try {
+            //insert new images
+            await db('bio_url').insert({
+                id_user: id,
+                role: 1,
+                type: 1,
+                url: bio_url
+            })
+            return true
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
     
+    async updateFullname(fullname, id){
+        try {
+            await db('kols').where('id', id).update({'full_name': fullname});
+            return true
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+
+    async updateDescription(des, id){
+        try {
+            await db('kols').where('id', id).update({'introduce': des});
+            return true
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+
+    async updateInfo(new_info, id){
+        try {
+            await db('kols').where('id', id).update({
+                birthday: new_info.birth,
+                gender: new_info.gender,
+                phone: new_info.phone,
+                email: new_info.mail,
+                address: new_info.address
+            });
+            return true
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+
+    async updateAvatar(url_avatar, id){
+        try {
+            await db('image_user').where({
+                id_user: id,
+                role: 1,
+                type: 1
+            }).update({'url': url_avatar});
+            return true
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+
+    async updateImageDetail(array_url, id){
+        try {
+            //delete all old images
+            await db('image_user').where({
+                id_user: id,
+                role: 1,
+                type: 2
+            }).del();
+
+            //insert new images
+            for (i = 0; i < array_url.length; i++){
+                await db('image_user').insert({
+                    id_user: id,
+                    role: 1,
+                    type: 2,
+                    url: array_url[i]
+                })
+            }
+            return true
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+
     updateOTPByEmailKOLs(email, OTP){
         return db('kols').where('email', email).update({'otp': OTP});
     },
@@ -71,7 +162,27 @@ module.exports = {
         return db('kols').where('id', id_user).update({'otp': OTP});
     },
 
-    updatePassword(email, password){
-        return db('kols').where('email', email).update({'password': password});
-    }
+    async updatePassword(id, password){
+        try {
+            await db('kols').where('id', id).update({'password': password});
+            return true
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+    async deleteBioUrl(bio_url, id){
+        try {
+            //insert new images
+            await db('bio_url').where({
+                id_user: id,
+                role: 1,
+                url: bio_url
+            }).del();
+            return true
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
 }
