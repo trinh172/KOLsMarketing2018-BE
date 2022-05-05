@@ -1,4 +1,7 @@
 DROP TABLE IF EXISTS post_categories;
+DROP TABLE IF EXISTS job_describe;
+DROP TABLE IF EXISTS job_comment;
+DROP TABLE IF EXISTS job_member;
 DROP TABLE IF EXISTS kols_like_brands;
 DROP TABLE IF EXISTS kols_like_post;
 DROP TABLE IF EXISTS brands_like_kols;
@@ -127,6 +130,7 @@ CREATE TABLE "bio_url" (
 
 -- ----------------------------
 -- Table structure for Recruitment
+-- State 1: chua duyet, 2: reject, 3: accept but not done work, 4: accept and done work
 -- ----------------------------
 CREATE TABLE "recruitment" (
   "id" int4 NOT NULL GENERATED ALWAYS AS IDENTITY (
@@ -140,6 +144,8 @@ CREATE TABLE "recruitment" (
   "id_brands" int4 NOT NULL,
   "content" varchar(1000) NOT NULL,
   "state" char NOT NULL DEFAULT '1',
+  "create_time" timestamp,
+  "url" varchar(255),
   PRIMARY KEY ("id"),
   UNIQUE ("id_post","id_kols", "id_brands"),
   CONSTRAINT "recruit_kols" FOREIGN KEY ("id_kols") REFERENCES "kols" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
@@ -293,6 +299,70 @@ ALTER TABLE "posts" ADD CONSTRAINT "PostBrands" FOREIGN KEY ("id_writer") REFERE
 ALTER TABLE "message" ADD CONSTRAINT "message_room" FOREIGN KEY ("id_room") REFERENCES "room" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- ----------------------------
+-- Table structure for job_describe
+-- ----------------------------
+CREATE TABLE "job_describe" (
+   "id" int4 NOT NULL GENERATED ALWAYS AS IDENTITY (
+    INCREMENT 1
+    MINVALUE  1
+    MAXVALUE 2147483647
+    START 10
+    ),
+  "id_post" int4 NOT NULL,
+  "id_brand" int4 NOT NULL,
+  "content" varchar(500) NOT NULL,
+  "create_time" timestamp NOT NULL,
+  PRIMARY KEY ("id")
+) 
+;
+ALTER TABLE "job_describe" ADD CONSTRAINT "jobdescribe_post" FOREIGN KEY ("id_post") REFERENCES "posts" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "job_describe" ADD CONSTRAINT "jobdescribe_brand" FOREIGN KEY ("id_brand") REFERENCES "brands" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- ----------------------------
+-- Table structure for job_comment
+-- ----------------------------
+-- role 1: kol, 2: brand
+CREATE TABLE "job_comment" (
+   "id" int4 NOT NULL GENERATED ALWAYS AS IDENTITY (
+    INCREMENT 1
+    MINVALUE  1
+    MAXVALUE 2147483647
+    START 10
+    ),
+  "id_post" int4 NOT NULL,
+  "id_user" int4 NOT NULL,
+  "role" char NOT NULL DEFAULT '1',
+  "content" varchar(500) NOT NULL,
+  "url" varchar(255),
+  "create_time" timestamp NOT NULL,
+  PRIMARY KEY ("id")
+) 
+;
+ALTER TABLE "job_comment" ADD CONSTRAINT "jobcomment_post" FOREIGN KEY ("id_post") REFERENCES "posts" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- ----------------------------
+-- Table structure for job_comment
+-- ----------------------------
+-- state 1: not done work, 2: done work
+CREATE TABLE "job_member" (
+   "id" int4 NOT NULL GENERATED ALWAYS AS IDENTITY (
+    INCREMENT 1
+    MINVALUE  1
+    MAXVALUE 2147483647
+    START 10
+    ),
+  "id_post" int4 NOT NULL,
+  "id_user" int4 NOT NULL,
+  "role" char NOT NULL DEFAULT '1',
+  "state" char NOT NULL DEFAULT '1',
+  "url" varchar(255),
+  "create_time" timestamp NOT NULL,
+  PRIMARY KEY ("id")
+) 
+;
+ALTER TABLE "job_member" ADD CONSTRAINT "jobmember_post" FOREIGN KEY ("id_post") REFERENCES "posts" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- ----------------------------
 -- Records of categories
 -- ----------------------------
 BEGIN;
@@ -308,10 +378,22 @@ COMMIT;
 -- brand pass: kols1234
 -- ----------------------------
 BEGIN;
-INSERT INTO kols OVERRIDING SYSTEM VALUE VALUES (1, 'kols1', 'kol1@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', null, null, null, null, null, null, '2022-04-21 13:15:42.579', '1', -1);
-INSERT INTO kols OVERRIDING SYSTEM VALUE VALUES (2, 'kols2', 'kol2@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', null, null, null, null, null, null, '2022-04-21 13:15:42.579', '1', -1);
-INSERT INTO brands OVERRIDING SYSTEM VALUE VALUES (1,'brand1@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', 'brand1', 'Brand 1', '79', '123123123',  '2022-04-21 13:15:42.579', '1', null, '1', -1);
-INSERT INTO brands OVERRIDING SYSTEM VALUE VALUES (3,'brand3@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', 'brand3', 'Brand 3', '01', '5656565656',  '2022-04-21 13:15:42.579', '1', null, '1', -1);
+INSERT INTO kols OVERRIDING SYSTEM VALUE VALUES (1, 'Phương Xuân', 'kol1@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', null, null, null, null, null, null, null, '2022-04-21 13:15:42.579', '1', -1);
+INSERT INTO kols OVERRIDING SYSTEM VALUE VALUES (2, 'Lan Anh', 'kol2@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', null, null, null, null, null, null, null, '2022-04-21 13:15:42.579', '1', -1);
+INSERT INTO kols OVERRIDING SYSTEM VALUE VALUES (3, 'Ngọc Trúc', 'kol3@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', null, null, null, null, null, null, null, '2022-04-21 13:15:42.579', '1', -1);
+INSERT INTO kols OVERRIDING SYSTEM VALUE VALUES (4, 'Trần Nam', 'kol4@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', null, null, null, null, null, null, null, '2022-04-21 13:15:42.579', '1', -1);
+INSERT INTO kols OVERRIDING SYSTEM VALUE VALUES (5, 'Phương Thảo', 'kol5@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', null, null, null, null, null, null, null, '2022-04-21 13:15:42.579', '1', -1);
+
+INSERT INTO brands OVERRIDING SYSTEM VALUE VALUES (1,'brand1@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', 'Trần Huy', 'Trà sữa Huy Tea', '79', '1111111111',  '2022-04-21 13:15:42.579', '1', null, '1', -1);
+INSERT INTO brands OVERRIDING SYSTEM VALUE VALUES (2,'brand2@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', 'Ngọc Nga', 'Shop quần áo Ngọc Nga', '36', '2222222222',  '2022-04-21 13:15:42.579', '1', null, '1', -1);
+INSERT INTO brands OVERRIDING SYSTEM VALUE VALUES (3,'brand3@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', 'Minh Anh', 'Thời trang Anh Anh', '01', '3333333333',  '2022-04-21 13:15:42.579', '1', null, '1', -1);
+INSERT INTO brands OVERRIDING SYSTEM VALUE VALUES (4,'brand4@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', 'Trần Tiến', 'Shop Tiến Nguyễn', '01', '444444444',  '2022-04-21 13:15:42.579', '1', null, '1', -1);
+INSERT INTO brands OVERRIDING SYSTEM VALUE VALUES (5,'brand5@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', 'Minh Hậu', 'Gaming Hậu', '92', '555555555',  '2022-04-21 13:15:42.579', '1', null, '1', -1);
+INSERT INTO brands OVERRIDING SYSTEM VALUE VALUES (6,'brand6@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', 'Ngọc Anh', 'Quần áo Ngọc Anh', '92', '6666666666',  '2022-04-21 13:15:42.579', '1', null, '1', -1);
+INSERT INTO brands OVERRIDING SYSTEM VALUE VALUES (7,'brand7@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', 'Trần Trà', 'Trà sữa Yoyo', '75', '7777777777',  '2022-04-21 13:15:42.579', '1', null, '1', -1);
+INSERT INTO brands OVERRIDING SYSTEM VALUE VALUES (8,'brand8@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', 'Trúc Nguyễn', 'Trúc Nguyễn shop', '79', '888888888',  '2022-04-21 13:15:42.579', '1', null, '1', -1);
+INSERT INTO brands OVERRIDING SYSTEM VALUE VALUES (9,'brand9@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', 'Long Phan', 'Long Fashion', '01', '0999999999',  '2022-04-21 13:15:42.579', '1', null, '1', -1);
+INSERT INTO brands OVERRIDING SYSTEM VALUE VALUES (10,'brand10@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', 'Minh Nguyễn', 'Thức ăn cho bé', '79', '1010101010',  '2022-04-21 13:15:42.579', '1', null, '1', -1);
 COMMIT;
 
 -- ----------------------------
