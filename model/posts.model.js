@@ -1,6 +1,5 @@
 const db = require('../utils/connectDB')
 const moment = require('moment');
-const { post } = require('../routes/kols.routes');
 module.exports = {
     async all(){
         let items = await db('posts');

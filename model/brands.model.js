@@ -47,6 +47,19 @@ module.exports = {
         if(url_avatar.length > 0){
             items[0].avatar = url_avatar[0].url;
         }
+
+        items[0].detail_images = [];
+        let url_detail = await db("image_user").where({
+            id_user: ID,
+            role: '2',
+            type: 2
+        });
+        if(url_detail.length > 0){
+            for(i = 0; i< url_detail.length; i++){
+                items[0].detail_images.push(url_detail[i].url);
+            }
+        };
+
         if (items[0].address != null){
             let address = await db("vn_tinhthanhpho").where({
                 id: items[0].address
