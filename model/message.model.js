@@ -73,6 +73,17 @@ module.exports = {
         return null;
     },
 
+    async findRoomByID(id_room){
+        const items = await db('room').where({
+            id: id_room
+        }); 
+
+        if (items.length > 0)
+          return items[0];
+
+        return null;
+    },
+
     async findAllRoomOf1User(user, role){
         const case1 = await db('room').where({
             id_user1: user,
@@ -88,11 +99,25 @@ module.exports = {
             item.id_room = case1[i].id;
             if(case1[i].role2 == 1){
                 let userInfo = await this.getUserInfo(case1[i].id_user2, 1)
+                let state = await db("check_read_room").where({
+                    id_room: case1[i].id,
+                    id_user: user,
+                    role: role
+                })
+                item.state = state[0].state;
                 item.userInfo = userInfo;
+                item.create_time = case1[i].time;
             }
             if(case1[i].role2 == 2){
                 let userInfo = await this.getUserInfo(case1[i].id_user2, 2)
                 item.userInfo = userInfo;
+                let state = await db("check_read_room").where({
+                    id_room: case1[i].id,
+                    id_user: user,
+                    role: role
+                })
+                item.state = state[0].state;
+                item.create_time = case1[i].time;
             }
             result.push(item);
         }
@@ -102,10 +127,24 @@ module.exports = {
             if(case2[i].role1 == 1){
                 let userInfo = await this.getUserInfo(case2[i].id_user1, 1)
                 item.userInfo = userInfo;
+                let state = await db("check_read_room").where({
+                    id_room: case2[i].id,
+                    id_user: user,
+                    role: role
+                })
+                item.state = state[0].state;
+                item.create_time = case2[i].time;
             }
             if(case2[i].role1 == 2){
                 let userInfo = await this.getUserInfo(case2[i].id_user1, 2)
                 item.userInfo = userInfo;
+                let state = await db("check_read_room").where({
+                    id_room: case2[i].id,
+                    id_user: user,
+                    role: role
+                })
+                item.state = state[0].state;
+                item.create_time = case2[i].time;
             }
             result.push(item);
         }
@@ -131,7 +170,22 @@ module.exports = {
                 id_user1: user1,
                 role1: role1,
                 id_user2: user2,
-                role2: role2
+                role2: role2,
+                time: moment().add(7, 'hours')
+            });
+            return true
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+
+    async add_check_read_room(idroom, iduser, role){
+        try {
+            await db('check_read_room').insert({
+                id_room: idroom,
+                id_user: iduser,
+                role: role
             });
             return true
         } catch (e) {
@@ -143,6 +197,28 @@ module.exports = {
     async addMessage(newMessage){
         try {
             await db('message').insert(newMessage);
+            await db('room').where("id", newMessage.id_room).update({
+                "time": newMessage.create_time
+            });
+            await db('check_read_room').where({
+                "id_room": newMessage.id_room,
+                "id_user": newMessage.id_user,
+                "role": newMessage.role
+            }).update("state", 1);
+            return true
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+
+    async updateCheckReadRoom(idroom, user, role, state){
+        try {
+            await db('check_read_room').where({
+                "id_room": idroom,
+                "id_user": user,
+                "role": role
+            }).update("state", state);
             return true
         } catch (e) {
             console.log(e);

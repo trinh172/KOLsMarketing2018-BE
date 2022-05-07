@@ -93,6 +93,7 @@ module.exports = function(io) {
             console.log('new message', new_message);
 
             await mess_db.addMessage(new_message);
+            await mess_db.updateCheckReadRoom(idroom, iduser, role, 0);
             let receiver = null;
             if (role == 1){
                 receiver = await getUser(iduser, "kols");
@@ -104,6 +105,12 @@ module.exports = function(io) {
                 io.to(receiver.socketId).emit("getNewMessage", added_message);
             }
 
+        })
+
+        //FE emit("confirmReadAll", {access_token, iduser, role, content}); iduser là người sẽ nhận tin, role dạng kols, brands
+        socket.on('confirmReadAll', async ({access_token, idroom}) => {
+            const decoded_user = await tokenToUser(access_token);
+            await mess_db.updateCheckReadRoom(idroom, decoded_user.user?.id, decoded_user.role, 1);
         })
 
         socket.on("disconnect", () => {
