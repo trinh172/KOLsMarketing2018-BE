@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS post_categories;
+DROP TABLE IF EXISTS check_read_room;
 DROP TABLE IF EXISTS job_describe;
 DROP TABLE IF EXISTS job_comment;
 DROP TABLE IF EXISTS job_member;
@@ -257,6 +258,7 @@ CREATE TABLE "image_user" (
 -- Table structure for room
 -- ----------------------------
 -- role 1: kol, 2: brand
+-- state: 1 - read all message, 0 - not read all message
 DROP TABLE IF EXISTS "room";
 CREATE TABLE "room" (
   "id" int4 NOT NULL GENERATED ALWAYS AS IDENTITY (
@@ -269,10 +271,25 @@ CREATE TABLE "room" (
   "role1"  char NOT NULL DEFAULT '1',
   "id_user2" int4 NOT NULL,
   "role2" char NOT NULL DEFAULT '1',
+  "time" timestamp,
   PRIMARY KEY ("id")
 ) 
 ;
+-- ----------------------------
+-- Table structure for check_read_room
+-- ----------------------------
+-- role 1: kol, 2: brand
+-- state: 1 - read all message, 0 - not read all message
 
+CREATE TABLE "check_read_room" (
+  "id_room" int4 NOT NULL,
+  "id_user" int4 NOT NULL,
+  "role" char NOT NULL DEFAULT '1',
+  "state" char NOT NULL DEFAULT '1',
+  PRIMARY KEY ("id_room", "id_user", "role")
+) 
+;
+ALTER TABLE "check_read_room" ADD CONSTRAINT "read_room" FOREIGN KEY ("id_room") REFERENCES "room" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
 -- ----------------------------
 -- Table structure for message
 -- ----------------------------
@@ -400,10 +417,20 @@ COMMIT;
 -- Records of room and message
 -- ----------------------------
 BEGIN;
-INSERT INTO room OVERRIDING SYSTEM VALUE VALUES (1, 1, 1, 1, 2);
-INSERT INTO room OVERRIDING SYSTEM VALUE VALUES (2, 1, 1, 3, 2);
-INSERT INTO room OVERRIDING SYSTEM VALUE VALUES (3, 1, 1, 2, 1);
+INSERT INTO room OVERRIDING SYSTEM VALUE VALUES (1, 1, 1, 1, 2, '2022-04-21 13:15:42.579');
+INSERT INTO room OVERRIDING SYSTEM VALUE VALUES (2, 1, 1, 3, 2, '2022-04-20 13:15:42.579');
+INSERT INTO room OVERRIDING SYSTEM VALUE VALUES (3, 1, 1, 2, 1, '2022-04-22 13:15:42.579');
 INSERT INTO room OVERRIDING SYSTEM VALUE VALUES (4, 2, 1, 3, 2);
+
+INSERT INTO check_read_room OVERRIDING SYSTEM VALUE VALUES (1, 1, 1, 1);
+INSERT INTO check_read_room OVERRIDING SYSTEM VALUE VALUES (1, 1, 2, 0);
+INSERT INTO check_read_room OVERRIDING SYSTEM VALUE VALUES (2, 1, 1, 1);
+INSERT INTO check_read_room OVERRIDING SYSTEM VALUE VALUES (2, 3, 2, 1);
+INSERT INTO check_read_room OVERRIDING SYSTEM VALUE VALUES (3, 1, 1, 0);
+INSERT INTO check_read_room OVERRIDING SYSTEM VALUE VALUES (3, 2, 1, 1);
+INSERT INTO check_read_room OVERRIDING SYSTEM VALUE VALUES (4, 3, 2, 0);
+INSERT INTO check_read_room OVERRIDING SYSTEM VALUE VALUES (4, 2, 1, 1);
+
 INSERT INTO message OVERRIDING SYSTEM VALUE VALUES (1, 1, 1, 1, 'đây là tin nhắn của id 1 role 1', '2022-04-21 13:15:42.579');
 INSERT INTO message OVERRIDING SYSTEM VALUE VALUES (2, 1, 1, 2, 'đây là tin nhắn thứ nhất của id 1 role 2', '2022-04-21 13:15:42.579');
 INSERT INTO message OVERRIDING SYSTEM VALUE VALUES (3, 1, 1, 2, 'đây là tin nhắn thứ 2 của id 1 role 2', '2022-04-21 13:15:42.579');
