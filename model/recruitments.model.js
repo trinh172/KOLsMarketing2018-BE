@@ -30,6 +30,15 @@ module.exports = {
         return items;
     },
 
+    async findRecruitmentByRecruitID(id_recruit){
+        let items = await db('recruitment').where({
+            'id': id_recruit
+        });
+        if (items.length==0)
+            return null;
+        return items[0];
+    },
+
     async acceptRecruitment(id_recruit){
         try {
             await db('recruitment').where({
@@ -38,7 +47,12 @@ module.exports = {
             .update({
                 'state': 3
             });
-            return true
+            await db('recruitment').where({
+                'id': id_recruit
+            });
+            if (items.length==0)
+                return null;
+            return items[0];
         } catch (e) {
             console.log(e);
             return false;

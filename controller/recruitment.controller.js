@@ -1,6 +1,6 @@
 const brands_db = require('../model/brands.model');
-const recruit_db = require('../model/recruitments.model');
-const categories_db = require('../model/categories.model');
+const recruit_db = require('../model/recruitments.model')
+const job_db = require('../model/job.model');
 const image_db = require('../model/images.model');
 const bcrypt = require('bcryptjs');
 const jwtHelper = require("../utils/jwt.helper");
@@ -37,6 +37,14 @@ exports.find_recruitments_in_post = async function(req, res) {
 exports.accept_recruitment = async function(req, res) {
     let flag = await recruit_db.acceptRecruitment(req.body.id_recruit);
     if (flag){
+        let new_mem = {
+            'id_post':flag.id_post,
+            'id_user': flag.id_kols,
+            'role': 1,
+            'state': 1,
+            'create_time':  moment().add(7, 'hours')
+        }
+        await job_db.create_job_member(new_mem)
         return res.status(200).json(true);
     }
     res.status(400).json(false);
@@ -52,8 +60,10 @@ exports.reject_recruitment = async function(req, res) {
 
 exports.delete_recruitment = async function(req, res) {
     let id_recruitment = req.body.id_recruit;
+    let del_recruit =  await recruit_db.findRecruitmentByRecruitID(id_recruitment);
     let flag = await recruit_db.delete_recruitment(id_recruitment)
     if (flag){
+        await job_db.delete_member(del_recruit.id_post, req.jwtDecoded.data.id, req.jwtDecoded.data.role);
         return res.status(200).json(true);
     }
     
