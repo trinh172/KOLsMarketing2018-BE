@@ -102,7 +102,10 @@ module.exports = function(io) {
             
             if (receiver){
                 let added_message = await mess_db.getMessageByIdroomCreatetime(idroom,create_time);
+                let all_room = await mess_db.findAllRoomOf1User(iduser, role);
+                const list_room = all_room.sort((a, b) => b.create_time - a.create_time)
                 io.to(receiver.socketId).emit("getNewMessage", added_message);
+                io.to(receiver.socketId).emit("pleaseResortRoom", list_room);
             }
 
         })
