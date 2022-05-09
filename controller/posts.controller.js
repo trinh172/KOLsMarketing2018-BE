@@ -1,6 +1,7 @@
 const brands_db = require('../model/brands.model');
 const post_db = require('../model/posts.model');
 const image_db = require('../model/images.model');
+const job_db = require('../model/job.model');
 const categories_db = require('../model/categories.model');
 const cate_post_db = require("../model/cate_post.model")
 const bcrypt = require('bcryptjs');
@@ -45,6 +46,15 @@ exports.add_post = async function(req, res) {
             "id_post": added_post.id
         }
         await cate_post_db.add(cate_post)
+        //Xử lý job (member)
+        let new_mem = {
+            'id_post':added_post.id,
+            'id_user': req.jwtDecoded.data.id,
+            'role': 2,
+            'state': 3,
+            'create_time':  moment().add(7, 'hours')
+        }
+        await job_db.add(new_mem);
         //Xử lý post_images
         if(req.body.files.length>0){
             const new_image = {
@@ -181,6 +191,8 @@ exports.getDetailPost = async function(req, res) {
     if(id_post){
         let flag = await post_db.findPostAndBrandByIDPost(id_post);
         if (flag){
+            flag.views = flag.views + 1;
+            await post_db.updateView(flag.views, id_post);
             console.log("Check detail info of post in controller: ", flag);
             return res.json(flag);
         }
