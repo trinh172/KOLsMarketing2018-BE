@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS post_categories;
 DROP TABLE IF EXISTS check_read_room;
+DROP TABLE IF EXISTS image_job;
 DROP TABLE IF EXISTS job_describe;
 DROP TABLE IF EXISTS job_comment;
 DROP TABLE IF EXISTS job_member;
@@ -131,7 +132,7 @@ CREATE TABLE "bio_url" (
 
 -- ----------------------------
 -- Table structure for Recruitment
--- State 1: chua duyet, 2: reject, 3: accept but not done work, 4: accept and done work
+-- State 1: chua duyet, 2: reject, 3: accept 
 -- ----------------------------
 CREATE TABLE "recruitment" (
   "id" int4 NOT NULL GENERATED ALWAYS AS IDENTITY (
@@ -199,6 +200,7 @@ CREATE TABLE "image_post" (
   CONSTRAINT "post_image" FOREIGN KEY ("id_post") REFERENCES "posts" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 ) 
 ;
+
 -- ----------------------------
 -- Table structure for PostCate
 -- ----------------------------
@@ -334,7 +336,23 @@ CREATE TABLE "job_describe" (
 ;
 ALTER TABLE "job_describe" ADD CONSTRAINT "jobdescribe_post" FOREIGN KEY ("id_post") REFERENCES "posts" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE "job_describe" ADD CONSTRAINT "jobdescribe_brand" FOREIGN KEY ("id_brand") REFERENCES "brands" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
+-- ----------------------------
+-- Table structure for image_job, type 1
+-- ----------------------------
+CREATE TABLE "image_job" (
+  "id" int4 NOT NULL GENERATED ALWAYS AS IDENTITY (
+    INCREMENT 1
+    MINVALUE  1
+    MAXVALUE 2147483647
+    START 10
+    ),
+  "id_job" int4 NOT NULL,
+  "url" varchar(255) NOT NULL,
+  "type" char NOT NULL DEFAULT '1',
+  PRIMARY KEY ("id"),
+  CONSTRAINT "jobimage_job" FOREIGN KEY ("id_job") REFERENCES "job_describe" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+) 
+;
 -- ----------------------------
 -- Table structure for job_comment
 -- ----------------------------
@@ -360,7 +378,7 @@ ALTER TABLE "job_comment" ADD CONSTRAINT "jobcomment_post" FOREIGN KEY ("id_post
 -- ----------------------------
 -- Table structure for job_comment
 -- ----------------------------
--- state 1: not done work, 2: done work
+-- state 1: kol not done work, 2: kol done work, 3: brand 
 CREATE TABLE "job_member" (
    "id" int4 NOT NULL GENERATED ALWAYS AS IDENTITY (
     INCREMENT 1
@@ -372,7 +390,6 @@ CREATE TABLE "job_member" (
   "id_user" int4 NOT NULL,
   "role" char NOT NULL DEFAULT '1',
   "state" char NOT NULL DEFAULT '1',
-  "url" varchar(255),
   "create_time" timestamp NOT NULL,
   PRIMARY KEY ("id")
 ) 
