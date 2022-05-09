@@ -37,6 +37,39 @@ let isAuthor = async (req, res, next) => {
         return res.status(401).json('401');*/
     };
 }
+let isLogin = async (req, res, next) => {
+    const tokenFromClient = req.headers["x-access-token"];
+    console.log("Token from client isAuthor: ", tokenFromClient);
+    if (tokenFromClient && tokenFromClient!='null') {
+        try {
+            const decoded = await jwtHelper.verifyToken(tokenFromClient, accessTokenSecret);
+            if(decoded === "expired"){
+                console.log(decoded)
+                return res.status(403).json('403');
+            }
+            else{
+                req.jwtDecoded = {};
+                if(decoded.data.role == 1){
+                    req.jwtDecoded.data = await kols_db.findKOLsByID(decoded.data.id);
+                }
+                if(decoded.data.role == 2){
+                    req.jwtDecoded.data = await brands_db.findBrandsByID(decoded.data.id);
+                }
+                
+                req.jwtDecoded.data.is_social_login = decoded.data.is_social_login;
+                req.jwtDecoded.data.role = decoded.data.role;
+                next();
+            }
+            
+        } catch (error) {
+            console.log(error)
+            return res.status(400).json('400');
+        }
+    } else {
+        console.log('error 401 iddLogin')
+        return res.status(401).json('401');
+    };
+}
 let isBrand = async (req, res, next) => {
     const tokenFromClient = req.headers["x-access-token"];
     console.log("Token from client isBrand, ", tokenFromClient);
@@ -100,5 +133,6 @@ let isKOLs = async (req, res, next) => {
 module.exports = {
     isAuthor: isAuthor,
     isBrand: isBrand,
-    isKOLs: isKOLs
+    isKOLs: isKOLs,
+    isLogin: isLogin
 };
