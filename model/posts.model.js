@@ -498,4 +498,16 @@ module.exports = {
             return false;
         }
     },
+    async updateView(newView, id_post){
+        try {
+            await db('posts').where({
+                'id': id_post
+            }).update({'views': newView});
+            return true
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+       
+    }
 }
