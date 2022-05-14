@@ -54,7 +54,7 @@ exports.add_post = async function(req, res) {
             'state': 3,
             'create_time':  moment().add(7, 'hours')
         }
-        await job_db.add(new_mem);
+        await job_db.create_job_member(new_mem);
         //Xử lý post_images
         if(req.body.files.length>0){
             const new_image = {
