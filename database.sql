@@ -469,6 +469,7 @@ CREATE TABLE "vn_tinhthanhpho" (
 ;
 BEGIN;
 INSERT INTO "vn_tinhthanhpho" ("id", "name", "type", "slug") VALUES
+('00',	'Khác',	'Toàn quốc',	'KHAC'),
 ('01',	'Thành phố Hà Nội',	'Thành phố Trung ương',	'HANOI'),
 ('02',	'Tỉnh Hà Giang',	'Tỉnh',	'HAGIANG'),
 ('04',	'Tỉnh Cao Bằng',	'Tỉnh',	'CAOBANG'),
