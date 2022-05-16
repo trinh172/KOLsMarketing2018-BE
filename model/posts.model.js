@@ -4,7 +4,7 @@ module.exports = {
     async all(){
         let items = await db('posts');
         for(let i = 0; i<items.length; i++){
-            items[i].create_time = moment(items[i].create_time).format("DD/MM/YYYY HH:mm:ss");
+            items[i].write_time = moment(items[i].write_time).format("DD/MM/YYYY HH:mm:ss");
         }
         return items
     },
@@ -59,6 +59,16 @@ module.exports = {
         return [];
     },
 
+    async getAddressName(id){
+        const item = await db('vn_tinhthanhpho').where({
+            'id': id
+        })
+        if(item.length>0){
+            return item[0].name;
+        }
+        return null;
+    },
+
     async getListCategoryOfPost(id_post){
         let list_cate = [];
         let category = await db('post_categories').where({
@@ -81,7 +91,7 @@ module.exports = {
             'state': 1
         });
         for(let i = 0; i<items.length; i++){
-            items[i].create_time = moment(items[i].create_time).format("DD/MM/YYYY HH:mm:ss");
+            items[i].write_time = moment(items[i].write_time).format("DD/MM/YYYY HH:mm:ss");
         }
         return items
     },
@@ -99,6 +109,10 @@ module.exports = {
         else{
             items[0].brand_name = '';
             items[0].brand_introduce = '';
+        }
+
+        if(items[0].address !== null){
+            items[0].address = await this.getAddressName(items[0].address);
         }
 
         let image_detail = await db('image_post').where({
@@ -126,6 +140,7 @@ module.exports = {
             list_cate.push(detailCate[0]);
         }
         items[0].list_categories = list_cate;
+        items[0].write_time = moment(items[i].write_time).format("DD/MM/YYYY HH:mm");
         console.log("Detail Post model: ", items[0]);
         return items[0];
     },
@@ -138,6 +153,8 @@ module.exports = {
         items[0].image_detail = await this.getImageDetail(ID);
         items[0].image_cover = await this.getImageCover(ID);
         items[0].list_categories = await this.getListCategoryOfPost(ID);
+        items[0].address = await this.getAddressName(items[0].address);
+        items[0].write_time = moment(items[0].write_time).format("DD/MM/YYYY HH:mm");
         console.log("Detail Post and brand in model: ", items[0]);
         return items[0];
     },
@@ -154,6 +171,8 @@ module.exports = {
         items[0].image_detail = await this.getImageDetail(ID);
         items[0].image_cover = await this.getImageCover(ID);
         items[0].list_categories = await this.getListCategoryOfPost(ID);
+        items[0].address = await this.getAddressName(items[0].address);
+        items[0].write_time = moment(items[0].write_time).format("DD/MM/YYYY HH:mm");
         console.log("Detail Post and brand in model: ", items[0]);
         return items[0];
     },
@@ -169,6 +188,8 @@ module.exports = {
         items[0].image_detail = await this.getImageDetail(ID);
         items[0].image_cover = await this.getImageCover(ID);
         items[0].list_categories = await this.getListCategoryOfPost(ID);
+        items[0].address = await this.getAddressName(items[0].address);
+        items[0].write_time = moment(items[0].write_time).format("DD/MM/YYYY HH:mm");
         console.log("Detail Post and brand in model: ", items[0]);
         return items[0];
     },
@@ -241,12 +262,15 @@ module.exports = {
         //console.log(rows);
         if(rows.length <= 0)
             return null;
-            while (tempcount < rows.length){
-                rows[tempcount].image_cover = await this.getImageCover(rows[tempcount].id);
-                rows[tempcount].brand_info = await this.getBrandInfo(rows[tempcount].id_writer);
-                rows[tempcount].list_categories = await this.getListCategoryOfPost(rows[tempcount].id);
-                tempcount = tempcount + 1;
-            }
+        let tempcount = 0;
+        while (tempcount < rows.length){
+            rows[tempcount].image_cover = await this.getImageCover(rows[tempcount].id);
+            rows[tempcount].brand_info = await this.getBrandInfo(rows[tempcount].id_writer);
+            rows[tempcount].list_categories = await this.getListCategoryOfPost(rows[tempcount].id);
+            rows[tempcount].address = await this.getAddressName(rows[tempcount].address);
+            rows[tempcount].write_time = moment(rows[tempcount].write_time).format("DD/MM/YYYY HH:mm");
+            tempcount = tempcount + 1;
+        }
         return rows;
     },
 
@@ -396,6 +420,8 @@ module.exports = {
             rows[tempcount].image_cover = await this.getImageCover(rows[tempcount].id);
             rows[tempcount].brand_info = await this.getBrandInfo(rows[tempcount].id_writer);
             rows[tempcount].list_categories = await this.getListCategoryOfPost(rows[tempcount].id);
+            rows[tempcount].address = await this.getAddressName(rows[tempcount].address);
+            rows[tempcount].write_time = moment(rows[tempcount].write_time).format("DD/MM/YYYY HH:mm");
             tempcount = tempcount + 1;
         }
         console.log("60 bai post nè: ", rows);
@@ -414,6 +440,8 @@ module.exports = {
             rows[tempcount].image_cover = await this.getImageCover(rows[tempcount].id);
             rows[tempcount].brand_info = await this.getBrandInfo(rows[tempcount].id_writer);
             rows[tempcount].list_categories = await this.getListCategoryOfPost(rows[tempcount].id);
+            rows[tempcount].address = await this.getAddressName(rows[tempcount].address);
+            rows[tempcount].write_time = moment(rows[tempcount].write_time).format("DD/MM/YYYY HH:mm");
             tempcount = tempcount + 1;
         }
         return rows;
@@ -431,6 +459,8 @@ module.exports = {
             rows[tempcount].image_cover = await this.getImageCover(rows[tempcount].id);
             rows[tempcount].brand_info = await this.getBrandInfo(rows[tempcount].id_writer);
             rows[tempcount].list_categories = await this.getListCategoryOfPost(rows[tempcount].id);
+            rows[tempcount].address = await this.getAddressName(rows[tempcount].address);
+            rows[tempcount].write_time = moment(rows[tempcount].write_time).format("DD/MM/YYYY HH:mm");
             tempcount = tempcount + 1;
         }
         return rows;
@@ -448,6 +478,8 @@ module.exports = {
             rows[tempcount].image_cover = await this.getImageCover(rows[tempcount].id);
             rows[tempcount].brand_info = await this.getBrandInfo(rows[tempcount].id_writer);
             rows[tempcount].list_categories = await this.getListCategoryOfPost(rows[tempcount].id);
+            rows[tempcount].address = await this.getAddressName(rows[tempcount].address);
+            rows[tempcount].write_time = moment(rows[tempcount].write_time).format("DD/MM/YYYY HH:mm");
             tempcount = tempcount + 1;
         }
         return rows;
