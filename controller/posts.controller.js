@@ -1,5 +1,6 @@
 const brands_db = require('../model/brands.model');
 const post_db = require('../model/posts.model');
+const post_unlogin_db = require('../model/post_notlogin.model');
 const image_db = require('../model/images.model');
 const job_db = require('../model/job.model');
 const categories_db = require('../model/categories.model');
@@ -95,33 +96,56 @@ exports.delete_post = async function(req, res) {
 }
 
 exports.findTop9PostHomepage = async function(req, res) {
-    
-    let flag = await post_db.findTop9MostRead();
-    if (flag){
-        return res.status(200).json(flag);
+    if(req.jwtDecoded.data?.id && req.jwtDecoded.data?.role == 1){
+        let flag = await post_db.findTop9MostRead(req.jwtDecoded.data?.id);
+        if (flag){
+            return res.status(200).json(flag);
+        }
     }
-    
+    else{
+        let flag = await post_unlogin_db.findTop9MostRead();
+        if (flag){
+            return res.status(200).json(flag);
+        }
+    }
     return res.status(400).json(false);
 }
 
 exports.findPostInMonthHomepage = async function(req, res) {
-    
-    let flag = await post_db.findPostInMonth();
-    if (flag){
-        return res.status(200).json(flag);
+    if(req.jwtDecoded.data?.id && req.jwtDecoded.data?.role == 1){
+        let flag = await post_db.findPostInMonth(req.jwtDecoded.data?.id);
+        if (flag){
+            return res.status(200).json(flag);
+        }
     }
-    
+    else{
+        let flag = await post_unlogin_db.findPostInMonth();
+        if (flag){
+            return res.status(200).json(flag);
+        }
+    }
     return res.status(400).json(false);
 }
 exports.findNewPostByCateHomepage = async function(req, res) {
     let idCate = req.params.id_cate;
     if(idCate){
-        let flag = await post_db.findNewPostByCategory(idCate);
-        if (flag){
-            if(flag.length <= 12)
-                return res.status(200).json(flag);
-            let result = await shuffle(flag, 12);
-            return res.status(200).json(result);
+        if(req.jwtDecoded.data?.id && req.jwtDecoded.data?.role == 1){
+            let flag = await post_db.findNewPostByCategory(idCate, req.jwtDecoded.data?.id);
+            if (flag){
+                if(flag.length <= 12)
+                    return res.status(200).json(flag);
+                let result = await shuffle(flag, 12);
+                return res.status(200).json(result);
+            }
+        }
+        else{
+            let flag = await post_unlogin_db.findNewPostByCategory(idCate);
+            if (flag){
+                if(flag.length <= 12)
+                    return res.status(200).json(flag);
+                let result = await shuffle(flag, 12);
+                return res.status(200).json(result);
+            }
         }
     }
     return res.status(400).json(false);
@@ -130,50 +154,91 @@ exports.findNewPostByCateHomepage = async function(req, res) {
 exports.findNewPostByCateMore = async function(req, res) {
     let idCate = req.params.id_cate;
     if(idCate){
-        let flag = await post_db.findNewPostByCategory(idCate);
-        if (flag){
-            if(flag.length <= 60)
-                return res.status(200).json(flag);
-            let result = await shuffle(flag, 60);
-            return res.status(200).json(result);
+        if(req.jwtDecoded.data?.id && req.jwtDecoded.data?.role == 1){
+            let flag = await post_db.findNewPostByCategory(idCate, req.jwtDecoded.data?.id);
+            if (flag){
+                if(flag.length <= 60)
+                    return res.status(200).json(flag);
+                let result = await shuffle(flag, 60);
+                return res.status(200).json(result);
+            }
+        }
+        else{
+            let flag = await post_unlogin_db.findNewPostByCategory(idCate);
+            if (flag){
+                if(flag.length <= 60)
+                    return res.status(200).json(flag);
+                let result = await shuffle(flag, 60);
+                return res.status(200).json(result);
+            }
         }
     }
     return res.status(400).json(false);
 }
 
 exports.find60NewestPost = async function(req, res) {
-    let flag = await post_db.find60NewestPostModel();
-    if (flag){
-        return res.status(200).json(flag);
+    if(req.jwtDecoded.data?.id && req.jwtDecoded.data?.role == 1){
+        let flag = await post_db.find60NewestPostModel(req.jwtDecoded.data?.id);
+        if (flag){
+            return res.status(200).json(flag);
+        }
+    }
+    else{
+        let flag = await post_unlogin_db.find60NewestPostModel();
+        if (flag){
+            return res.status(200).json(flag);
+        }
     }
     
     return res.status(400).json(false);
 }
 
 exports.find120NewestPost = async function(req, res) {
-    let flag = await post_db.find120NewestPostModel();
-    if (flag){
-        return res.status(200).json(flag);
+    if(req.jwtDecoded.data?.id && req.jwtDecoded.data?.role == 1){
+        let flag = await post_db.find120NewestPostModel(req.jwtDecoded.data?.id);
+        if (flag){
+            return res.status(200).json(flag);
+        }
     }
-    
+    else{
+        let flag = await post_unlogin_db.find120NewestPostModel();
+        if (flag){
+            return res.status(200).json(flag);
+        }
+    }
     return res.status(400).json(false);
 }
 
 exports.findHighestCastPost = async function(req, res) {
-    let flag = await post_db.find6HighestCastPostModel();
-    if (flag){
-        return res.status(200).json(flag);
+    if(req.jwtDecoded.data?.id && req.jwtDecoded.data?.role == 1){
+        let flag = await post_db.find6HighestCastPostModel(req.jwtDecoded.data?.id);
+        if (flag){
+            return res.status(200).json(flag);
+        }
+    }
+    else{
+        let flag = await post_unlogin_db.find6HighestCastPostModel();
+        if (flag){
+            return res.status(200).json(flag);
+        }
     }
     
     return res.status(400).json(false);
 }
 
 exports.findHighestCastPostMore = async function(req, res) {
-    let flag = await post_db.find30HighestCastPostModel();
-    if (flag){
-        return res.status(200).json(flag);
+    if(req.jwtDecoded.data?.id && req.jwtDecoded.data?.role == 1){
+        let flag = await post_db.find30HighestCastPostModel(req.jwtDecoded.data?.id);
+        if (flag){
+            return res.status(200).json(flag);
+        }
     }
-    
+    else{
+        let flag = await post_unlogin_db.find30HighestCastPostModel();
+        if (flag){
+            return res.status(200).json(flag);
+        }
+    }
     return res.status(400).json(false);
 }
 
@@ -189,12 +254,23 @@ exports.checkAvailableTittle = async function(req, res) {
 exports.getDetailPost = async function(req, res) {
     let id_post = req.body.id_post;
     if(id_post){
-        let flag = await post_db.findPostAndBrandByIDPost(id_post);
-        if (flag){
-            flag.views = flag.views + 1;
-            await post_db.updateView(flag.views, id_post);
-            console.log("Check detail info of post in controller: ", flag);
-            return res.json(flag);
+        if(req.jwtDecoded.data?.id && req.jwtDecoded.data?.role == 1){
+            let flag = await post_db.findPostAndBrandByIDPost(id_post, req.jwtDecoded.data?.id);
+            if (flag){
+                flag.views = flag.views + 1;
+                await post_db.updateView(flag.views, id_post);
+                console.log("Check detail info of post in controller: ", flag);
+                return res.json(flag);
+            }
+        }
+        else{
+            let flag = await post_unlogin_db.findPostAndBrandByIDPost(id_post);
+            if (flag){
+                flag.views = flag.views + 1;
+                await post_db.updateView(flag.views, id_post);
+                console.log("Check detail info of post in controller: ", flag);
+                return res.json(flag);
+            }
         }
     }
     

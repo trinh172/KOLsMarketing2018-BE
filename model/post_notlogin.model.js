@@ -141,11 +141,12 @@ module.exports = {
         }
         items[0].list_categories = list_cate;
         items[0].write_time = moment(items[i].write_time).format("DD/MM/YYYY HH:mm");
+        items[0].likePost = false;
         console.log("Detail Post model: ", items[0]);
         return items[0];
     },
 
-    async findPostAndBrandByIDPost(ID, iduser){
+    async findPostAndBrandByIDPost(ID){
         let items = await db('posts').where('id', ID);
         if (items.length == 0)
             return null;
@@ -155,19 +156,12 @@ module.exports = {
         items[0].list_categories = await this.getListCategoryOfPost(ID);
         items[0].address = await this.getAddressName(items[0].address);
         items[0].write_time = moment(items[0].write_time).format("DD/MM/YYYY HH:mm");
-        let like = await db('kols_like_post')
-                .where({
-                    'id_kol': iduser,
-                    'id_post':  items[0].id,
-                });
-        if(like.length > 0)
-            items[0].likePost = true;
-        else items[0].likePost = false;
+        items[0].likePost = false;
         console.log("Detail Post and brand in model: ", items[0]);
         return items[0];
     },
 
-    async findActivePostByIDPostInTime(ID, day_ago, iduser){
+    async findActivePostByIDPostInTime(ID, day_ago){
         let items = await db('posts').where({
                                         'id': ID,
                                         'state': 1
@@ -181,19 +175,12 @@ module.exports = {
         items[0].list_categories = await this.getListCategoryOfPost(ID);
         items[0].address = await this.getAddressName(items[0].address);
         items[0].write_time = moment(items[0].write_time).format("DD/MM/YYYY HH:mm");
-        let like = await db('kols_like_post')
-                .where({
-                    'id_kol': iduser,
-                    'id_post':  items[0].id,
-                });
-        if(like.length > 0)
-            items[0].likePost = true;
-        else items[0].likePost = false;
+        items[0].likePost = false;
         console.log("Detail Post and brand in model: ", items[0]);
         return items[0];
     },
 
-    async findAllPostByIDPostInTime(ID, day_ago, iduser){
+    async findAllPostByIDPostInTime(ID, day_ago){
         let items = await db('posts').where({
                                         'id': ID
                                     })
@@ -206,14 +193,7 @@ module.exports = {
         items[0].list_categories = await this.getListCategoryOfPost(ID);
         items[0].address = await this.getAddressName(items[0].address);
         items[0].write_time = moment(items[0].write_time).format("DD/MM/YYYY HH:mm");
-        let like = await db('kols_like_post')
-                                .where({
-                                    'id_kol': iduser,
-                                    'id_post':  items[0].id,
-                                });
-        if(like.length > 0)
-        items[0].likePost = true;
-        else  items[0].likePost = false;
+        items[0].likePost = false;
         console.log("Detail Post and brand in model: ", items[0]);
         return items[0];
     },
@@ -245,7 +225,7 @@ module.exports = {
     /*
     Top 9 post most read in month --> Cơ hội hấp dẫn
     */
-    async findTop9MostRead(iduser) {
+    async findTop9MostRead() {
         let day_ago = moment().subtract(30, "days");
         const rows = await db('posts')
             .where({
@@ -270,19 +250,12 @@ module.exports = {
                                     id: rows[i].id_writer,
                                 });
             rows[i].brand = brand[0];
-            let like = await db('kols_like_post')
-                                .where({
-                                    'id_kol': iduser,
-                                    'id_post': rows[i].id,
-                                });
-            if(like.length > 0)
-                rows[i].likePost = true;
-            else rows[i].likePost = false;
+            rows[i].likePost = false;
         }
         return rows;
     },
     //All post in month --> bài viết trên trang
-    async findPostInMonth(iduser) {
+    async findPostInMonth() {
         let day_ago = moment().subtract(30, "days");
         const rows = await db('posts')
             .where({
@@ -301,14 +274,7 @@ module.exports = {
             rows[tempcount].list_categories = await this.getListCategoryOfPost(rows[tempcount].id);
             rows[tempcount].address = await this.getAddressName(rows[tempcount].address);
             rows[tempcount].write_time = moment(rows[tempcount].write_time).format("DD/MM/YYYY HH:mm");
-            let like = await db('kols_like_post')
-                                .where({
-                                    'id_kol': iduser,
-                                    'id_post': rows[tempcount].id,
-                                });
-            if(like.length > 0)
-                rows[tempcount].likePost = true;
-            else rows[tempcount].likePost = false;
+            rows[tempcount].likePost = false;
             tempcount = tempcount + 1;
         }
         return rows;
@@ -393,7 +359,7 @@ module.exports = {
     },
 
     //Find new post (1 month) by Category --> từng chuyên mục
-    async findNewPostByCategory(id_category, iduser) {
+    async findNewPostByCategory(id_category) {
         let day_ago = moment().subtract(30, "days");
         const rows = await db('post_categories')
             .where({
@@ -402,7 +368,7 @@ module.exports = {
         let result = [];
         let tempcount = 0;
         while (tempcount < rows.length){
-            let item = await this.findActivePostByIDPostInTime(rows[tempcount].id_post, day_ago, iduser);
+            let item = await this.findActivePostByIDPostInTime(rows[tempcount].id_post, day_ago);
             if(item != null){
                 result.push(item);
             }
@@ -411,43 +377,7 @@ module.exports = {
         return result;
     },
 
-    //Find all post that user like, sap xep theo thu tu ma user like
-    async findAllPostsKolsLike(idkol) {
-        const rows = await db('kols_like_post')
-            .where({
-                id_kol: idkol,
-            })
-        let result = [];
-        let tempcount = 0;
-        while (tempcount < rows.length){
-            let item = await this.findPostAndBrandByIDPost(rows[tempcount].id_post, idkol);
-            if(item != null){
-                result.push(item);
-            }
-            tempcount = tempcount + 1;
-        }
-        return result;
-    },
-
-      //Find all post that user recruitment, sap xep theo thu tu ma user ung tuyen
-    async findAllPostsKolsRecruitment(idkol) {
-        const rows = await db('recruitment')
-            .where({
-                id_kols: idkol,
-            })
-        let result = [];
-        let tempcount = 0;
-        while (tempcount < rows.length){
-            let item = await this.findPostAndBrandByIDPost(rows[tempcount].id_post, idkol)
-            if(item != null){
-                result.push(item);
-            }
-            tempcount = tempcount + 1;
-        }
-        return result;
-    },
-
-    async find60NewestPostModel(iduser) {
+    async find60NewestPostModel() {
         const rows = await db('posts')
             .where("state", '1')
             .orderBy('write_time', 'desc')
@@ -461,21 +391,14 @@ module.exports = {
             rows[tempcount].list_categories = await this.getListCategoryOfPost(rows[tempcount].id);
             rows[tempcount].address = await this.getAddressName(rows[tempcount].address);
             rows[tempcount].write_time = moment(rows[tempcount].write_time).format("DD/MM/YYYY HH:mm");
-            let like = await db('kols_like_post')
-                    .where({
-                        'id_kol': iduser,
-                        'id_post':  rows[tempcount].id,
-                    });
-            if(like.length > 0)
-                rows[tempcount].likePost = true;
-            else rows[tempcount].likePost = false;
+            rows[tempcount].likePost = false;
             tempcount = tempcount + 1;
         }
         console.log("60 bai post nè: ", rows);
         return rows;
     },
 
-    async find120NewestPostModel(iduser) {
+    async find120NewestPostModel() {
         const rows = await db('posts')
             .where("state", '1')
             .orderBy('write_time', 'desc')
@@ -489,20 +412,13 @@ module.exports = {
             rows[tempcount].list_categories = await this.getListCategoryOfPost(rows[tempcount].id);
             rows[tempcount].address = await this.getAddressName(rows[tempcount].address);
             rows[tempcount].write_time = moment(rows[tempcount].write_time).format("DD/MM/YYYY HH:mm");
-            let like = await db('kols_like_post')
-                    .where({
-                        'id_kol': iduser,
-                        'id_post':  rows[tempcount].id,
-                    });
-            if(like.length > 0)
-                rows[tempcount].likePost = true;
-            else rows[tempcount].likePost = false;
+            rows[tempcount].likePost = false;
             tempcount = tempcount + 1;
         }
         return rows;
     },
 
-    async find6HighestCastPostModel(iduser) {
+    async find6HighestCastPostModel() {
         const rows = await db('posts')
             .where("state", '1')
             .orderBy('min_cast', 'desc')
@@ -516,20 +432,13 @@ module.exports = {
             rows[tempcount].list_categories = await this.getListCategoryOfPost(rows[tempcount].id);
             rows[tempcount].address = await this.getAddressName(rows[tempcount].address);
             rows[tempcount].write_time = moment(rows[tempcount].write_time).format("DD/MM/YYYY HH:mm");
-            let like = await db('kols_like_post')
-                    .where({
-                        'id_kol': iduser,
-                        'id_post':  rows[tempcount].id,
-                    });
-            if(like.length > 0)
-                rows[tempcount].likePost = true;
-            else rows[tempcount].likePost = false;
+            rows[tempcount].likePost = false;
             tempcount = tempcount + 1;
         }
         return rows;
     },
 
-    async find30HighestCastPostModel(iduser) {
+    async find30HighestCastPostModel() {
         const rows = await db('posts')
             .where("state", '1')
             .orderBy('min_cast', 'desc')
@@ -543,64 +452,12 @@ module.exports = {
             rows[tempcount].list_categories = await this.getListCategoryOfPost(rows[tempcount].id);
             rows[tempcount].address = await this.getAddressName(rows[tempcount].address);
             rows[tempcount].write_time = moment(rows[tempcount].write_time).format("DD/MM/YYYY HH:mm");
-            let like = await db('kols_like_post')
-                    .where({
-                        'id_kol': iduser,
-                        'id_post':  rows[tempcount].id,
-                    });
-            if(like.length > 0)
-                rows[tempcount].likePost = true;
-            else rows[tempcount].likePost = false;
+            rows[tempcount].likePost = false;
             tempcount = tempcount + 1;
         }
         return rows;
     },
 
-    async createPosts(post) {
-        try {
-            await db('posts').insert(post)
-            return true
-        } catch (e) {
-            console.log(e);
-            return false;
-        }
-    },
-    delete_post(id_post){
-        return db('posts').where("id", id_post).del();
-    },
-    async findPostByBrandTitle(iduser, title){
-        let items = await db('posts').where({
-            'id_writer': iduser,
-            'title': title
-        });
-        if (items.length==0)
-            return null;
-        return items[0];
-    },
-    async kolsLikePost(id_kol, id_post) {
-        try {
-            await db('kols_like_post').insert({
-                'id_post': id_post,
-                'id_kol': id_kol
-            })
-            return true
-        } catch (e) {
-            console.log(e);
-            return false;
-        }
-    },
-    async kolsUnlikePost(id_kol, id_post) {
-        try {
-            await db('kols_like_post').where({
-                'id_post': id_post,
-                'id_kol': id_kol
-            }).del();
-            return true
-        } catch (e) {
-            console.log(e);
-            return false;
-        }
-    },
     async updateView(newView, id_post){
         try {
             await db('posts').where({
