@@ -49,7 +49,16 @@ module.exports = {
                 items[0].address = address[0].name;
             };
         }
-        
+        items[0].bio_url = [];
+        let bio = await db("bio_url").where({
+            id_user: ID,
+            role: '1'
+        });
+        if(bio.length > 0){
+            for(i = 0; i< bio.length; i++){
+                items[0].bio_url.push(bio[i].url);
+            }
+        };
         items[0].create_time = moment(items[0].create_time).format("DD/MM/YYYY HH:mm:ss");
         items[0].role = '1';
         
