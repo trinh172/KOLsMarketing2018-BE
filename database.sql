@@ -174,7 +174,7 @@ CREATE TABLE "image_recruitment" (
     INCREMENT 1
     MINVALUE  1
     MAXVALUE 2147483647
-    START 10
+    START 30
     ),
   "id_recruitment" int4 NOT NULL,
   "url" varchar(255) NOT NULL,
@@ -191,7 +191,7 @@ CREATE TABLE "image_post" (
     INCREMENT 1
     MINVALUE  1
     MAXVALUE 2147483647
-    START 10
+    START 40
     ),
   "id_post" int4 NOT NULL,
   "url" varchar(255) NOT NULL,
@@ -306,7 +306,7 @@ CREATE TABLE "message" (
   "id_room" int4 NOT NULL,
   "id_user" int4 NOT NULL,
   "role" char NOT NULL DEFAULT '1',
-  "content" varchar(500) NOT NULL,
+  "content" varchar(1000) NOT NULL,
   "create_time" timestamp NOT NULL,
   PRIMARY KEY ("id")
 ) 
@@ -344,7 +344,7 @@ CREATE TABLE "image_job" (
     INCREMENT 1
     MINVALUE  1
     MAXVALUE 2147483647
-    START 10
+    START 30
     ),
   "id_job" int4 NOT NULL,
   "url" varchar(255) NOT NULL,
@@ -362,7 +362,7 @@ CREATE TABLE "job_comment" (
     INCREMENT 1
     MINVALUE  1
     MAXVALUE 2147483647
-    START 10
+    START 30
     ),
   "id_post" int4 NOT NULL,
   "id_user" int4 NOT NULL,
@@ -384,7 +384,7 @@ CREATE TABLE "job_member" (
     INCREMENT 1
     MINVALUE  1
     MAXVALUE 2147483647
-    START 10
+    START 30
     ),
   "id_post" int4 NOT NULL,
   "id_user" int4 NOT NULL,
