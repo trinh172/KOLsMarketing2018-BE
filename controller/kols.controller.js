@@ -66,7 +66,7 @@ exports.edit_info = async function(req, res) {
     }
     let flag = await kols_db.updateInfo(new_info, req.jwtDecoded.data.id);
     if (flag){
-        return res.status(200).json(new_des);
+        return res.status(200).json(new_info);
     }
     
     return res.status(400).json(false);
@@ -89,6 +89,17 @@ exports.update_detail_images = async function(req, res) {
     let flag = await kols_db.updateImageDetail(array_images, req.jwtDecoded.data.id);
     if (flag){
         return res.status(200).json(array_images);
+    }
+    
+    return res.status(400).json(false);
+}
+
+exports.update_bio_link = async function(req, res) {
+    //Get infor from form at FE 
+    let array_bio = req.body.bio_link;
+    let flag = await kols_db.updateBioLink(array_bio, req.jwtDecoded.data.id);
+    if (flag){
+        return res.status(200).json(array_bio);
     }
     
     return res.status(400).json(false);

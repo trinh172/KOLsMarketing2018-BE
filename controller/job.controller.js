@@ -37,7 +37,7 @@ exports.add_job_comment = async function(req, res) {
         create_time: create_time,
         url: req.body.files
     };
-    let flag = await job_db.create_job_describe(new_job);
+    let flag = await job_db.create_job_comment(new_cmt);
     
     let added_job = await job_db.findCommentByUserCreatetime(req.jwtDecoded.data.id,req.jwtDecoded.data.role, create_time);
     if (added_job){
