@@ -19,15 +19,8 @@ module.exports = {
             result.phone = item[0].phone;
             result.name = item[0].brand_name;
             result.id = item[0].id;
-            result.avatar = '';
-            let url_avatar = await db("image_user").where({
-                id_user: iduser,
-                role: '2',
-                type: 1
-            });
-            if(url_avatar.length > 0){
-                result.avatar = url_avatar[0].url;
-            }
+            result.avatar = item[0].avatar;
+            result.cover = item[0].cover;
             result.role = '2';
             return result
         }

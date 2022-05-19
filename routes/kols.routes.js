@@ -13,6 +13,7 @@ router.post('/update-detail-images',auth_middle.isKOLs, kols.update_detail_image
 
 router.post('/add-bio-link',auth_middle.isKOLs, kols.add_bio_link);
 router.delete('/delete-bio-link',auth_middle.isKOLs, kols.delete_bio_link);
+router.post('/update-bio-link',auth_middle.isKOLs, kols.update_bio_link);
 
 router.post('/edit-info',auth_middle.isKOLs, kols.edit_info);
 

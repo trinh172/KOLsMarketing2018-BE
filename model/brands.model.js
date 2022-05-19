@@ -38,16 +38,6 @@ module.exports = {
         if (items.length==0)
             return null;
         items[0].password = 'has-password';
-        items[0].avatar = '';
-        let url_avatar = await db("image_user").where({
-            id_user: ID,
-            role: '2',
-            type: 1
-        });
-        if(url_avatar.length > 0){
-            items[0].avatar = url_avatar[0].url;
-        }
-
         items[0].detail_images = [];
         let url_detail = await db("image_user").where({
             id_user: ID,
@@ -85,15 +75,8 @@ module.exports = {
             result.introduce = item[0].introduce;
             result.brand_name = item[0].brand_name;
             result.id = item[0].id;
-            result.avatar = '';
-            let url_avatar = await db("image_user").where({
-                id_user: item[0].id,
-                role: '2',
-                type: 1
-            });
-            if(url_avatar.length > 0){
-                result.avatar = url_avatar[0].url;
-            }
+            result.avatar = item[0].avatar;
+            result.cover = item[0].cover;
             items.push(result);
         }
         return items;

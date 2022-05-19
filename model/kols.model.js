@@ -21,15 +21,6 @@ module.exports = {
         if (items.length==0)
             return null;
         items[0].password = 'has-password';
-        items[0].avatar = '';
-        let url_avatar = await db("image_user").where({
-            id_user: ID,
-            role: '1',
-            type: 1
-        });
-        if(url_avatar.length > 0){
-            items[0].avatar = url_avatar[0].url;
-        };
         items[0].detail_images = [];
         let url_detail = await db("image_user").where({
             id_user: ID,
@@ -136,28 +127,10 @@ module.exports = {
 
     async updateAvatar(url_avatar, id){
         try {
-            let item = await db('image_user').where({
-                id_user: id,
-                role: 1,
-                type: 1
+            await db('kols').where('id', id).update({
+                avatar: url_avatar
             });
-            if(item.length > 0){
-                await db('image_user').where({
-                    id_user: id,
-                    role: 1,
-                    type: 1
-                }).update({'url': url_avatar});
-                return true
-            }
-            else{
-                await db('image_user').insert({
-                    id_user: id,
-                    role: 1,
-                    type: 1,
-                    'url': url_avatar
-                });
-                return true;
-            }
+            return true
         } catch (e) {
             console.log(e);
             return false;
@@ -179,6 +152,31 @@ module.exports = {
                     id_user: id,
                     role: 1,
                     type: 2,
+                    url: array_url[i]
+                })
+            }
+            return true
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+
+    async updateBioLink(array_url, id){
+        try {
+            //delete all old images
+            await db('bio_url').where({
+                id_user: id,
+                role: 1,
+                type: 1
+            }).del();
+
+            //insert new images
+            for (i = 0; i < array_url.length; i++){
+                await db('bio_url').insert({
+                    id_user: id,
+                    role: 1,
+                    type: 1,
                     url: array_url[i]
                 })
             }
