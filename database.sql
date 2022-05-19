@@ -59,7 +59,7 @@ START 10
   "address" varchar(5),
   "phone" varchar(15),
 	"create_time" timestamp,
-  "gender" char,
+  "gender" varchar(15),
   "introduce" varchar(500),
   "state" char NOT NULL DEFAULT '1',
 	"otp" int4,
