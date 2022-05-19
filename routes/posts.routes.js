@@ -22,6 +22,9 @@ router.post('/like-post', auth_middle.isKOLs, posts.kolsLikePost);
 router.get('/get-post-user-like', auth_middle.isKOLs, posts.getAllPostKolsLikes);
 router.delete('/unlike-post', auth_middle.isKOLs, posts.kolsUnlikePost);
 
+router.get('/get-active-post-of-brand', auth_middle.isBrand, posts.getAllActivePostOfBrand);
+router.get('/get-unactive-post-of-brand', auth_middle.isBrand, posts.getAllUnactivePostOfBrand);
+
 router.get('/get-post-user-recruitment', auth_middle.isKOLs, posts.getAllPostKolsRecruitment);
 
 router.post('/is-available-title', posts.checkAvailableTittle);

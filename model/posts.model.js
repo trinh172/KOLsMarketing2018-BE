@@ -231,9 +231,7 @@ module.exports = {
                                         'id_writer': brand_id,
                                         'state': 0
                                     });
-        if (items.length==0)
-            return null;
-        return items[0];
+        return items;
     },
     /*
     Top 9 post most read in month --> Cơ hội hấp dẫn
@@ -402,6 +400,28 @@ module.exports = {
             tempcount = tempcount + 1;
         }
         return result;
+    },
+
+      //Find all post that brand create count recruitment, and still work
+      async findAllActivePostsRecruitmentBrand(id_brand) {
+        const rows = await db('posts')
+            .where({
+                "id_writer": id_brand,
+                "state": '1'
+            })
+        let tempcount = 0;
+        while (tempcount < rows.length){
+            let count = await db('recruitment')
+                            .where({
+                                "id_post": rows[tempcount].id,
+                                "state": '1'
+                            })
+            console.log("Count: ", count.length);
+            rows[tempcount].count_recruitment = count.length;
+            
+            tempcount = tempcount + 1;
+        }
+        return rows;
     },
 
     //Find all post that user like, sap xep theo thu tu ma user like

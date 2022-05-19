@@ -103,3 +103,8 @@ INSERT INTO public.post_categories (id_post, id_cate) VALUES (27, 3);
 INSERT INTO public.post_categories (id_post, id_cate) VALUES (36, 1);
 INSERT INTO public.post_categories (id_post, id_cate) VALUES (37, 3);
 
+INSERT INTO public.recruitment (id, id_post, id_kols, id_brands, content, state, create_time, url) OVERRIDING SYSTEM VALUE VALUES (1, 12, 1, 2, 'kol1 chưa duyệt', 1, '2022-05-06 17:21:39.194', null);
+INSERT INTO public.recruitment (id, id_post, id_kols, id_brands, content, state, create_time, url) OVERRIDING SYSTEM VALUE VALUES (2, 12, 2, 2, 'kol2 chưa duyệt', 1, '2022-05-06 17:21:39.194', null);
+INSERT INTO public.recruitment (id, id_post, id_kols, id_brands, content, state, create_time, url) OVERRIDING SYSTEM VALUE VALUES (3, 11, 1, 2, 'kol1 chưa duyệt', 1, '2022-05-06 17:21:39.194', null);
+INSERT INTO public.recruitment (id, id_post, id_kols, id_brands, content, state, create_time, url) OVERRIDING SYSTEM VALUE VALUES (4, 12, 3, 2, 'kol3 chưa duyệt', 1, '2022-05-06 17:21:39.194', null);
+INSERT INTO public.recruitment (id, id_post, id_kols, id_brands, content, state, create_time, url) OVERRIDING SYSTEM VALUE VALUES (5, 11, 2, 2, 'kol2 đã duyệt', 2, '2022-05-06 17:21:39.194', null);

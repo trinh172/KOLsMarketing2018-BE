@@ -307,6 +307,24 @@ exports.getAllPostKolsRecruitment = async function(req, res) {
     return res.status(400).json(false);
 }
 
+exports.getAllActivePostOfBrand = async function(req, res) {
+    let flag = await post_db.findAllActivePostsRecruitmentBrand(req.jwtDecoded.data.id);
+    if (flag){
+        //console.log("getAllActivePostOfBrand and count recruitment: ", flag);
+        return res.json(flag);
+    }
+    return res.status(400).json(false);
+}
+
+exports.getAllUnactivePostOfBrand = async function(req, res) {
+    let flag = await post_db.findUnactivePostOfBrands(req.jwtDecoded.data.id);
+    if (flag){
+        //console.log("getAllUnactivePostOfBrand: ", flag);
+        return res.json(flag);
+    }
+    return res.status(400).json(false);
+}
+
 exports.kolsUnlikePost = async function(req, res) {
     let id_post = req.body.id_post;
     if(id_post){
