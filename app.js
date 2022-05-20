@@ -46,6 +46,7 @@ var brandRouter = require('./routes/brands.routes');
 var postRouter = require('./routes/posts.routes'); 
 var cateRouter = require('./routes/categories.routes'); 
 var messRouter = require('./routes/message.routes');
+var recruitRouter = require('./routes/recruitment.routes');
 
 const AuthMiddleWare = require("./middleware/auth_middleware");
 const { DOMAIN_FE } = require('./config/const.config')
@@ -95,6 +96,8 @@ app.use(AuthMiddleWare.isAuthor);
 app.use('/kols', kolsRouter);
 app.use('/message', messRouter);
 app.use('/posts', postRouter);
+app.use('/recruitments', recruitRouter);
+
 if (!fs.existsSync("./public/images/posts")) {
   fs.mkdirSync("./public/images/posts");
 }
