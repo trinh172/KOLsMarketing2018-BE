@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS post_categories;
+DROP TABLE IF EXISTS card_kols;
 DROP TABLE IF EXISTS check_read_room;
 DROP TABLE IF EXISTS image_job;
 DROP TABLE IF EXISTS job_describe;
@@ -33,12 +34,29 @@ START 10
   "gender" varchar(15),
   "avatar" varchar(255),
   "follows" int4,
-  "introduce" varchar(500),
+  "introduce" varchar(1000),
   "birthday" timestamp,
 	"create_time" timestamp NOT NULL,
   "state" char NOT NULL DEFAULT '1',
 	"otp" int4,
 	PRIMARY KEY ("id")
+)
+;
+
+-- ----------------------------
+-- Table structure for card_kols
+-- ----------------------------
+CREATE TABLE card_kols (
+  "email" char NOT NULL DEFAULT '1',
+  "address" char NOT NULL DEFAULT '1',
+  "phone" char NOT NULL DEFAULT '1',
+  "gender" char NOT NULL DEFAULT '1',
+  "image" varchar(255),
+  "describe" varchar(1000),
+  "state" char NOT NULL DEFAULT '1',
+  "id_kol" int4 NOT NULL,
+	PRIMARY KEY ("id_kol"),
+  CONSTRAINT "card_kols" FOREIGN KEY ("id_kol") REFERENCES "kols" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 )
 ;
 
@@ -61,7 +79,7 @@ START 15
   "phone" varchar(15),
 	"create_time" timestamp,
   "gender" char,
-  "introduce" varchar(500),
+  "introduce" varchar(1000),
   "cover" varchar(255),
   "avatar" varchar(255),
   "state" char NOT NULL DEFAULT '1',
