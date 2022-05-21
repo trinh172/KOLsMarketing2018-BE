@@ -21,6 +21,16 @@ module.exports = {
         return items[0];
     },
 
+    async findRecruitmentByKolsPost(iduser, id_post){
+        let items = await db('recruitment').where({
+            'id_kols': iduser,
+            'id_post': id_po4
+        });
+        if (items.length==0)
+            return null;
+        return items[0];
+    },
+
     async findRecruitmentByPostID(id_post){
         let items = await db('recruitment').where({
             'id_post': id_post

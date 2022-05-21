@@ -1,6 +1,7 @@
 const brands_db = require('../model/brands.model');
 const post_db = require('../model/posts.model');
 const post_unlogin_db = require('../model/post_notlogin.model');
+const recruit_db = require('../model/recruitments.model');
 const image_db = require('../model/images.model');
 const job_db = require('../model/job.model');
 const categories_db = require('../model/categories.model');
@@ -259,6 +260,10 @@ exports.getDetailPost = async function(req, res) {
             if (flag){
                 flag.views = flag.views + 1;
                 await post_db.updateView(flag.views, id_post);
+                let recruit = await recruit_db.findRecruitmentByKolsPost(req.jwtDecoded.data?.id, id_post);
+                if(recruit != null){
+                    flag.recruitment = recruit;
+                }
                 console.log("Check detail info of post in controller: ", flag);
                 return res.json(flag);
             }
