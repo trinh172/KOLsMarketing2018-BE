@@ -24,7 +24,7 @@ module.exports = {
     async findRecruitmentByKolsPost(iduser, id_post){
         let items = await db('recruitment').where({
             'id_kols': iduser,
-            'id_post': id_po4
+            'id_post': id_post
         });
         if (items.length==0)
             return null;

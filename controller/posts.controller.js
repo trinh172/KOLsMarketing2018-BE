@@ -260,10 +260,7 @@ exports.getDetailPost = async function(req, res) {
             if (flag){
                 flag.views = flag.views + 1;
                 await post_db.updateView(flag.views, id_post);
-                let recruit = await recruit_db.findRecruitmentByKolsPost(req.jwtDecoded.data?.id, id_post);
-                if(recruit != null){
-                    flag.recruitment = recruit;
-                }
+                flag.recruitment = await recruit_db.findRecruitmentByKolsPost(req.jwtDecoded.data?.id, id_post);
                 console.log("Check detail info of post in controller: ", flag);
                 return res.json(flag);
             }
