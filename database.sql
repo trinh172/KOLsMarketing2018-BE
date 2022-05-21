@@ -57,7 +57,7 @@ START 15
   "password" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
   "full_name" varchar(255),
   "brand_name" varchar(50),
-  "address" varchar(5),
+  "address" varchar(255),
   "phone" varchar(15),
 	"create_time" timestamp,
   "gender" char,
@@ -538,4 +538,3 @@ INSERT INTO "vn_tinhthanhpho" ("id", "name", "type", "slug") VALUES
 ('96',	'Cà Mau',	'Tỉnh',	'CAMAU');
 COMMIT;
 ALTER TABLE "kols" ADD CONSTRAINT "KolsAddress" FOREIGN KEY ("address") REFERENCES "vn_tinhthanhpho" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE "brands" ADD CONSTRAINT "BrandsAddress" FOREIGN KEY ("address") REFERENCES "vn_tinhthanhpho" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
