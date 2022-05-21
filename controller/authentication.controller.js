@@ -1,4 +1,5 @@
-const kols_db = require('../model/kols.model')
+const kols_db = require('../model/kols.model');
+const cardkols_db = require('../model/cardkols.model')
 const brands_db = require('../model/brands.model');
 const bcrypt = require('bcryptjs');
 const jwtHelper = require("../utils/jwt.helper");
@@ -20,7 +21,12 @@ exports.kols_register = async function(req, res) {
     }
     let flag = await kols_db.createKOLs(user);
     if (flag){
-        return res.json(true);
+        let createdkol = await kols_db.findKOLsByEmail(req.body.email);
+        if(createdkol){
+            let createCard = await cardkols_db.createCardKols(createdkol.id);
+            if (createCard)
+                return res.json(true);
+        }
     }
     
     return res.json(false);
