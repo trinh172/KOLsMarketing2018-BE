@@ -15,7 +15,8 @@ var shuffle = function(array, n) {
     temp = [];
     originalLength = array.length;
     for (var i = 0; i < n; i++) {
-      temp.push(array.splice(Math.floor(Math.random()*array.length),1));
+        let removed = array.splice(Math.floor(Math.random()*array.length),1);
+        temp.push(removed[0]);
     }
     return temp;
  };
@@ -309,8 +310,9 @@ exports.getAllPostKolsRecruitment = async function(req, res) {
     return res.status(400).json(false);
 }
 
-exports.getAllActivePostOfBrand = async function(req, res) {
-    let flag = await post_db.findAllActivePostsRecruitmentBrand(req.jwtDecoded.data.id);
+exports.kolGetAllActivePostOfBrand = async function(req, res) {
+    let id_brand = req.body.id_brand;
+    let flag = await post_db.findActivePostOfBrands(id_brand);
     if (flag){
         //console.log("getAllActivePostOfBrand and count recruitment: ", flag);
         return res.json(flag);
@@ -318,6 +320,27 @@ exports.getAllActivePostOfBrand = async function(req, res) {
     return res.status(400).json(false);
 }
 
+exports.kolGet2ActivePostOfBrand = async function(req, res) {
+    let id_brand = req.body.id_brand;
+    let flag = await post_db.findActivePostOfBrands(id_brand);
+    if (flag){
+        if(flag.length <= 2)
+            return res.status(200).json(flag);
+        let result = await shuffle(flag, 2);
+        return res.status(200).json(result);
+    }
+    return res.status(400).json(false);
+}
+
+exports.getAllActivePostOfBrand = async function(req, res) {
+    let id_brand = req.body.id_brand;
+    let flag = await post_db.findAllActivePostsRecruitmentBrand(req.jwtDecoded.data.id);
+    if (flag){
+        //console.log("getAllActivePostOfBrand and count recruitment: ", flag);
+        return res.json(flag);
+    }
+    return res.status(400).json(false);
+}
 exports.getAllUnactivePostOfBrand = async function(req, res) {
     let flag = await post_db.findUnactivePostOfBrands(req.jwtDecoded.data.id);
     if (flag){

@@ -222,9 +222,7 @@ module.exports = {
                                         'id_writer': brand_id,
                                         'state': 1
                                     });
-        if (items.length==0)
-            return null;
-        return items[0];
+        return items;
     },
     async findUnactivePostOfBrands(brand_id){
         let items = await db('posts').where({
@@ -401,6 +399,7 @@ module.exports = {
         }
         return result;
     },
+
 
       //Find all post that brand create count recruitment, and still work
       async findAllActivePostsRecruitmentBrand(id_brand) {
