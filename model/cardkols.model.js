@@ -19,12 +19,41 @@ module.exports = {
             return false;
         }
     },
-    async findCardKolsByIdKol(id_kol){
-        let items = await db('card_kols').where('id_kol', id_kol);
-        if (items.length==0)
-            return null;
-        return items[0];
+
+    async getAllCardKols(){
+        try {
+            let items = await db('card_kols').where("state", "1");
+            for (i = 0; i < items.length; i++){
+                let detail = await db("kols").where('id', items[i].id_kol);
+                if(items[i].phone == '1')
+                    items[i].phone = detail[0]?.phone;
+                if(items[i].gender == '1')
+                    items[i].gender = detail[0]?.gender;    
+                if(items[i].address == '1')
+                    items[i].address = detail[0]?.address;
+                if(items[i].email == '1')
+                    items[i].email = detail[0]?.email;
+            }
+            return items;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
     },
+
+    async findCardKolsByIdKol(id_kol){
+       
+        try {
+            let items = await db('card_kols').where('id_kol', id_kol);
+            if (items.length==0)
+                return null;
+            return items[0];
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+    
     async updateCardKolsByIdKol(id_kol, new_card){
         try {
             await db('card_kols').where('id_kol', id_kol).update(new_card);
