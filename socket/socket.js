@@ -99,15 +99,24 @@ module.exports = function(io) {
                 receiver = await getUser(iduser, "kols");
             }
             else receiver = await getUser(iduser, "brands");
-            
+            let current = null;
+            if (decoded_user.role == 1){
+                current = await getUser(decoded_user.user?.id, "kols");
+            }
+            else current = await getUser(decoded_user.user?.id, "brands");
+
+            if (current){
+                let all_room_current = await mess_db.findAllRoomOf1User(decoded_user.user?.id, decoded_user.role);
+                const list_room_current = all_room_current.sort((a, b) => b.create_time - a.create_time);
+                io.to(current.socketId).emit("pleaseResortRoom", list_room_current);
+            }
             if (receiver){
                 let added_message = await mess_db.getMessageByIdroomCreatetime(idroom,create_time);
                 let all_room = await mess_db.findAllRoomOf1User(iduser, role);
-                const list_room = all_room.sort((a, b) => b.create_time - a.create_time)
+                const list_room = all_room.sort((a, b) => b.create_time - a.create_time);
                 io.to(receiver.socketId).emit("getNewMessage", added_message);
                 io.to(receiver.socketId).emit("pleaseResortRoom", list_room);
             }
-
         })
 
         //FE emit("confirmReadAll", {access_token, iduser, role, content}); iduser là người sẽ nhận tin, role dạng kols, brands

@@ -34,7 +34,7 @@ exports.getAllRoom = async function(req, res) {
     //Get infor from form at FE 
     let flag = await mess_db.findAllRoomOf1User(req.jwtDecoded.data?.id, req.jwtDecoded.data?.role);
     if (flag){
-        const sortedActivities = flag.sort((a, b) => b.create_time - a.create_time)
+        const sortedActivities = flag.sort((a, b) => b.create_time - a.create_time);
         return res.status(200).json(sortedActivities);
     }
     return res.json([]);

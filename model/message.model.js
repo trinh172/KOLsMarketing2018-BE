@@ -69,6 +69,17 @@ module.exports = {
         return null;
     },
 
+    async findNewestMessageInroom(id_room){
+        const items = await db('message').where({
+            id_room: id_room
+        }); 
+
+        if (items.length > 0)
+          return items[items.length - 1];
+
+        return null;
+    },
+
     async findAllRoomOf1User(user, role){
         const case1 = await db('room').where({
             id_user1: user,
@@ -92,6 +103,7 @@ module.exports = {
                 item.state = state[0].state;
                 item.userInfo = userInfo;
                 item.create_time = case1[i].time;
+                item.last_message = await this.findNewestMessageInroom(case1[i].id);
             }
             if(case1[i].role2 == 2){
                 let userInfo = await this.getUserInfo(case1[i].id_user2, 2)
@@ -103,6 +115,7 @@ module.exports = {
                 })
                 item.state = state[0].state;
                 item.create_time = case1[i].time;
+                item.last_message = await this.findNewestMessageInroom(case1[i].id);
             }
             result.push(item);
         }
@@ -119,6 +132,7 @@ module.exports = {
                 })
                 item.state = state[0].state;
                 item.create_time = case2[i].time;
+                item.last_message = await this.findNewestMessageInroom(case2[i].id);
             }
             if(case2[i].role1 == 2){
                 let userInfo = await this.getUserInfo(case2[i].id_user1, 2)
@@ -130,6 +144,7 @@ module.exports = {
                 })
                 item.state = state[0].state;
                 item.create_time = case2[i].time;
+                item.last_message = await this.findNewestMessageInroom(case2[i].id);
             }
             result.push(item);
         }
