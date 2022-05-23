@@ -79,12 +79,20 @@ exports.edit_description = async function(req, res) {
 
 exports.edit_password = async function(req, res) {
     //Get infor from form at FE 
-    const hash = bcrypt.hashSync(req.body.password, 10);
-    let flag = await brands_db.updatePassword(req.jwtDecoded.data.id, hash);
-    if (flag){
-        return res.status(200).json("Đổi mật khẩu thành công");
+    const ret = bcrypt.compareSync(req.body.old_password, req.jwtDecoded.data.password);
+    console.log(ret);
+    if (ret===false){
+      console.log("Password cũ không đúng")
+      return res.json({'error':'Password cũ không đúng'});
     }
-    
+    if(ret === true){
+        const hash = bcrypt.hashSync(req.body.password, 10);
+        let flag = await brands_db.updatePassword(req.jwtDecoded.data.id, hash);
+        if (flag){
+            return res.status(200).json("Đổi mật khẩu thành công");
+        }    
+
+    }
     return res.status(400).json(false);
 }
 
@@ -93,7 +101,7 @@ exports.edit_email = async function(req, res) {
     //Check duplicate email
     let check_dup_email = await brands_db.findBrandsByEmail(new_email);
     if(check_dup_email.id != req.jwtDecoded.data.id){
-        return res.status(400).json("Email không khả dụng");
+        return res.status(400).json({"error": "Email không khả dụng"});
     }
     let flag = await brands_db.updateEmail(new_email, req.jwtDecoded.data.id);
     if (flag){
@@ -116,7 +124,7 @@ exports.edit_phone = async function(req, res) {
 
 exports.edit_address = async function(req, res) {
     //Get infor from form at FE 
-    let new_address = req.body.phone;
+    let new_address = req.body.address;
     let flag = await brands_db.updateAddress(new_address, req.jwtDecoded.data.id);
     if (flag){
         return res.status(200).json(new_address);
