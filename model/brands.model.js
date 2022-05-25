@@ -147,7 +147,7 @@ module.exports = {
     async updateCover(url_cover, id){
         try {
             await db('brands').where('id', id).update({
-                avatar: url_cover
+                cover: url_cover
             });
             return true
         } catch (e) {
