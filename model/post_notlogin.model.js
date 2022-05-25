@@ -21,6 +21,7 @@ module.exports = {
             result.id = item[0].id;
             result.avatar = item[0].avatar;
             result.cover = item[0].cover;
+            result.address = item[0].address;
             result.role = '2';
             return result
         }
