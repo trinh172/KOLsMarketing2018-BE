@@ -39,7 +39,7 @@ let isAuthor = async (req, res, next) => {
 }
 let isLogin = async (req, res, next) => {
     const tokenFromClient = req.headers["x-access-token"];
-    console.log("Token from client isAuthor: ", tokenFromClient);
+    console.log("Token from client isLogin: ", tokenFromClient);
     if (tokenFromClient && tokenFromClient!='null') {
         try {
             const decoded = await jwtHelper.verifyToken(tokenFromClient, accessTokenSecret);

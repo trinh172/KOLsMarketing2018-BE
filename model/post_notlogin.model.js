@@ -387,7 +387,7 @@ module.exports = {
             rows[tempcount].likePost = false;
             tempcount = tempcount + 1;
         }
-        console.log("60 bai post nè: ", rows);
+        console.log("60 bai post notlogin nè: ", rows[0]);
         return rows;
     },
 
