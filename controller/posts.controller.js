@@ -312,24 +312,45 @@ exports.getAllPostKolsRecruitment = async function(req, res) {
 
 exports.kolGetAllActivePostOfBrand = async function(req, res) {
     let id_brand = req.body.id_brand;
-    let flag = await post_db.findActivePostOfBrands(id_brand);
-    if (flag){
-        //console.log("getAllActivePostOfBrand and count recruitment: ", flag);
-        return res.json(flag);
+    if(req.jwtDecoded.data?.id && req.jwtDecoded.data?.role == 1){
+        let flag = await post_db.findActivePostOfBrandsLikeInfor(id_brand, req.jwtDecoded.data?.id);
+        if (flag){
+            return res.status(200).json(flag);
+        }
+        return res.status(400).json(false);
     }
-    return res.status(400).json(false);
+    else{
+        let flag = await post_unlogin_db.findActivePostOfBrands(id_brand);
+        if (flag){
+            return res.status(200).json(flag);
+        }
+        return res.status(400).json(false);
+    }
 }
 
 exports.kolGet2ActivePostOfBrand = async function(req, res) {
     let id_brand = req.body.id_brand;
-    let flag = await post_db.findActivePostOfBrands(id_brand);
-    if (flag){
-        if(flag.length <= 2)
-            return res.status(200).json(flag);
-        let result = await shuffle(flag, 2);
-        return res.status(200).json(result);
+    if(req.jwtDecoded.data?.id && req.jwtDecoded.data?.role == 1){
+        let flag = await post_db.findActivePostOfBrandsLikeInfor(id_brand, req.jwtDecoded.data?.id);
+        if (flag){
+            if(flag.length <= 2)
+                return res.status(200).json(flag);
+            let result = await shuffle(flag, 2);
+            return res.status(200).json(result);
+        }
+        return res.status(400).json(false);
     }
-    return res.status(400).json(false);
+    else{
+        let flag = await post_unlogin_db.findActivePostOfBrands(id_brand);
+        if (flag){
+            if(flag.length <= 2)
+                return res.status(200).json(flag);
+            let result = await shuffle(flag, 2);
+            return res.status(200).json(result);
+        }
+        return res.status(400).json(false);
+    }
+    
 }
 
 exports.getAllActivePostOfBrand = async function(req, res) {

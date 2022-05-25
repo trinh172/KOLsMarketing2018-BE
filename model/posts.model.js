@@ -225,6 +225,33 @@ module.exports = {
                                     });
         return items;
     },
+    async findActivePostOfBrandsLikeInfor(brand_id, iduser){
+        let items = await db('posts').where({
+                                        'id_writer': brand_id,
+                                        'state': 1
+                                    });
+        for (i = 0; i< items.length; i++){
+            let image_cover = await db('image_post')
+                                    .where({
+                                        'id_post': items[i].id,
+                                        'type': '2'
+                                    })
+            if(image_cover.length > 0){
+                items[i].image_cover = image_cover[0].url;
+            }else{
+                items[i].image_cover = null;
+            }
+            let like = await db('kols_like_post')
+                                .where({
+                                    'id_kol': iduser,
+                                    'id_post': items[i].id,
+                                });
+            if(like.length > 0)
+                items[i].likePost = true;
+            else items[i].likePost = false;
+        }
+        return items;
+    },
     async findUnactivePostOfBrands(brand_id){
         let items = await db('posts').where({
                                         'id_writer': brand_id,
@@ -254,6 +281,9 @@ module.exports = {
                                     })
             if(image_cover.length > 0){
                 rows[i].image_cover = image_cover[0].url;
+            }
+            else{
+                items[i].image_cover = null;
             }
             let brand = await db('brands')
                                 .where({
