@@ -249,6 +249,7 @@ module.exports = {
             if(like.length > 0)
                 items[i].likePost = true;
             else items[i].likePost = false;
+            items[i].address = await this.getAddressName(items[i].address);
         }
         return items;
     },

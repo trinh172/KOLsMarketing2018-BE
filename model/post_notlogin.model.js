@@ -217,6 +217,7 @@ module.exports = {
                 items[i].image_cover = null;
             }
             items[i].likePost = false;
+            items[i].address = await this.getAddressName(items[i].address);
             
         }
         return items;
