@@ -254,11 +254,26 @@ module.exports = {
         return items;
     },
     async findUnactivePostOfBrands(brand_id){
-        let items = await db('posts').where({
+        let rows = await db('posts').where({
                                         'id_writer': brand_id,
                                         'state': 0
                                     });
-        return items;
+        let tempcount = 0;
+        while (tempcount < rows.length){
+            
+            let image_cover = await db('image_post')
+                                    .where({
+                                        'id_post': rows[tempcount].id,
+                                        'type': '2'
+                                    })
+            if(image_cover.length > 0){
+                rows[tempcount].image_cover = image_cover[0].url;
+            }else{
+                rows[tempcount].image_cover = null;
+            }
+            tempcount = tempcount + 1;
+        }
+        return rows;
     },
     /*
     Top 9 post most read in month --> Cơ hội hấp dẫn
@@ -447,9 +462,17 @@ module.exports = {
                                 "id_post": rows[tempcount].id,
                                 "state": '1'
                             })
-            console.log("Count: ", count.length);
             rows[tempcount].count_recruitment = count.length;
-            
+            let image_cover = await db('image_post')
+                                    .where({
+                                        'id_post': rows[tempcount].id,
+                                        'type': '2'
+                                    })
+            if(image_cover.length > 0){
+                rows[tempcount].image_cover = image_cover[0].url;
+            }else{
+                rows[tempcount].image_cover = null;
+            }
             tempcount = tempcount + 1;
         }
         return rows;

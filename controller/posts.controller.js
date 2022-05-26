@@ -354,7 +354,6 @@ exports.kolGet2ActivePostOfBrand = async function(req, res) {
 }
 
 exports.getAllActivePostOfBrand = async function(req, res) {
-    let id_brand = req.body.id_brand;
     let flag = await post_db.findAllActivePostsRecruitmentBrand(req.jwtDecoded.data.id);
     if (flag){
         //console.log("getAllActivePostOfBrand and count recruitment: ", flag);
