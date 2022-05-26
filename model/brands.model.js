@@ -62,11 +62,37 @@ module.exports = {
         let items = []
         for(i = 0; i < item.length; i++){
             let result = {};
-            result.introduce = item[0].introduce;
-            result.brand_name = item[0].brand_name;
-            result.id = item[0].id;
-            result.avatar = item[0].avatar;
-            result.cover = item[0].cover;
+            result.introduce = item[i].introduce;
+            result.brand_name = item[i].brand_name;
+            result.id = item[i].id;
+            result.avatar = item[i].avatar;
+            result.cover = item[i].cover;
+            result.likeBrand = false;
+            items.push(result);
+        }
+        return items;
+    },
+
+    async getListBrandsLikeInfo(idkol){
+        let item = await db('brands');
+        if (item.length==0)
+            return null;
+        let items = []
+        for(i = 0; i < item.length; i++){
+            let result = {};
+            result.introduce = item[i].introduce;
+            result.brand_name = item[i].brand_name;
+            result.id = item[i].id;
+            result.avatar = item[i].avatar;
+            result.cover = item[i].cover;
+            let like = await db('kols_like_brands')
+                .where({
+                    'id_kol': idkol,
+                    'id_brand':  item[i].id,
+                });
+            if(like.length > 0)
+                result.likeBrand = true;
+            else result.likeBrand = false;
             items.push(result);
         }
         return items;

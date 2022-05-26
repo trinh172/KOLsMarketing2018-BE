@@ -15,9 +15,6 @@ router.post('/kols-login', authentication.kols_signin);
 router.post('/brands-login', authentication.brands_signin);
 router.post('/google-login', authentication.google_signin);
 
-router.get('/list-brands', brands_ct.get15Brands);
-router.get('/list-brands-more', brands_ct.get60Brands);
-
 router.get('/list-province-vn', address_ct.list_province_vn);
 
 module.exports = router;

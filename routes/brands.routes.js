@@ -17,4 +17,9 @@ router.post('/update-cover',auth_middle.isBrand, brands.update_cover);
 router.post('/update-bio-link',auth_middle.isBrand, brands.update_bio_link);
 
 router.patch('/renew-password',auth_middle.isBrand, brands.edit_password);
+
+
+router.get('/list-brands', brands.get15Brands);
+router.get('/list-brands-more', brands.get60Brands);
+
 module.exports = router;
