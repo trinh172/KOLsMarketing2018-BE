@@ -1,4 +1,7 @@
 DROP TABLE IF EXISTS post_categories;
+DROP TABLE IF EXISTS kol_social_post;
+DROP TABLE IF EXISTS kol_social_page;
+DROP TABLE IF EXISTS kol_social_account;
 DROP TABLE IF EXISTS card_kols;
 DROP TABLE IF EXISTS check_read_room;
 DROP TABLE IF EXISTS image_job;
@@ -397,7 +400,7 @@ CREATE TABLE "job_comment" (
 ALTER TABLE "job_comment" ADD CONSTRAINT "jobcomment_post" FOREIGN KEY ("id_post") REFERENCES "posts" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- ----------------------------
--- Table structure for job_comment
+-- Table structure for job_member
 -- ----------------------------
 -- state 1: kol not done work, 2: kol done work, 3: brand 
 CREATE TABLE "job_member" (
@@ -416,6 +419,93 @@ CREATE TABLE "job_member" (
 ) 
 ;
 ALTER TABLE "job_member" ADD CONSTRAINT "jobmember_post" FOREIGN KEY ("id_post") REFERENCES "posts" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- ----------------------------
+-- Table structure for kol_social_account
+-- ----------------------------
+-- state 1: đang chờ đăng, 2: đã đăng thành công, 0: bản nháp 
+-- type_schedule: 1: có lên lịch, 2: đăng ngay (ko lên lịch)
+-- type_social: mạng xã hội (hiện tại support FB): 1 (Facebook)
+CREATE TABLE "kol_social_account" (
+   "id" int4 NOT NULL GENERATED ALWAYS AS IDENTITY (
+    INCREMENT 1
+    MINVALUE  1
+    MAXVALUE 2147483647
+    START 30
+    ),
+  "id_kol" int4 NOT NULL,
+  "state" char NOT NULL DEFAULT '1',
+  "account_token" varchar,
+  "account_name" varchar(150),
+  "time_expired" timestamp,
+  "create_time" timestamp NOT NULL,
+  PRIMARY KEY ("id")
+) 
+;
+ALTER TABLE "kol_social_account" ADD CONSTRAINT "kol_social_account_kol" FOREIGN KEY ("id_kol") REFERENCES "kols" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- ----------------------------
+-- Table structure for kol_social_page
+-- ----------------------------
+-- state 1: đang chờ đăng, 2: đã đăng thành công, 0: bản nháp 
+-- type_schedule: 1: có lên lịch, 2: đăng ngay (ko lên lịch)
+-- type_social: mạng xã hội (hiện tại support FB): 1 (Facebook)
+CREATE TABLE "kol_social_page" (
+   "id" int4 NOT NULL GENERATED ALWAYS AS IDENTITY (
+    INCREMENT 1
+    MINVALUE  1
+    MAXVALUE 2147483647
+    START 30
+    ),
+  "id_kol" int4 NOT NULL,
+  "id_account" int4 NOT NULL,
+  "state" char NOT NULL DEFAULT '1',
+  "page_token" varchar,
+  "id_page_social" varchar(50),
+  "page_name" varchar(150),
+  "time_expired" timestamp,
+  "create_time" timestamp NOT NULL,
+  PRIMARY KEY ("id")
+) 
+;
+ALTER TABLE "kol_social_page" ADD CONSTRAINT "kol_social_page_kol" FOREIGN KEY ("id_kol") REFERENCES "kols" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "kol_social_page" ADD CONSTRAINT "kol_social_page_account" FOREIGN KEY ("id_account") REFERENCES "kol_social_account" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- ----------------------------
+-- Table structure for kol_social_post
+-- ----------------------------
+-- state 1: đang chờ đăng, 2: đã đăng thành công, 0: bản nháp 
+-- type_schedule: 1: có lên lịch, 2: đăng ngay (ko lên lịch)
+-- type_social: mạng xã hội (hiện tại support FB): 1 (Facebook)
+CREATE TABLE "kol_social_post" (
+   "id" int4 NOT NULL GENERATED ALWAYS AS IDENTITY (
+    INCREMENT 1
+    MINVALUE  1
+    MAXVALUE 2147483647
+    START 30
+    ),
+  "id_kol" int4 NOT NULL,
+  "id_page" int4 NOT NULL,
+  "id_job_describe" int4 NOT NULL,
+  "id_post_social" varchar(15),
+  "url_image" varchar(150),
+  "url_image" varchar(150),
+  "url_post_social" varchar(150),
+  "count_like" int4 NOT NULL DEFAULT 0,
+  "count_share" int4 NOT NULL DEFAULT 0,
+  "count_comment" int4 NOT NULL DEFAULT 0,
+  "state" char NOT NULL DEFAULT '1',
+  "content" varchar,
+  "type_social" char NOT NULL DEFAULT '1',
+  "type_schedule" char NOT NULL DEFAULT '1',
+  "schedule_time" timestamp,
+  "create_time" timestamp NOT NULL,
+  PRIMARY KEY ("id")
+) 
+;
+ALTER TABLE "kol_social_post" ADD CONSTRAINT "kol_social_post_kol" FOREIGN KEY ("id_kol") REFERENCES "kols" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "kol_social_post" ADD CONSTRAINT "kol_social_post_page" FOREIGN KEY ("id_page") REFERENCES "kol_social_page" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "kol_social_post" ADD CONSTRAINT "kol_social_post_job" FOREIGN KEY ("id_job_describe") REFERENCES "job_describe" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- ----------------------------
 -- Records of categories
