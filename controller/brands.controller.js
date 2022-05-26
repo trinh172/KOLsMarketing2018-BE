@@ -20,10 +20,31 @@ exports.brands_profile_detail = async function(req, res) {
     
     return res.json(false);
 }
+
+exports.kol_get_brand_info = async function(req, res) {
+    //Get infor from form at FE 
+    let id_brand = req.body.id_brand;
+    if(req?.jwtDecoded?.data?.id && req?.jwtDecoded?.data?.role == 1){
+        let flag = await brands_db.kolsGetBrandInfo(id_brand,req.jwtDecoded?.data?.id );
+        if (flag){
+            return res.status(200).json(flag);
+        }
+        return res.status(400).json(false);
+    }
+    else{
+        let flag = await brands_db.kolsGetBrandInfo(id_brand, null);
+        if (flag){
+            return res.status(200).json(flag);
+        }
+        
+        return res.status(400).json(false);
+    }
+    
+}
+
 exports.get15Brands = async function(req, res) {
-    console.log(" get brand jwtdecode info: ", req.jwtDecoded?.data);
-    if(req.jwtDecoded?.data.id && req.jwtDecoded?.data.role == 1){
-        let flag = await brands_db.getListBrandsLikeInfo(req.jwtDecoded?.data.id);
+    if(req.jwtDecoded?.data?.id && req.jwtDecoded?.data?.role == 1){
+        let flag = await brands_db.getListBrandsLikeInfo(req.jwtDecoded?.data?.id);
         if (flag){
             if(flag.length <= 15)
                 return res.status(200).json(flag);

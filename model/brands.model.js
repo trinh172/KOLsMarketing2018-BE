@@ -55,6 +55,55 @@ module.exports = {
         return items[0];
     },
 
+    async kolsGetBrandInfo(ID, id_kol){
+        if(id_kol){
+            let items = await db('brands').where('id', ID);
+            if (items.length==0)
+                return null;
+            items[0].password = 'has-password';
+            items[0].bio_url = [];
+            let bio = await db("bio_url").where({
+                id_user: ID,
+                role: '2'
+            });
+            if(bio.length > 0){
+                for(i = 0; i< bio.length; i++){
+                    items[0].bio_url.push(bio[i].url);
+                }
+            };
+            items[0].create_time = moment(items[0].create_time).format("DD/MM/YYYY HH:mm:ss");
+            items[0].role = '2';
+            let like = await db('kols_like_brands')
+                .where({
+                    'id_kol': id_kol,
+                    'id_brand':  ID,
+                });
+            if(like.length > 0)
+                items[0].likeBrand = true;
+            else items[0].likeBrand = false;
+            return items[0];
+        }
+        let items = await db('brands').where('id', ID);
+        if (items.length==0)
+            return null;
+        items[0].password = 'has-password';
+        items[0].likeBrand = false;
+        items[0].bio_url = [];
+        let bio = await db("bio_url").where({
+            id_user: ID,
+            role: '2'
+        });
+        if(bio.length > 0){
+            for(i = 0; i< bio.length; i++){
+                items[0].bio_url.push(bio[i].url);
+            }
+        };
+        items[0].create_time = moment(items[0].create_time).format("DD/MM/YYYY HH:mm:ss");
+        items[0].role = '2';
+        
+        return items[0];
+    },
+
     async getListBrands(){
         let item = await db('brands');
         if (item.length==0)

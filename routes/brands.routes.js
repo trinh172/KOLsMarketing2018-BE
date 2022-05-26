@@ -18,7 +18,7 @@ router.post('/update-bio-link',auth_middle.isBrand, brands.update_bio_link);
 
 router.patch('/renew-password',auth_middle.isBrand, brands.edit_password);
 
-
+router.post('/brand-info', brands.kol_get_brand_info);
 router.get('/list-brands', brands.get15Brands);
 router.get('/list-brands-more', brands.get60Brands);
 
