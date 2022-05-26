@@ -383,3 +383,45 @@ exports.kolsUnlikePost = async function(req, res) {
     }
     return res.status(400).json(false);
 }
+
+exports.getAllSuggestPost = async function(req, res) {
+    if(req.jwtDecoded.data?.id && req.jwtDecoded.data?.role == 1){
+        let flag = await post_db.findSuggestPost( req.jwtDecoded.data?.id, false);
+        if (flag){
+            return res.status(200).json(flag);
+        }
+        return res.status(400).json(false);
+    }
+    else{
+        let flag = await post_unlogin_db.findSuggestPost( false);
+        if (flag){
+            return res.status(200).json(flag);
+        }
+        return res.status(400).json(false);
+    }
+}
+
+exports.get12SuggestPost = async function(req, res) {
+    let id_current = req.body?.id_post;
+    if(req.jwtDecoded.data?.id && req.jwtDecoded.data?.role == 1){
+        let flag = await post_db.findSuggestPost( req.jwtDecoded.data?.id, id_current);
+        if (flag){
+            if(flag.length <= 12)
+                return res.status(200).json(flag);
+            let result = await shuffle(flag.slice(0,12), 12);
+            return res.status(200).json(result);
+        }
+        return res.status(400).json(false);
+    }
+    else{
+        let flag = await post_unlogin_db.findSuggestPost( id_current);
+        if (flag){
+            if(flag.length <= 12)
+                return res.status(200).json(flag);
+            let result = await shuffle(flag.slice(0,12), 12);
+            return res.status(200).json(result);
+        }
+        return res.status(400).json(false);
+    }
+    
+}

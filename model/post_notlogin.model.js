@@ -231,6 +231,38 @@ module.exports = {
         }
         return items;
     },
+
+    //Lấy danh sách các bài đăng đề xuất, dựa theo top lượt xem
+    async findSuggestPost( id_current){
+        let items = [];
+        if(id_current){
+            items = await db('posts').where({
+                'state': 1
+            }).whereNot('id', id_current).orderBy('views', 'desc');
+        }
+        else{
+            items = await db('posts').where({
+                'state': 1
+            }).orderBy('views', 'desc');
+        }
+        
+        for (i = 0; i< items.length; i++){
+            let image_cover = await db('image_post')
+                                    .where({
+                                        'id_post': items[i].id,
+                                        'type': '2'
+                                    })
+            if(image_cover.length > 0){
+                items[i].image_cover = image_cover[0].url;
+            }else{
+                items[i].image_cover = null;
+            }
+            items[i].likePost = false;
+            items[i].address = await this.getAddressName(items[i].address);
+        }
+        return items;
+    },
+
     async findUnactivePostOfBrands(brand_id){
         let items = await db('posts').where({
                                         'id_writer': brand_id,

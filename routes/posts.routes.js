@@ -28,6 +28,9 @@ router.post('/kol-get-2active-post-of-brand', posts.kolGet2ActivePostOfBrand);
 router.get('/get-active-post-of-brand',  auth_middle.isBrand, posts.getAllActivePostOfBrand);
 router.get('/get-unactive-post-of-brand', auth_middle.isBrand, posts.getAllUnactivePostOfBrand);
 
+router.post('/get-suggest-post', posts.get12SuggestPost);
+router.post('/get-suggest-post-more', posts.getAllSuggestPost);
+
 router.get('/get-post-user-recruitment', auth_middle.isKOLs, posts.getAllPostKolsRecruitment);
 
 router.post('/is-available-title', posts.checkAvailableTittle);
