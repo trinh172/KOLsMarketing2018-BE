@@ -125,3 +125,36 @@ exports.delete_bio_link = async function(req, res) {
     
     return res.status(400).json(false);
 }
+
+exports.kolsLikeBrand = async function(req, res) {
+    let id_brand = req.body.id_brand;
+    if(id_brand){
+        let flag = await kols_db.kolsLikeBrand(req.jwtDecoded.data.id, id_brand);
+        if (flag){
+            console.log("Check like brand successfully: ", flag);
+            return res.json(flag);
+        }
+    }
+    return res.status(400).json(false);
+}
+
+exports.getAllBrandsKolsLikes = async function(req, res) {
+    let flag = await kols_db.findAllBrandsKolsLike(req.jwtDecoded.data.id);
+    if (flag){
+        console.log("getAllBrandsKolsLikes: ", flag);
+        return res.json(flag);
+    }
+    return res.status(400).json(false);
+}
+
+exports.kolsUnlikeBrand = async function(req, res) {
+    let id_brand = req.body.id_brand;
+    if(id_brand){
+        let flag = await kols_db.kolsUnlikeBrand(req.jwtDecoded.data.id, id_brand);
+        if (flag){
+            console.log("Check unlike brand successfully: ", flag);
+            return res.json(flag);
+        }
+    }
+    return res.status(400).json(false);
+}

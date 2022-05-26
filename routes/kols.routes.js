@@ -19,4 +19,8 @@ router.post('/edit-info',auth_middle.isKOLs, kols.edit_info);
 
 router.patch('/renew-password',auth_middle.isKOLs, kols.edit_password);
 
+router.post('/like-brand', auth_middle.isKOLs, kols.kolsLikeBrand);
+router.get('/get-brand-user-like', auth_middle.isKOLs, kols.getAllBrandsKolsLikes);
+router.delete('/unlike-brand', auth_middle.isKOLs, kols.kolsUnlikeBrand);
+
 module.exports = router;

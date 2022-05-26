@@ -1,6 +1,28 @@
 const db = require('../utils/connectDB')
 const moment = require('moment');
 module.exports = {
+
+    async getBrandInfo(iduser){
+        const item = await db('brands').where({
+            id: iduser
+        });
+        if(item.length>0){
+            let result = {};
+            result.email = item[0].email;
+            result.introduce = item[0].introduce;
+            result.phone = item[0].phone;
+            result.name = item[0].brand_name;
+            result.id = item[0].id;
+            result.avatar = item[0].avatar;
+            result.cover = item[0].cover;
+            result.address = item[0].address;
+            result.role = '2';
+            return result
+        }
+    
+        return null;
+    },
+
     async all(){
         let items = await db('kols');
         for(let i = 0; i<items.length; i++){
@@ -82,6 +104,49 @@ module.exports = {
                 type: 1,
                 url: bio_url
             })
+            return true
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+
+     //Find all brands that user like, sap xep theo thu tu ma user like
+     async findAllBrandsKolsLike(idkol) {
+        const rows = await db('kols_like_brands')
+            .where({
+                id_kol: idkol,
+            })
+        let result = [];
+        let tempcount = 0;
+        while (tempcount < rows.length){
+            let item = await this.getBrandInfo(rows[tempcount].id_brand);
+            if(item != null){
+                result.push(item);
+            }
+            tempcount = tempcount + 1;
+        }
+        return result;
+    },
+
+    async kolsLikeBrand(id_kol, id_brand) {
+        try {
+            await db('kols_like_brands').insert({
+                'id_brand': id_brand,
+                'id_kol': id_kol
+            })
+            return true
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+    async kolsUnlikeBrand(id_kol, id_brand) {
+        try {
+            await db('kols_like_brands').where({
+                'id_brand': id_brand,
+                'id_kol': id_kol
+            }).del();
             return true
         } catch (e) {
             console.log(e);
