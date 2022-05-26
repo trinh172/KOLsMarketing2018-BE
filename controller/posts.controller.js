@@ -313,14 +313,14 @@ exports.getAllPostKolsRecruitment = async function(req, res) {
 exports.kolGetAllActivePostOfBrand = async function(req, res) {
     let id_brand = req.body.id_brand;
     if(req.jwtDecoded.data?.id && req.jwtDecoded.data?.role == 1){
-        let flag = await post_db.findActivePostOfBrandsLikeInfor(id_brand, req.jwtDecoded.data?.id);
+        let flag = await post_db.findActivePostOfBrandsLikeInfor(id_brand, req.jwtDecoded.data?.id, false);
         if (flag){
             return res.status(200).json(flag);
         }
         return res.status(400).json(false);
     }
     else{
-        let flag = await post_unlogin_db.findActivePostOfBrands(id_brand);
+        let flag = await post_unlogin_db.findActivePostOfBrands(id_brand, false);
         if (flag){
             return res.status(200).json(flag);
         }
@@ -330,8 +330,9 @@ exports.kolGetAllActivePostOfBrand = async function(req, res) {
 
 exports.kolGet2ActivePostOfBrand = async function(req, res) {
     let id_brand = req.body.id_brand;
+    let id_current = req.body.id_post;
     if(req.jwtDecoded.data?.id && req.jwtDecoded.data?.role == 1){
-        let flag = await post_db.findActivePostOfBrandsLikeInfor(id_brand, req.jwtDecoded.data?.id);
+        let flag = await post_db.findActivePostOfBrandsLikeInfor(id_brand, req.jwtDecoded.data?.id, id_current);
         if (flag){
             if(flag.length <= 2)
                 return res.status(200).json(flag);
@@ -341,7 +342,7 @@ exports.kolGet2ActivePostOfBrand = async function(req, res) {
         return res.status(400).json(false);
     }
     else{
-        let flag = await post_unlogin_db.findActivePostOfBrands(id_brand);
+        let flag = await post_unlogin_db.findActivePostOfBrands(id_brand, id_current);
         if (flag){
             if(flag.length <= 2)
                 return res.status(200).json(flag);
@@ -357,6 +358,7 @@ exports.getAllActivePostOfBrand = async function(req, res) {
     let flag = await post_db.findAllActivePostsRecruitmentBrand(req.jwtDecoded.data.id);
     if (flag){
         //console.log("getAllActivePostOfBrand and count recruitment: ", flag);
+        //const sortedActivities = flag.sort((a, b) => b.write_time - a.write_time);
         return res.json(flag);
     }
     return res.status(400).json(false);

@@ -198,11 +198,20 @@ module.exports = {
             return null;
         return items[0];
     },
-    async findActivePostOfBrands(brand_id){
-        let items = await db('posts').where({
-                                        'id_writer': brand_id,
-                                        'state': 1
-                                    });
+    async findActivePostOfBrands(brand_id, id_current){
+        let items = [];
+        if(id_current){
+            items = await db('posts').where({
+                'id_writer': brand_id,
+                'state': 1
+            }).whereNot('id', id_current);
+        }
+        else{
+            items = await db('posts').where({
+                'id_writer': brand_id,
+                'state': 1
+            });
+        }
         for (i = 0; i< items.length; i++){
             let image_cover = await db('image_post')
                                     .where({

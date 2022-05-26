@@ -225,11 +225,21 @@ module.exports = {
                                     });
         return items;
     },
-    async findActivePostOfBrandsLikeInfor(brand_id, iduser){
-        let items = await db('posts').where({
-                                        'id_writer': brand_id,
-                                        'state': 1
-                                    });
+    async findActivePostOfBrandsLikeInfor(brand_id, iduser, id_current){
+        let items = [];
+        if(id_current){
+            items = await db('posts').where({
+                'id_writer': brand_id,
+                'state': 1
+            }).whereNot('id', id_current);
+        }
+        else{
+            items = await db('posts').where({
+                'id_writer': brand_id,
+                'state': 1
+            });
+        }
+        
         for (i = 0; i< items.length; i++){
             let image_cover = await db('image_post')
                                     .where({
