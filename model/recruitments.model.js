@@ -1,6 +1,22 @@
 const db = require('../utils/connectDB')
 const moment = require('moment');
 module.exports = {
+    async getKolsInfo(iduser){
+        const item = await db('kols').where({
+            id: iduser
+        });
+        if(item.length>0){
+            let result = {};
+            result.name = item[0].full_name;
+            result.id = item[0].id;
+            result.avatar = item[0].avatar;
+            result.role = '2';
+            return result
+        }
+    
+        return null;
+    },
+    
     async create_recruitment(new_recruit) {
         try {
             await db('recruitment').insert(new_recruit)
@@ -36,7 +52,10 @@ module.exports = {
             'id_post': id_post
         });
         if (items.length==0)
-            return null;
+            return [];
+        for (i = 0; i < items.length; i++){
+            items[i].kols_info = await this.getKolsInfo(items[i].id_kols);
+        }
         return items;
     },
 
