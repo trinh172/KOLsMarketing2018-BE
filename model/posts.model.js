@@ -257,7 +257,7 @@ module.exports = {
         let rows = await db('posts').where({
                                         'id_writer': brand_id,
                                         'state': 0
-                                    });
+                                    }).orderBy('write_time', 'desc');;
         let tempcount = 0;
         while (tempcount < rows.length){
             
@@ -455,6 +455,7 @@ module.exports = {
                 "id_writer": id_brand,
                 "state": '1'
             })
+            .orderBy('write_time', 'desc');
         let tempcount = 0;
         while (tempcount < rows.length){
             let count = await db('recruitment')
