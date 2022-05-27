@@ -28,6 +28,16 @@ module.exports = {
     
         return null;
     },
+    async getBrandName(iduser){
+        const item = await db('brands').where({
+            id: iduser
+        });
+        if(item.length>0){
+            return item[0].brand_name;
+        }
+    
+        return null;
+    },
     async getImageDetail(id_post){
         const item = await db('image_post').where({
             'id_post': id_post,
@@ -278,16 +288,7 @@ module.exports = {
         }
         
         for (i = 0; i< items.length; i++){
-            let image_cover = await db('image_post')
-                                    .where({
-                                        'id_post': items[i].id,
-                                        'type': '2'
-                                    })
-            if(image_cover.length > 0){
-                items[i].image_cover = image_cover[0].url;
-            }else{
-                items[i].image_cover = null;
-            }
+            items[i].image_cover = await this.getImageCover(items[i].id);
             let like = await db('kols_like_post')
                                 .where({
                                     'id_kol': iduser,
@@ -297,16 +298,8 @@ module.exports = {
                 items[i].likePost = true;
             else items[i].likePost = false;
             items[i].address = await this.getAddressName(items[i].address);
-            let brand = await db('brands')
-                            .where({
-                                'id': items[i].id_writer
-                            });
-            if (brand.length > 0){
-                items[i].brand_name = brand[0].brand_name;
-            }
-            else{
-                items[i].brand_name = "";
-            }
+            items[i].brand_name = await this.getBrandName(items[i].id_writer);
+            
         }
         return items;
     },
