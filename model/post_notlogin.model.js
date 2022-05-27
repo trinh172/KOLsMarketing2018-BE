@@ -259,6 +259,16 @@ module.exports = {
             }
             items[i].likePost = false;
             items[i].address = await this.getAddressName(items[i].address);
+            let brand = await db('brands')
+                            .where({
+                                'id': items[i].id_writer
+                            });
+            if (brand.length > 0){
+                items[i].brand_name = brand[0].brand_name;
+            }
+            else{
+                items[i].brand_name = "";
+            }
         }
         return items;
     },
