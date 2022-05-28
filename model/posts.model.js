@@ -35,8 +35,8 @@ module.exports = {
         if(item.length>0){
             return item[0].brand_name;
         }
-    
-        return null;
+        else
+            return null;
     },
     async getImageDetail(id_post){
         const item = await db('image_post').where({
@@ -50,7 +50,8 @@ module.exports = {
             }
             return result;
         }
-        return [];
+        else
+            return [];
     },
     async getImageCover(id_post){
         const item = await db('image_post').where({
@@ -60,15 +61,20 @@ module.exports = {
         if(item.length>0){
             return item[0].url;
         }
-        return [];
+        else
+            return null;
     },
 
     async getAddressName(id){
-        const item = await db('vn_tinhthanhpho').where({
-            'id': id
-        })
-        if(item.length>0){
-            return item[0].name;
+        if(id){
+            const item = await db('vn_tinhthanhpho').where({
+                'id': id
+            })
+            if(item.length>0){
+                return item[0].name;
+            }
+            else
+                return null;
         }
         return null;
     },
@@ -249,29 +255,42 @@ module.exports = {
                 'state': 1
             });
         }
-        
+        let result = [];
         for (i = 0; i< items.length; i++){
+            let temp = {};
+            temp.id = items[i]?.id;
+            temp.id_writer = items[i]?.id_writer;
+            temp.hot = items[i]?.hot;
+            temp.max_cast = items[i]?.max_cast;
+            temp.min_cast = items[i]?.min_cast;
+            temp.title = items[i]?.title;
             let image_cover = await db('image_post')
                                     .where({
-                                        'id_post': items[i].id,
+                                        'id_post': items[i]?.id,
                                         'type': '2'
                                     })
             if(image_cover.length > 0){
-                items[i].image_cover = image_cover[0].url;
+                temp.image_cover = image_cover[0].url;
             }else{
-                items[i].image_cover = null;
+                temp.image_cover = null;
             }
-            let like = await db('kols_like_post')
-                                .where({
-                                    'id_kol': iduser,
-                                    'id_post': items[i].id,
-                                });
-            if(like.length > 0)
-                items[i].likePost = true;
-            else items[i].likePost = false;
-            items[i].address = await this.getAddressName(items[i].address);
+            if(iduser && items[i]?.id){
+                let like = await db('kols_like_post')
+                .where({
+                    'id_kol': iduser,
+                    'id_post': items[i]?.id,
+                });
+                if(like.length > 0)
+                    temp.likePost = true;
+                else temp.likePost = false;
+            }
+            else temp.likePost = false;
+            
+            temp.write_time = moment(items[i]?.write_time).format("DD/MM/YYYY HH:mm");
+            temp.address = await this.getAddressName(items[i]?.address);
+            result.push(temp);
         }
-        return items;
+        return result;
     },
     //Lấy danh sách các bài đăng đề xuất, dựa theo top lượt xem
     async findSuggestPost(iduser, id_current){
@@ -286,22 +305,32 @@ module.exports = {
                 'state': 1
             }).orderBy('views', 'desc');
         }
-        
+        let result =[]
         for (i = 0; i< items.length; i++){
-            items[i].image_cover = await this.getImageCover(items[i].id);
-            let like = await db('kols_like_post')
-                                .where({
-                                    'id_kol': iduser,
-                                    'id_post': items[i].id,
-                                });
-            if(like.length > 0)
-                items[i].likePost = true;
-            else items[i].likePost = false;
-            items[i].address = await this.getAddressName(items[i].address);
-            items[i].brand_name = await this.getBrandName(items[i].id_writer);
-            
+            let temp = {};
+            temp.id = items[i]?.id;
+            temp.id_writer = items[i]?.id_writer;
+            temp.hot = items[i]?.hot;
+            temp.max_cast = items[i]?.max_cast;
+            temp.min_cast = items[i]?.min_cast;
+            temp.title = items[i]?.title;
+            temp.image_cover = await this.getImageCover(items[i]?.id);
+            if(iduser && items[i]?.id){
+                let like = await db('kols_like_post')
+                .where({
+                    'id_kol': iduser,
+                    'id_post': items[i]?.id,
+                });
+                if(like.length > 0)
+                    temp.likePost = true;
+                else temp.likePost = false;
+            }
+            else temp.likePost = false;
+            temp.address = await this.getAddressName(items[i]?.address);
+            temp.brand_name = await this.getBrandName(items[i]?.id_writer);
+            result.push(temp)
         }
-        return items;
+        return result;
     },
 
     async findUnactivePostOfBrands(brand_id){
