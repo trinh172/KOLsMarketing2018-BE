@@ -3,3 +3,4 @@ node_modules/
 jspm_packages/
 public/images/posts/
 utils/connectDB.js
+.env
