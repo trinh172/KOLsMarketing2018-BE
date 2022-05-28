@@ -586,7 +586,8 @@ module.exports = {
         let result = [];
         let tempcount = 0;
         while (tempcount < rows.length){
-            let item = await this.findPostAndBrandByIDPost(rows[tempcount].id_post, idkol)
+            let item = await this.findPostAndBrandByIDPost(rows[tempcount].id_post, idkol);
+            item.state_recruitment = rows[tempcount].state;
             if(item != null){
                 result.push(item);
             }
