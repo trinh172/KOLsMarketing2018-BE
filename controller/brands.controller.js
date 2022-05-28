@@ -213,6 +213,7 @@ exports.update_bio_link = async function(req, res) {
 exports.brandLikeKol = async function(req, res) {
     let id_kol = req.body.id_kol;
     if(id_kol){
+        let flag = await brands_db.brandLikeKol(req.jwtDecoded.data.id, id_kol);
         if (flag){
             console.log("Check like kol successfully: ", flag);
             return res.json(flag);
