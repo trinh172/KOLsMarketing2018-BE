@@ -8,9 +8,9 @@ DROP TABLE IF EXISTS image_job;
 DROP TABLE IF EXISTS job_describe;
 DROP TABLE IF EXISTS job_comment;
 DROP TABLE IF EXISTS job_member;
+DROP TABLE IF EXISTS brands_like_kols;
 DROP TABLE IF EXISTS kols_like_brands;
 DROP TABLE IF EXISTS kols_like_post;
-DROP TABLE IF EXISTS brands_like_kols;
 DROP TABLE IF EXISTS image_recruitment;
 DROP TABLE IF EXISTS image_post;
 DROP TABLE IF EXISTS image_user;
@@ -238,7 +238,7 @@ CREATE TABLE "kols_like_post" (
 ;
 
 -- ----------------------------
--- Table structure for PostCate
+-- Table structure for kols_like_brands
 -- ----------------------------
 CREATE TABLE "kols_like_brands" (
   "id_kol" int4 NOT NULL,
@@ -435,7 +435,8 @@ CREATE TABLE "kol_social_account" (
     ),
   "id_kol" int4 NOT NULL,
   "state" char NOT NULL DEFAULT '1',
-  "account_token" varchar,
+  "id_user_social" varchar(150),
+  "account_token" varchar(255),
   "account_name" varchar(150),
   "time_expired" timestamp,
   "create_time" timestamp NOT NULL,
@@ -489,11 +490,7 @@ CREATE TABLE "kol_social_post" (
   "id_job_describe" int4 NOT NULL,
   "id_post_social" varchar(15),
   "url_image" varchar(150),
-  "url_image" varchar(150),
   "url_post_social" varchar(150),
-  "count_like" int4 NOT NULL DEFAULT 0,
-  "count_share" int4 NOT NULL DEFAULT 0,
-  "count_comment" int4 NOT NULL DEFAULT 0,
   "state" char NOT NULL DEFAULT '1',
   "content" varchar,
   "type_social" char NOT NULL DEFAULT '1',
@@ -528,6 +525,12 @@ INSERT INTO kols OVERRIDING SYSTEM VALUE VALUES (2, 'Lan Anh', 'kol2@gmail.com',
 INSERT INTO kols OVERRIDING SYSTEM VALUE VALUES (3, 'Ngọc Trúc', 'kol3@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', null, null, null, null, null, null, null, null, '2022-04-21 13:15:42.579', '1', -1);
 INSERT INTO kols OVERRIDING SYSTEM VALUE VALUES (4, 'Trần Nam', 'kol4@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', null, null, null, null, null, null, null, null, '2022-04-21 13:15:42.579', '1', -1);
 INSERT INTO kols OVERRIDING SYSTEM VALUE VALUES (5, 'Phương Thảo', 'kol5@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', null, null, null, null, null, null, null, null, '2022-04-21 13:15:42.579', '1', -1);
+
+INSERT INTO card_kols VALUES (1, 1, 1, 1, null, null, 0, 1);
+INSERT INTO card_kols VALUES (1, 1, 1, 1, null, null, 0, 2);
+INSERT INTO card_kols VALUES (1, 1, 1, 1, null, null, 0, 3);
+INSERT INTO card_kols VALUES (1, 1, 1, 1, null, null, 0, 4);
+INSERT INTO card_kols VALUES (1, 1, 1, 1, null, null, 0, 5);
 
 INSERT INTO brands OVERRIDING SYSTEM VALUE VALUES (1,'brand1@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', 'Trần Huy', 'Trà sữa Huy Tea', '79', '1111111111',  '2022-04-21 13:15:42.579', '1', null, null, null, '1', -1);
 INSERT INTO brands OVERRIDING SYSTEM VALUE VALUES (2,'brand2@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', 'Ngọc Nga', 'Shop quần áo Ngọc Nga', '36', '2222222222',  '2022-04-21 13:15:42.579', '1', null, null, null, '1', -1);

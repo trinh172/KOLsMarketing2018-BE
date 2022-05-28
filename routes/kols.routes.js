@@ -23,4 +23,5 @@ router.post('/like-brand', auth_middle.isKOLs, kols.kolsLikeBrand);
 router.get('/get-brand-user-like', auth_middle.isKOLs, kols.getAllBrandsKolsLikes);
 router.delete('/unlike-brand', auth_middle.isKOLs, kols.kolsUnlikeBrand);
 
+router.post('/kol-info', kols.brand_get_kol_info);
 module.exports = router;

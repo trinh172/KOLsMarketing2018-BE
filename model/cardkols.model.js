@@ -33,6 +33,36 @@ module.exports = {
                     items[i].address = detail[0]?.address;
                 if(items[i].email == '1')
                     items[i].email = detail[0]?.email;
+                items[i].likeKol = false;
+            }
+            return items;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+
+    async getAllCardKolsLikeInfo(id_brand){
+        try {
+            let items = await db('card_kols').where("state", "1");
+            for (i = 0; i < items.length; i++){
+                let detail = await db("kols").where('id', items[i].id_kol);
+                if(items[i].phone == '1')
+                    items[i].phone = detail[0]?.phone;
+                if(items[i].gender == '1')
+                    items[i].gender = detail[0]?.gender;    
+                if(items[i].address == '1')
+                    items[i].address = detail[0]?.address;
+                if(items[i].email == '1')
+                    items[i].email = detail[0]?.email;
+                let like = await db("brands_like_kols").where({
+                    id_brand: id_brand,
+                    id_kol: items[i].id_kol
+                })
+                items[i].likeKol = false;
+                if (like.length > 0){
+                    items[i].likeKol = true;
+                }
             }
             return items;
         } catch (e) {

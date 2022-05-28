@@ -14,6 +14,13 @@ exports.get_detail_card = async function(req, res) {
 
 exports.get_all_card = async function(req, res) {
     //Get infor from form at FE 
+    if(req.jwtDecoded?.data?.id && req.jwtDecoded?.data?.role == "2"){
+        let flag = await cardkols_db.getAllCardKolsLikeInfo(req.jwtDecoded?.data?.id);
+        if (flag){
+            return res.status(200).json(flag);
+        }
+        return res.status(404).json(null);
+    }
     let flag = await cardkols_db.getAllCardKols();
     if (flag){
         return res.status(200).json(flag);

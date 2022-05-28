@@ -209,3 +209,35 @@ exports.update_bio_link = async function(req, res) {
     
     return res.status(400).json(false);
 }
+
+exports.brandLikeKol = async function(req, res) {
+    let id_kol = req.body.id_kol;
+    if(id_kol){
+        if (flag){
+            console.log("Check like kol successfully: ", flag);
+            return res.json(flag);
+        }
+    }
+    return res.status(400).json(false);
+}
+
+exports.getAllKolsBrandLike = async function(req, res) {
+    let flag = await brands_db.findAllKolsBrandLike(req.jwtDecoded.data.id)
+    if (flag){
+        console.log("getAllKolsBrandLike: ", flag);
+        return res.json(flag);
+    }
+    return res.status(400).json(false);
+}
+
+exports.brandUnlikeKols = async function(req, res) {
+    let id_kol = req.body.id_kol;
+    if(id_kol){
+        let flag = await brands_db.brandUnlikeKol(req.jwtDecoded.data.id, id_kol);
+        if (flag){
+            console.log("Check unlike kol successfully: ", flag);
+            return res.json(flag);
+        }
+    }
+    return res.status(400).json(false);
+}

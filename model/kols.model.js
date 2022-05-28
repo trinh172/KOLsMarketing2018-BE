@@ -283,4 +283,93 @@ module.exports = {
             return false;
         }
     },
+    async brandGetKolsInfo(ID, id_brand){
+        if(id_brand){
+            let items = await db('kols').where('id', ID);
+            if (items.length==0)
+                return null;
+            items[0].password = 'has-password';
+            items[0].bio_url = [];
+            items[0].detail_images = [];
+
+            let url_detail = await db("image_user").where({
+                id_user: ID,
+                role: '1',
+                type: 2
+            });
+            if(url_detail.length > 0){
+                for(i = 0; i< url_detail.length; i++){
+                    items[0].detail_images.push(url_detail[i].url);
+                }
+            };
+            let bio = await db("bio_url").where({
+                id_user: ID,
+                role: '2'
+            });
+            if(bio.length > 0){
+                for(i = 0; i< bio.length; i++){
+                    items[0].bio_url.push(bio[i].url);
+                }
+            };
+            if (items[0].address != null){
+                let address = await db("vn_tinhthanhpho").where({
+                    id: items[0].address
+                });
+                if(address.length > 0){
+                    items[0].address = address[0].name;
+                };
+            }
+            
+            items[0].create_time = moment(items[0].create_time).format("DD/MM/YYYY HH:mm:ss");
+            items[0].role = '1';
+            let like = await db('brands_like_kols')
+                .where({
+                    'id_kol': ID,
+                    'id_brand':  id_brand,
+                });
+            if(like.length > 0)
+                items[0].likeKol = true;
+            else items[0].likeKol = false;
+            return items[0];
+        }
+        let items = await db('kols').where('id', ID);
+        if (items.length==0)
+            return null;
+        items[0].password = 'has-password';
+        items[0].bio_url = [];
+        items[0].detail_images = [];
+
+        let url_detail = await db("image_user").where({
+            id_user: ID,
+            role: '1',
+            type: 2
+        });
+        if(url_detail.length > 0){
+            for(i = 0; i< url_detail.length; i++){
+                items[0].detail_images.push(url_detail[i].url);
+            }
+        };
+        let bio = await db("bio_url").where({
+            id_user: ID,
+            role: '2'
+        });
+        if(bio.length > 0){
+            for(i = 0; i< bio.length; i++){
+                items[0].bio_url.push(bio[i].url);
+            }
+        };
+        if (items[0].address != null){
+            let address = await db("vn_tinhthanhpho").where({
+                id: items[0].address
+            });
+            if(address.length > 0){
+                items[0].address = address[0].name;
+            };
+        }
+        
+        items[0].create_time = moment(items[0].create_time).format("DD/MM/YYYY HH:mm:ss");
+        items[0].role = '1';
+        items[0].likeKol = false;
+        return items[0];
+    },
 }

@@ -9,6 +9,46 @@ module.exports = {
         return items
     },
 
+    async getKolInfo(ID){
+        let items = await db('kols').where('id', ID);
+        if (items.length==0)
+            return null;
+        items[0].password = 'has-password';
+        items[0].detail_images = [];
+        let url_detail = await db("image_user").where({
+            id_user: ID,
+            role: '1',
+            type: 2
+        });
+        if(url_detail.length > 0){
+            for(i = 0; i< url_detail.length; i++){
+                items[0].detail_images.push(url_detail[i].url);
+            }
+        };
+        if (items[0].address != null){
+            let address = await db("vn_tinhthanhpho").where({
+                id: items[0].address
+            });
+            if(address.length > 0){
+                items[0].address = address[0].name;
+            };
+        }
+        items[0].bio_url = [];
+        let bio = await db("bio_url").where({
+            id_user: ID,
+            role: '1'
+        });
+        if(bio.length > 0){
+            for(i = 0; i< bio.length; i++){
+                items[0].bio_url.push(bio[i].url);
+            }
+        };
+        items[0].create_time = moment(items[0].create_time).format("DD/MM/YYYY HH:mm:ss");
+        items[0].role = '1';
+        
+        return items[0];
+    },
+
     async findBrandsByID(ID){
         let items = await db('brands').where('id', ID);
         if (items.length==0)
@@ -267,6 +307,48 @@ module.exports = {
     async updatePassword(id, password){
         try {
             await db('brands').where('id', id).update({'password': password});
+            return true
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+     //Find all brands that user like, sap xep theo thu tu ma user like
+     async findAllKolsBrandLike(id_brand) {
+        const rows = await db('brands_like_kols')
+            .where({
+                id_brand: id_brand,
+            })
+        let result = [];
+        let tempcount = 0;
+        while (tempcount < rows.length){
+            let item = await this.getKolInfo(rows[tempcount].id_kol);
+            if(item != null){
+                result.push(item);
+            }
+            tempcount = tempcount + 1;
+        }
+        return result;
+    },
+
+    async brandLikeKol(id_brand, id_kol) {
+        try {
+            await db('brands_like_kols').insert({
+                'id_brand': id_brand,
+                'id_kol': id_kol
+            })
+            return true
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+    async brandUnlikeKol(id_brand, id_kol) {
+        try {
+            await db('brands_like_kols').where({
+                'id_brand': id_brand,
+                'id_kol': id_kol
+            }).del();
             return true
         } catch (e) {
             console.log(e);
