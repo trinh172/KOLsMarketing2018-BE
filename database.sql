@@ -427,20 +427,14 @@ ALTER TABLE "job_member" ADD CONSTRAINT "jobmember_post" FOREIGN KEY ("id_post")
 -- type_schedule: 1: có lên lịch, 2: đăng ngay (ko lên lịch)
 -- type_social: mạng xã hội (hiện tại support FB): 1 (Facebook)
 CREATE TABLE "kol_social_account" (
-   "id" int4 NOT NULL GENERATED ALWAYS AS IDENTITY (
-    INCREMENT 1
-    MINVALUE  1
-    MAXVALUE 2147483647
-    START 30
-    ),
   "id_kol" int4 NOT NULL,
   "state" char NOT NULL DEFAULT '1',
-  "id_user_social" varchar(150),
+  "id_user_social" varchar(50),
   "account_token" varchar(255),
   "account_name" varchar(150),
   "time_expired" timestamp,
   "create_time" timestamp NOT NULL,
-  PRIMARY KEY ("id")
+  PRIMARY KEY ("id_user_social")
 ) 
 ;
 ALTER TABLE "kol_social_account" ADD CONSTRAINT "kol_social_account_kol" FOREIGN KEY ("id_kol") REFERENCES "kols" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -459,9 +453,9 @@ CREATE TABLE "kol_social_page" (
     START 30
     ),
   "id_kol" int4 NOT NULL,
-  "id_account" int4 NOT NULL,
+  "id_user_account" varchar(50),
   "state" char NOT NULL DEFAULT '1',
-  "page_token" varchar,
+  "page_token" varchar(255),
   "id_page_social" varchar(50),
   "page_name" varchar(150),
   "time_expired" timestamp,
@@ -470,7 +464,7 @@ CREATE TABLE "kol_social_page" (
 ) 
 ;
 ALTER TABLE "kol_social_page" ADD CONSTRAINT "kol_social_page_kol" FOREIGN KEY ("id_kol") REFERENCES "kols" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE "kol_social_page" ADD CONSTRAINT "kol_social_page_account" FOREIGN KEY ("id_account") REFERENCES "kol_social_account" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "kol_social_page" ADD CONSTRAINT "kol_social_page_account" FOREIGN KEY ("id_user_account") REFERENCES "kol_social_account" ("id_user_social") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- ----------------------------
 -- Table structure for kol_social_post
@@ -487,8 +481,9 @@ CREATE TABLE "kol_social_post" (
     ),
   "id_kol" int4 NOT NULL,
   "id_page" int4 NOT NULL,
-  "id_job_describe" int4 NOT NULL,
-  "id_post_social" varchar(15),
+  "id_page_social" varchar(50),
+  "id_job_describe" int4,
+  "id_post_social" varchar(100),
   "url_image" varchar(150),
   "url_post_social" varchar(150),
   "state" char NOT NULL DEFAULT '1',
