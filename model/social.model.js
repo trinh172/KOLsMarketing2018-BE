@@ -79,6 +79,21 @@ module.exports = {
         }
     },
 
+    async getListDraftOfKol(id_kol) {
+        try {
+            let items = await db('kol_social_post').where({
+                id_kol: id_kol,
+                state: '0'
+            });
+            if (items.length > 0)
+                return items;
+            return null;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+
     async getUserSocialInfoSecurity(id_kol) {
         try {
             let today = moment();
@@ -102,6 +117,35 @@ module.exports = {
     async getSocialByPostSocialID(id_post_social) {
         try {
             let items = await db('kol_social_post').where("id_post_social", id_post_social);
+            if (items.length > 0)
+                return items[0];
+            return null;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+
+    async getDraftPostByCreateTimeIdKol(create_time, id_kol) {
+        try {
+            let items = await db('kol_social_post').where({
+                create_time: create_time,
+                id_kol: id_kol,
+            });
+            if (items.length > 0)
+                return items[0];
+            return null;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+
+    async getDraftPostByID(id) {
+        try {
+            let items = await db('kol_social_post').where({
+                id: id,
+            });
             if (items.length > 0)
                 return items[0];
             return null;
@@ -152,6 +196,17 @@ module.exports = {
             return false;
         }
     },
+
+    async updatePostByID(id, newupdate) {
+        try {
+            let items = await db('kol_social_post').where("id", id).update(newupdate);
+            return items;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+
     async addNewPostSocial(post) {
         try {
             let items = await db('kol_social_post').insert(post);
@@ -161,9 +216,10 @@ module.exports = {
             return false;
         }
     },
-    async delete_job(id_job){
+
+    async deletePostByID(id){
         try {
-            await db('job_describe').where("id", id_job).del();
+            await db('kol_social_post').where("id", id).del();
             return true
         } catch (e) {
             console.log(e);
