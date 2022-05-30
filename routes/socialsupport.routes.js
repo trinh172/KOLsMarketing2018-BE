@@ -6,6 +6,8 @@ router.post('/get-user-info',social.get_user_social_info);
 router.post('/get-1page-info',social.save_user_info);
 router.post('/get-list-page-info',social.get_list_page_of_kol);
 router.post('/get-list-draft-of-kol',social.get_list_draft_of_kol);
+router.post('/get-list-publish-post-done-of-kol',social.get_list_publish_post_done);
+router.post('/get-list-publish-post-wait-of-kol',social.get_list_publish_post_waiting);
 
 router.post('/validate-user',social.save_user_info);
 router.post('/validate-page',social.save_page_info);

@@ -60,7 +60,7 @@ module.exports = {
 
     async getListPageSecurityByIDKols(id_kol) {
         try {
-            let today = moment();
+            let today = moment().add(7, 'hours');
             let items = await db('kol_social_page').where({
                 "id_kol": id_kol,
             }).andWhere('time_expired', '>=', today);
@@ -85,8 +85,44 @@ module.exports = {
                 id_kol: id_kol,
                 state: '0'
             });
-            if (items.length > 0)
+            if (items)
                 return items;
+            return null;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+
+    async getListPublishPostDone(id_kol) {
+        try {
+            let today = moment().add(7, 'hours');
+
+            let publish_post_done = await db('kol_social_post').where({
+                id_kol: id_kol,
+            }).andWhere('schedule_time', '<=', today).whereNot("type_schedule", "0").orderBy('schedule_time', 'desc');
+            //console.log("publish_post_done: ", publish_post_done);
+
+            if (publish_post_done)
+                return publish_post_done;
+            return null;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+
+    async getListPostScheduleWaiting(id_kol) {
+        try {
+            let today = moment().add(7, 'hours');
+
+            let publish_post_waiting = await db('kol_social_post').where({
+                id_kol: id_kol,
+            }).andWhere('schedule_time', '>', today).whereNot("type_schedule", "0").orderBy('schedule_time', 'desc');
+            //console.log("publish_post_waiting: ", publish_post_waiting);
+
+            if (publish_post_waiting)
+                return publish_post_waiting;
             return null;
         } catch (e) {
             console.log(e);
@@ -96,7 +132,7 @@ module.exports = {
 
     async getUserSocialInfoSecurity(id_kol) {
         try {
-            let today = moment();
+            let today = moment().add(7, 'hours');
             let items = await db('kol_social_account').where("id_kol", id_kol).andWhere('time_expired', '>=', today);
             let result = [];
             for (i = 0; i < items.length; i++){

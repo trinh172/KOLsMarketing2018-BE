@@ -128,9 +128,16 @@ exports.post_status_immediately = async function(req, res) {
                 "content": postText,
                 "type_social": '1',
                 "type_schedule": '2',
-                "schedule_time": null,
+                "schedule_time": moment().add(7, 'hours'),
                 "create_time": moment().add(7, 'hours'),
             }
+            if(image_url == null){
+                newPost.url_post_social = "https://facebook.com/" +  response?.data?.id;
+                const idArray = response?.data?.id.split("_");
+                response.data.id = idArray[1];
+                newPost.id_post_social = idArray[1];
+            }
+
             let addpost = await social_db.addNewPostSocial(newPost);
             if(addpost){
                 let returnpost = await social_db.getSocialByPostSocialID(response?.data?.id);
@@ -153,6 +160,7 @@ exports.post_schedule = async function(req, res) {
     let fbPageAccessToken = await social_db.getPageAccessByIDpageKol(id_kol, id_page_social);
     if(fbPageAccessToken && id_page_social){
         let req_url = "";
+        console.log("Image: ", image_url);
         if (image_url){
             req_url = `https://graph.facebook.com/v9.0/${id_page_social}/photos?access_token=${fbPageAccessToken}&published=false&scheduled_publish_time=${schedule_time}&message=${postText}&url=${image_url}`
         }
@@ -165,6 +173,7 @@ exports.post_schedule = async function(req, res) {
         });
         if(response?.data?.id){
             console.log(" schedule post: ", response.data);
+            
             let newPost = {
                 "id_kol": id_kol,
                 "id_page": id_page,
@@ -172,13 +181,24 @@ exports.post_schedule = async function(req, res) {
                 "id_job_describe": null,
                 "id_post_social": response?.data?.id,
                 "url_image": image_url,
-                "url_post_social": "https://facebook.com/"+response?.data?.id,
+                "url_post_social": "https://facebook.com/"+response?.data?.post_id,
                 "state": '1',
                 "content": postText,
                 "type_social": '1',
                 "type_schedule": '1',
                 "schedule_time": new Date(schedule_time*1000).toLocaleString(),
                 "create_time": moment().add(7, 'hours'),
+            }
+            if(image_url == null){
+                newPost.url_post_social = "https://facebook.com/" +  response?.data?.id;
+                const idArray = response?.data?.id.split("_");
+                response.data.id = idArray[1];
+                newPost.id_post_social = idArray[1];
+            }
+            if(image_url){
+                if (response?.data?.post_id == undefined){
+                    newPost.url_post_social = "https://facebook.com/" + id_page_social + "_" + response?.data?.id;
+                }
             }
             let addpost = await social_db.addNewPostSocial(newPost);
             if(addpost){
@@ -218,9 +238,16 @@ exports.publish_draft_immediately = async function(req, res) {
                     "state": '2',
                     "type_social": '1',
                     "type_schedule": '2',
-                    "schedule_time": null,
+                    "schedule_time": moment().add(7, 'hours'),
                     "create_time": moment().add(7, 'hours'),
                 }
+                if(detail_post_draft.url_image == null){
+                    update.url_post_social = "https://facebook.com/" +  response?.data?.id;
+                    const idArray = response?.data?.id.split("_");
+                    response.data.id = idArray[1];
+                    update.id_post_social = idArray[1];
+                }
+                
                 let updatepost = await social_db.updatePostByID(id, update);
                 if(updatepost){
                     let returnpost = await social_db.getSocialByPostSocialID(response?.data?.id);
@@ -256,12 +283,23 @@ exports.publish_draft_schedule = async function(req, res) {
                 console.log(" schedule draft post: ", response.data);
                 let update = {
                     "id_post_social": response?.data?.id,
-                    "url_post_social": "https://facebook.com/"+response?.data?.id,
+                    "url_post_social": "https://facebook.com/"+response?.data?.post_id,
                     "state": '1',
                     "type_social": '1',
                     "type_schedule": '1',
                     "schedule_time": new Date(schedule_time*1000).toLocaleString(),
                     "create_time": moment().add(7, 'hours'),
+                }
+                if(detail_post_draft.url_image == null){
+                    update.url_post_social = "https://facebook.com/" +  response?.data?.id;
+                    const idArray = response?.data?.id.split("_");
+                    response.data.id = idArray[1];
+                    update.id_post_social = idArray[1];
+                }
+                if(detail_post_draft.url_image){
+                    if (response?.data?.post_id == undefined){
+                        update.url_post_social = "https://facebook.com/" + detail_post_draft.id_page_social + "_" + response?.data?.id;
+                    }
                 }
                 let updatepost = await social_db.updatePostByID(id, update);
                 if(updatepost){
@@ -286,13 +324,7 @@ exports.create_draft = async function(req, res) {
     let create_time = moment().add(7, 'hours');
     let fbPageAccessToken = await social_db.getPageAccessByIDpageKol(id_kol, id_page_social);
     if(fbPageAccessToken && id_page_social){
-        let req_url = "";
-        if (image_url){
-            req_url = `https://graph.facebook.com/v9.0/${id_page_social}/photos?access_token=${fbPageAccessToken}&published=true&message=${postText}&url=${image_url}`
-        }
-        else{
-            req_url = `https://graph.facebook.com/v9.0/${id_page_social}/feed?access_token=${fbPageAccessToken}&published=true&message=${postText}`
-        }
+        
         let newPost = {
             "id_kol": id_kol,
             "id_page": id_page,
@@ -325,6 +357,43 @@ exports.get_list_draft_of_kol = async function(req, res) {
     console.log(" list draft: ", list_draft)
     if(list_draft){
         return res.status(200).json(list_draft)
+    }
+    return res.status(403).json(false);
+}
+
+exports.get_list_publish_post_done = async function(req, res) {
+    let id_kol = req.body?.id_kol;
+    
+    let list_done = await social_db.getListPublishPostDone(id_kol);
+    //console.log(" list getListPublishPostDone: ", list_done)
+    if(list_done.length > 0){
+        let fbPageAccessToken = await social_db.getPageAccessByIDpageKol(id_kol, list_done[0].id_page_social );
+        for(i = 0; i < list_done.length; i++){
+            let req_url = `https://graph.facebook.com/v9.0/${list_done[i].id_page_social}_${list_done[i].id_post_social}?access_token=${fbPageAccessToken}&fields=comments.limit(0).summary(true),likes.limit(0).summary(true)`;
+            let response = await axios({
+                url: encodeURI(req_url),
+                method: "get",
+            });
+
+            if(response?.data){
+                list_done[i].count_like = response.data.likes.summary.total_count;
+                list_done[i].count_comment = response.data.comments.summary.total_count;
+            }
+        }
+    }
+    if(list_done){
+        return res.status(200).json(list_done)
+    }
+    return res.status(403).json(false);
+}
+
+exports.get_list_publish_post_waiting = async function(req, res) {
+    let id_kol = req.body?.id_kol;
+    
+    let list_wait = await social_db.getListPostScheduleWaiting(id_kol);
+    console.log(" list getListPostScheduleWaiting: ", list_wait)
+    if(list_wait){
+        return res.status(200).json(list_wait)
     }
     return res.status(403).json(false);
 }
