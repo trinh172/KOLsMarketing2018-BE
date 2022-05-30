@@ -485,6 +485,7 @@ CREATE TABLE "kol_social_post" (
   "id_job_describe" int4,
   "id_post_social" varchar(100),
   "url_image" varchar(150),
+  "url_video" varchar(150),
   "url_post_social" varchar(150),
   "state" char NOT NULL DEFAULT '1',
   "content" varchar,

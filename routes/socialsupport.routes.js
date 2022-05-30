@@ -15,6 +15,8 @@ router.post('/save-user-info',social.save_user_info);
 
 router.post('/post-social-immediately',social.post_status_immediately);
 router.post('/post-social-schedule',social.post_schedule);
+router.post('/post-video-immediately',social.post_video);
+
 router.post('/create-draft-post',social.create_draft);
 router.post('/publish-a-draft-post-immediately',social.publish_draft_immediately);
 router.post('/publish-a-draft-post-schedule',social.publish_draft_schedule);
