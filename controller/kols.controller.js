@@ -42,12 +42,19 @@ exports.edit_description = async function(req, res) {
 
 exports.edit_password = async function(req, res) {
     //Get infor from form at FE 
-    const hash = bcrypt.hashSync(req.body.password, 10);
-    let flag = await kols_db.updatePassword(req.jwtDecoded.data.id, hash);
-    if (flag){
-        return res.status(200).json("Đổi mật khẩu thành công");
+    const ret = bcrypt.compareSync(req.body.old_password, req.jwtDecoded.data.password);
+    console.log(ret);
+    if (ret===false){
+      console.log("Password cũ không đúng")
+      return res.status(403).json({'error':'Password cũ không đúng'});
     }
-    
+    if(ret === true){
+        const hash = bcrypt.hashSync(req.body.password, 10);
+        let flag = await kols_db.updatePassword(req.jwtDecoded.data.id, hash);
+        if (flag){
+            return res.status(200).json("Đổi mật khẩu thành công");
+        } 
+    }
     return res.status(400).json(false);
 }
 
