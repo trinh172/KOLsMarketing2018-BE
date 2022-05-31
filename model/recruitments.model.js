@@ -76,7 +76,13 @@ module.exports = {
             .update({
                 'state': 3
             });
-            return true
+            let detail = await db('recruitment').where({
+                'id': id_recruit
+            });
+            if (detail.length > 0){
+                return detail[0]
+            }
+            else return null;
         } catch (e) {
             console.log(e);
             return false;
