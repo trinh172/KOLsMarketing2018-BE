@@ -25,15 +25,37 @@ module.exports = {
             let items = await db('card_kols').where("state", "1");
             for (i = 0; i < items.length; i++){
                 let detail = await db("kols").where('id', items[i].id_kol);
+
                 if(items[i].phone == '1')
                     items[i].phone = detail[0]?.phone;
+                else items[i].phone = null;
+
                 if(items[i].gender == '1')
-                    items[i].gender = detail[0]?.gender;    
+                    items[i].gender = detail[0]?.gender;
+                else items[i].gender = null;
+
                 if(items[i].address == '1')
-                    items[i].address = detail[0]?.address;
+                {
+                    if(detail[0]?.address){
+                        let addressname = await db("vn_tinhthanhpho").where({
+                            id: detail[0]?.address
+                        });
+                        if(addressname.length > 0){
+                            items[i].address = addressname[0].name;
+                        }
+                        else items[i].address = null;
+                    }
+                    else items[i].address = null;
+                }
+                else items[i].address = null;
+
                 if(items[i].email == '1')
                     items[i].email = detail[0]?.email;
+                else items[i].email = null;
+
                 items[i].likeKol = false;
+                items[i].full_name = detail[0].full_name;
+                items[i].avatar = detail[0].avatar;
             }
             return items;
         } catch (e) {
@@ -47,14 +69,34 @@ module.exports = {
             let items = await db('card_kols').where("state", "1");
             for (i = 0; i < items.length; i++){
                 let detail = await db("kols").where('id', items[i].id_kol);
+
                 if(items[i].phone == '1')
                     items[i].phone = detail[0]?.phone;
+                else items[i].phone = null;
+
                 if(items[i].gender == '1')
-                    items[i].gender = detail[0]?.gender;    
+                    items[i].gender = detail[0]?.gender;
+                else items[i].gender = null;
+
                 if(items[i].address == '1')
-                    items[i].address = detail[0]?.address;
+                {
+                    if(detail[0]?.address){
+                        let addressname = await db("vn_tinhthanhpho").where({
+                            id: detail[0]?.address
+                        });
+                        if(addressname.length > 0){
+                            items[i].address = addressname[0].name;
+                        }
+                        else items[i].address = null;
+                    }
+                    else items[i].address = null;
+                }
+                else items[i].address = null;
+
                 if(items[i].email == '1')
                     items[i].email = detail[0]?.email;
+                else items[i].email = null;
+
                 let like = await db("brands_like_kols").where({
                     id_brand: id_brand,
                     id_kol: items[i].id_kol
@@ -63,6 +105,8 @@ module.exports = {
                 if (like.length > 0){
                     items[i].likeKol = true;
                 }
+                items[i].full_name = detail[0].full_name;
+                items[i].avatar = detail[0].avatar;
             }
             return items;
         } catch (e) {
