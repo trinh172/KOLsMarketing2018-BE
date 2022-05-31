@@ -48,6 +48,8 @@ var cateRouter = require('./routes/categories.routes');
 var messRouter = require('./routes/message.routes');
 var recruitRouter = require('./routes/recruitment.routes');
 var cardkolRouter = require('./routes/cardkols.routes');
+var jobRouter = require('./routes/job.routes');
+var notiRouter = require('./routes/notifications.routes');
 var socialRouter = require('./routes/socialsupport.routes');
 
 const AuthMiddleWare = require("./middleware/auth_middleware");
@@ -100,6 +102,8 @@ app.use('/message', messRouter);
 app.use('/posts', postRouter);
 app.use('/recruitments', recruitRouter);
 app.use('/cardkols', cardkolRouter);
+app.use('/jobs', jobRouter);
+app.use('/notifications', notiRouter);
 app.use('/social', socialRouter);
 
 if (!fs.existsSync("./public/images/posts")) {
