@@ -401,6 +401,47 @@ exports.create_draft = async function(req, res) {
     return res.status(403).json(false);
 }
 
+exports.update_draft = async function(req, res) {
+
+    let postText = req.body?.postText;
+    let id_page_social = req.body?.id_page_social;
+    let image_url = req.body?.image_url;
+    let video_url = req.body?.video_url;
+    let id_page = req.body?.id_page;
+    let id = req.body?.id_page;
+    let create_time = moment().add(7, 'hours');
+
+    let update = {
+        "id_page": id_page,
+        "id_page_social": id_page_social,
+        "id_job_describe": null,
+        "url_image": image_url,
+        "url_video": video_url,
+        "content": postText,
+        "create_time": create_time,
+    }
+    let detail_post_draft = await social_db.getDraftPostByID(id);
+    if (detail_post_draft){
+        let updatepost = await social_db.updatePostByID(id, update);
+        if(updatepost){
+            let returnpost = await social_db.getSocialByPostSocialID(response?.data?.id);
+            return res.status(200).json(returnpost)
+        }
+        return res.status(400).json(false);
+    }
+    return res.status(403).json(false);
+}
+
+exports.delete_post = async function(req, res) {
+    
+    let id = req.body?.id;
+    let delPost = await social_db.deletePostByID(id);
+    if (delPost){
+        return res.status(200).json(true);
+    }
+    return res.status(403).json(false);
+}
+
 exports.get_list_draft_of_kol = async function(req, res) {
     let id_kol = req.body?.id_kol;
     

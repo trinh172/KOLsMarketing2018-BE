@@ -20,4 +20,7 @@ router.post('/post-video-immediately',social.post_video);
 router.post('/create-draft-post',social.create_draft);
 router.post('/publish-a-draft-post-immediately',social.publish_draft_immediately);
 router.post('/publish-a-draft-post-schedule',social.publish_draft_schedule);
+
+router.post('/update-draft-post',social.update_draft);
+router.delete('/delete-a-post',social.delete_post);
 module.exports = router;
