@@ -33,6 +33,21 @@ module.exports = {
         }
         return null;
     },
+
+    async getImagesOfJob(id_job){
+        const items = await db('image_job').where({
+            id_job: id_job
+        });
+        if(items.length>0){
+            let result = [];
+            for(index = 0; index < items.length; index++){
+                result.push(items[index].url);
+            }
+            return result
+        }
+        else return [];
+    },
+
     async create_job_describe(new_job) {
         try {
             await db('job_describe').insert(new_job)
@@ -63,8 +78,18 @@ module.exports = {
         }
     },
     
+    async create_job_image(new_image) {
+        try {
+            await db('image_job').insert(new_image)
+            return true
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+
     async findJobByBrandCreatetime(iduser, create_time){
-        let items = await db('recruitment').where({
+        let items = await db('job_describe').where({
             'id_brand': iduser,
             'create_time': create_time
         });
@@ -74,7 +99,7 @@ module.exports = {
     },
 
     async findCommentByUserCreatetime(iduser, role, create_time){
-        let items = await db('recruitment').where({
+        let items = await db('job_comment').where({
             'id_user': iduser,
             'role': role,
             'create_time': create_time
@@ -92,6 +117,7 @@ module.exports = {
             return null;
         for (i = 0; i < items.length; i++){
             items[i].userInfo = await this.getUserInfo(items[i].id_brand, 2);
+            items[i].image = await this.getImagesOfJob(items[i].id);
         }
         return items;
     },
@@ -116,7 +142,7 @@ module.exports = {
         if (items.length==0)
             return null;
         for (i = 0; i < items.length; i++){
-            items[i].userInfo = await this.getUserInfo(items[i].id_user, role);
+            items[i].userInfo = await this.getUserInfo(items[i].id_user, items[i].role);
         }
         return items;
     },
