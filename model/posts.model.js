@@ -444,73 +444,60 @@ module.exports = {
             let result = Array.from(new Set(post));
             return result
         }
-        return null;
+        return [];
     },
-    async findListActivePostByID(list_id, list_address){
+    async findListActivePostByListIDAndAddress(list_id, list_address, iduser){
         if(list_id.length == 0){
-            return null;
+            return [];
         }
-        let list_post = []
+        let rows = [];
         if(list_address.length > 0){
-            for(i =0 ; i < list_id.length; i++){
-                let post = await db('posts').where({
-                    state: 1,
-                    id: list_id[i]
-                }).whereIn('address', list_address);
-                if(post.length > 0)
-                    list_post.push(post[0])
-            }
+            rows = await db('posts').where('id', 'in', list_id).andWhere('address', 'in', list_address);
         }
-        if(list_address.length == 0){
-            for(i =0 ; i < list_id.length; i++){
-                let post = await db('posts').where({
-                    state: 1,
-                    id: list_id[i]
-                });
-                if(post.length > 0)
-                    list_post.push(post[0])
-            }
+        else {
+            rows = await db('posts').where('id', 'in', list_id);
         }
-        if(list_post.length <= 0)
-            return null;
-        for (i = 0; i< list_post.length; i++){
-            let image_cover = await db('image_post')
-                                    .where({
-                                        'id_post': list_post[i].id,
-                                        'type': '2'
-                                    })
-            if(image_cover.length > 0){
-                list_post[i].image_cover = image_cover[0].url;
-            }
-            let brand = await db('brands')
-                                .where({
-                                    id: list_post[i].id_writer,
-                                });
-            list_post[i].brand = brand[0];
+        let tempcount = 0;
+        while (tempcount < rows.length){
+            rows[tempcount].image_cover = await this.getImageCover(rows[tempcount].id);
+            rows[tempcount].brand_info = await this.getBrandInfo(rows[tempcount].id_writer);
+            rows[tempcount].list_categories = await this.getListCategoryOfPost(rows[tempcount].id);
+            rows[tempcount].address = await this.getAddressName(rows[tempcount].address);
+            rows[tempcount].write_time = moment(rows[tempcount].write_time).format("DD/MM/YYYY HH:mm");
+            let like = await db('kols_like_post')
+                    .where({
+                        'id_kol': iduser,
+                        'id_post':  rows[tempcount].id,
+                    });
+            rows[tempcount].likePost = false;
+            if(like.length > 0)
+                rows[tempcount].likePost = true;
+            tempcount = tempcount + 1;
         }
-        return list_post;
     },
 
-    async findPostActiveInListAddress(list_address){
-        let post = await db('posts')
+    async findPostActiveInListAddress(list_address, iduser){
+        let rows = await db('posts')
             .whereIn('address', list_address);
-        if(post.length == 0){
-            return false
+        if(rows.length == 0){
+            return []
         }
-        for (i = 0; i< post.length; i++){
-            let image_cover = await db('image_post')
-                                    .where({
-                                        'id_post': post[i].id,
-                                        'type': '2'
-                                    })
-            if(image_cover.length > 0){
-                post[i].image_cover = image_cover[0].url;
-            }
-            let brand = await db('brands')
-                                .where({
-                                    id: post[i].id_writer,
-                                });
-            post[i].brand = brand[0];
+        let tempcount = 0;
+        while (tempcount < rows.length){
+            rows[tempcount].image_cover = await this.getImageCover(rows[tempcount].id);
+            rows[tempcount].brand_info = await this.getBrandInfo(rows[tempcount].id_writer);
+            rows[tempcount].list_categories = await this.getListCategoryOfPost(rows[tempcount].id);
+            rows[tempcount].address = await this.getAddressName(rows[tempcount].address);
+            rows[tempcount].write_time = moment(rows[tempcount].write_time).format("DD/MM/YYYY HH:mm");
+            let like = await db('kols_like_post')
+                    .where({
+                        'id_kol': iduser,
+                        'id_post':  rows[tempcount].id,
+                    });
+            rows[tempcount].likePost = false;
+            if(like.length > 0)
+                rows[tempcount].likePost = true;
+            tempcount = tempcount + 1;
         }
         return post;
     },
