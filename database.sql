@@ -15,6 +15,7 @@ DROP TABLE IF EXISTS image_recruitment;
 DROP TABLE IF EXISTS image_post;
 DROP TABLE IF EXISTS image_user;
 DROP TABLE IF EXISTS recruitment;
+DROP TABLE IF EXISTS notifications;
 DROP TABLE IF EXISTS posts;
 DROP TABLE IF EXISTS message;
 -- ----------------------------
@@ -503,6 +504,32 @@ ALTER TABLE "kol_social_post" ADD CONSTRAINT "kol_social_post_job" FOREIGN KEY (
 -- ----------------------------
 -- Records of categories
 -- ----------------------------
+-- Thông báo ở phía kol: 
+--          khi recruitment được accept --> cần idpost; 
+--          khi brand tạo task trong job --> cần idpost; 
+-- Thông báo ở phía brand: 
+--          khi có kol recruit --> cần idpost; 
+--          khi có người comment --> cần có idpost;  
+-- type thể hiện loại thông báo: 1-thông báo recruitment được accept, 2-thông báo brand tạo task mới, 3-thông báo khi có người cmt
+-- status thể hiện người dùng đã đọc thông báo chưa: 1 - đọc rồi, 0 - chưa đọc
+CREATE TABLE notifications (
+  "id" int4 NOT NULL GENERATED ALWAYS AS IDENTITY (
+INCREMENT 1
+MINVALUE  1
+MAXVALUE 2147483647
+START 10
+),
+  "id_user" int4 NOT NULL,
+  "role" char NOT NULL,
+  "id_post" int4,
+  "message" varchar(255),
+  "create_time" timestamp,
+	"status" char NOT NULL DEFAULT '0',
+  PRIMARY KEY ("id")
+)
+;
+ALTER TABLE "notifications" ADD CONSTRAINT "noti_post" FOREIGN KEY ("id_post") REFERENCES "posts" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
 BEGIN;
 INSERT INTO categories OVERRIDING SYSTEM VALUE VALUES (1, 'Video');
 INSERT INTO categories OVERRIDING SYSTEM VALUE VALUES (2, 'PR');
