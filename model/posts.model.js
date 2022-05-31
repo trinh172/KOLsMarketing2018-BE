@@ -106,6 +106,13 @@ module.exports = {
         return items
     },
 
+    async findPostByIDNotDetail(id_post){
+        let items = await db('posts').where('id', id_post);
+        if (items.length == 0)
+            return null;
+        return items[0];
+    },
+
     async findPostsByID(ID){
         let items = await db('posts').where('id', ID);
         if (items.length == 0)
