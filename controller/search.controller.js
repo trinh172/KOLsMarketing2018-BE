@@ -49,8 +49,10 @@ exports.search_categories_address = async function(req, res) {
         if(req.jwtDecoded?.data?.id && req.jwtDecoded?.data?.role == 1){
             //trả về danh sách các idpost thuộc list_cate
             let postInCate = await post_db.findPostInListCategories(list_cate);
-            const values = postInCate.map(({ id_post }) => id_post);
-
+            let values = [];
+            if (postInCate.length > 0){
+                values = postInCate.map(({ id_post }) => id_post);
+            }
             //trả về kết quả các post dựa vào mảng id_post trên có address thỏa
             let result = await post_db.findListActivePostByListIDAndAddress(values, list_address, req.jwtDecoded.data?.id);
             if (result)
@@ -59,7 +61,10 @@ exports.search_categories_address = async function(req, res) {
         else{
             //trả về danh sách các idpost thuộc list_cate
             let postInCate = await post_unlogin_db.findPostInListCategories(list_cate);
-            const values = postInCate.map(({ id_post }) => id_post);
+            let values = [];
+            if (postInCate.length > 0){
+                values = postInCate.map(({ id_post }) => id_post);
+            }
 
             //trả về kết quả các post dựa vào mảng id_post trên có address thỏa
             let result = await post_unlogin_db.findListActivePostByListIDAndAddress(values, list_address);
