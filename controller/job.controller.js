@@ -5,6 +5,9 @@ const noti_db = require('../model/nofitications.model');
 const bcrypt = require('bcryptjs');
 const jwtHelper = require("../utils/jwt.helper");
 const moment = require('moment');
+const nodemailer = require('nodemailer');
+const contentMail = require('./mailContent.controller')
+const config = require('../config/const.config');
 
 exports.add_job_describe = async function(req, res) {
     console.log("Check job image already upload: ", req.body.files);
@@ -140,4 +143,69 @@ exports.delete_job = async function(req, res) {
     }
     
     return res.status(400).json(false);
+}
+
+exports.join_job_by_email = async function(req, res) {
+    let id_post = req.body.id_post;
+    let title = decodeURI(req.body.linkcode);
+    
+    let job = await post_db.findPostByIDNotDetail(id_post);
+    if (job && title == job.title){
+        
+        //Xử lý job (member)
+        let new_mem = {
+            'id_post': id_post,
+            'id_user': req.jwtDecoded.data.id,
+            'role': 1,
+            'state': 1,
+            'create_time':  moment().add(7, 'hours')
+        }
+        let flag = await job_db.create_job_member(new_mem);
+        return res.status(200).json(flag)
+    }
+    else{
+        return res.status(404).json(false)
+    }
+}
+
+exports.send_invite_mail = async function(req, res) {
+    let id_post = req.body.id_post;
+    let email = req.body.email;
+
+    let job = await post_db.findPostByIDNotDetail(id_post);
+    if (job){
+        let link_invite = config.DOMAIN_FE + "invitejob/" + id_post + "/" + encodeURI(job.title);
+        console.log("invite link: ", link_invite);
+        let content = await contentMail.getInvitationMail(req.jwtDecoded.data.full_name, email, link_invite, job.title);
+        console.log(typeof(content));
+        let transporter = nodemailer.createTransport(
+            {
+                service: "hotmail",
+                auth: {
+                  user: 'kolsmarketing@hotmail.com',
+                  pass: 'Thangtrinh@kols18'
+                },
+        });
+        
+        var mailOptions={
+            from: "kolsmarketing@hotmail.com",
+            to: email,
+            subject: "Invite job KOLsMarketing",
+            html: content,
+        };
+         
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log("Sent email error: ", error);
+                return res.json(false);
+            }
+            console.log('Message sent: %s', info.messageId);   
+            console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+            return res.status(200).json(true)
+        });
+
+    }
+    else{
+        return res.status(404).json(false)
+    }
 }
