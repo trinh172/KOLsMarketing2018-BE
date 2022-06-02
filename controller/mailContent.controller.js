@@ -74,7 +74,7 @@ exports.getInvitationMail = async function(sender, invitee_mail, invitationLink,
                                     border-radius: 5px;
                                 "
                                 href="${invitationLink}"
-                                >Accept</a
+                                >ĐỒNG Ý</a
                                 >
                             </td>
                             </tr>

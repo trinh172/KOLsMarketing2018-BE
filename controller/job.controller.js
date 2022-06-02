@@ -190,7 +190,7 @@ exports.send_invite_mail = async function(req, res) {
         var mailOptions={
             from: "kolsmarketing@hotmail.com",
             to: email,
-            subject: "Invite job KOLsMarketing",
+            subject: "Thư mời tham gia công việc",
             html: content,
         };
          
