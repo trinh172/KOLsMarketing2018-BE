@@ -481,7 +481,7 @@ CREATE TABLE "kol_social_post" (
     START 30
     ),
   "id_kol" int4 NOT NULL,
-  "id_page" int4 NOT NULL,
+  "id_page" int4,
   "id_page_social" varchar(50),
   "id_job_describe" int4,
   "id_post_social" varchar(100),
@@ -498,8 +498,8 @@ CREATE TABLE "kol_social_post" (
 ) 
 ;
 ALTER TABLE "kol_social_post" ADD CONSTRAINT "kol_social_post_kol" FOREIGN KEY ("id_kol") REFERENCES "kols" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE "kol_social_post" ADD CONSTRAINT "kol_social_post_page" FOREIGN KEY ("id_page") REFERENCES "kol_social_page" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE "kol_social_post" ADD CONSTRAINT "kol_social_post_job" FOREIGN KEY ("id_job_describe") REFERENCES "job_describe" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+--ALTER TABLE "kol_social_post" ADD CONSTRAINT "kol_social_post_page" FOREIGN KEY ("id_page") REFERENCES "kol_social_page" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+--ALTER TABLE "kol_social_post" ADD CONSTRAINT "kol_social_post_job" FOREIGN KEY ("id_job_describe") REFERENCES "job_describe" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- ----------------------------
 -- Records of categories
