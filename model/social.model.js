@@ -58,6 +58,20 @@ module.exports = {
         }
     },
 
+    async getPageNameByPageSocialID(id_page_social) {
+        try {
+            let items = await db('kol_social_page').where({
+                "id_page_social": id_page_social
+            });
+            if(items.length > 0)
+                return items[0].page_name;
+            else return '';
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+
     async getListPageSecurityByIDKols(id_kol) {
         try {
             let today = moment().add(7, 'hours');
@@ -85,6 +99,10 @@ module.exports = {
                 id_kol: id_kol,
                 state: '0'
             });
+            for( i = 0; i < items.length; i++){
+                items[i].stt = i + 1;
+                items[i].create_time = moment(items[i].create_time).format("DD/MM/YYYY HH:mm");
+            }
             if (items)
                 return items;
             return null;
@@ -102,7 +120,10 @@ module.exports = {
                 id_kol: id_kol,
             }).andWhere('schedule_time', '<=', today).whereNot("type_schedule", "0").orderBy('schedule_time', 'desc');
             //console.log("publish_post_done: ", publish_post_done);
-
+            for( i = 0; i < publish_post_done.length; i++){
+                publish_post_done[i].schedule_time = moment(publish_post_done[i].schedule_time).format("DD/MM/YYYY HH:mm");
+                publish_post_done[i].page_name = await this.getPageNameByPageSocialID(publish_post_done[i].id_page_social);
+            }
             if (publish_post_done)
                 return publish_post_done;
             return null;
@@ -120,7 +141,10 @@ module.exports = {
                 id_kol: id_kol,
             }).andWhere('schedule_time', '>', today).whereNot("type_schedule", "0").orderBy('schedule_time', 'desc');
             //console.log("publish_post_waiting: ", publish_post_waiting);
-
+            for( i = 0; i < publish_post_waiting.length; i++){
+                publish_post_waiting[i].schedule_time = moment(publish_post_waiting[i].schedule_time).format("DD/MM/YYYY HH:mm");
+                publish_post_waiting[i].page_name = await this.getPageNameByPageSocialID(publish_post_waiting[i].id_page_social);
+            }
             if (publish_post_waiting)
                 return publish_post_waiting;
             return null;

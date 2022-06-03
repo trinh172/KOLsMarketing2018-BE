@@ -9,6 +9,7 @@ router.post('/get-list-page-info', auth_middle.isKOLs, social.get_list_page_of_k
 router.post('/get-list-draft-of-kol', auth_middle.isKOLs, social.get_list_draft_of_kol);
 router.post('/get-list-publish-post-done-of-kol', auth_middle.isKOLs, social.get_list_publish_post_done);
 router.post('/get-list-publish-post-wait-of-kol', auth_middle.isKOLs, social.get_list_publish_post_waiting);
+router.post('/get-count-like-comment-of-post', auth_middle.isKOLs, social.count_like_comment);
 
 router.post('/validate-user', auth_middle.isKOLs, social.save_user_info);
 router.post('/validate-page', auth_middle.isKOLs, social.save_page_info);

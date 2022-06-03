@@ -98,9 +98,10 @@ exports.post_status_immediately = async function(req, res) {
     //Post fb immediately
     //let accessToken = req.body.fbUser;
     let postText = req.body?.postText;
-    let id_kol = req.body?.id_kol;
+    let id_kol = req.jwtDecoded.data?.id;
     let id_page_social = req.body?.id_page_social;
     let image_url = req.body?.image_url;
+    let video_url = req.body?.video_url;
     let id_page = req.body?.id_page;
     let fbPageAccessToken = await social_db.getPageAccessByIDpageKol(id_kol, id_page_social);
     if(fbPageAccessToken && id_page_social){
@@ -109,7 +110,13 @@ exports.post_status_immediately = async function(req, res) {
             req_url = `https://graph.facebook.com/v9.0/${id_page_social}/photos?access_token=${fbPageAccessToken}&published=true&message=${postText}&url=${image_url}`
         }
         else{
-            req_url = `https://graph.facebook.com/v9.0/${id_page_social}/feed?access_token=${fbPageAccessToken}&published=true&message=${postText}`
+            if(video_url){
+                req_url = `https://graph.facebook.com/v9.0/${id_page_social}/videos?access_token=${fbPageAccessToken}&file_url=${video_url}&description=${postText}`
+            }
+            else{
+                req_url = `https://graph.facebook.com/v9.0/${id_page_social}/feed?access_token=${fbPageAccessToken}&published=true&message=${postText}`;
+            }
+            
         }
         const response = await axios({
             url: encodeURI(req_url),
@@ -123,6 +130,7 @@ exports.post_status_immediately = async function(req, res) {
                 "id_job_describe": null,
                 "id_post_social": response?.data?.id,
                 "url_image": image_url,
+                "url_video": video_url,
                 "url_post_social": "https://facebook.com/"+response?.data?.post_id,
                 "state": '2',
                 "content": postText,
@@ -132,10 +140,15 @@ exports.post_status_immediately = async function(req, res) {
                 "create_time": moment().add(7, 'hours'),
             }
             if(image_url == null){
-                newPost.url_post_social = "https://facebook.com/" +  response?.data?.id;
-                const idArray = response?.data?.id.split("_");
-                response.data.id = idArray[1];
-                newPost.id_post_social = idArray[1];
+                if(video_url == null){
+                    newPost.url_post_social = "https://facebook.com/" +  response?.data?.id;
+                    const idArray = response?.data?.id.split("_");
+                    response.data.id = idArray[1];
+                    newPost.id_post_social = idArray[1];
+                }
+                else{
+                    newPost.url_post_social = "https://facebook.com/" + id_page_social + "_" + response?.data?.id;
+                }
             }
 
             let addpost = await social_db.addNewPostSocial(newPost);
@@ -143,7 +156,6 @@ exports.post_status_immediately = async function(req, res) {
                 let returnpost = await social_db.getSocialByPostSocialID(response?.data?.id);
                 return res.status(200).json(returnpost)
             }
-            return res.status(200).json(true);
         }
     }
     return res.status(403).json(false);
@@ -151,13 +163,15 @@ exports.post_status_immediately = async function(req, res) {
 
 exports.post_schedule = async function(req, res) {
     //Post schedule post
-    let postText = req.body?.postText;
-    let id_kol = req.body?.id_kol;
+    let postText = req.body?.content;
+    let id_kol = req.jwtDecoded.data?.id;
     let id_page_social = req.body?.id_page_social;
     let image_url = req.body?.image_url;
+    let video_url = req.body?.video_url;
     let id_page = req.body?.id_page;
     let schedule_time = req.body?.time;
     let fbPageAccessToken = await social_db.getPageAccessByIDpageKol(id_kol, id_page_social);
+     
     if(fbPageAccessToken && id_page_social){
         let req_url = "";
         console.log("Image: ", image_url);
@@ -165,7 +179,13 @@ exports.post_schedule = async function(req, res) {
             req_url = `https://graph.facebook.com/v9.0/${id_page_social}/photos?access_token=${fbPageAccessToken}&published=false&scheduled_publish_time=${schedule_time}&message=${postText}&url=${image_url}`
         }
         else{
-            req_url = `https://graph.facebook.com/v9.0/${id_page_social}/feed?access_token=${fbPageAccessToken}&published=false&scheduled_publish_time=${schedule_time}&message=${postText}`
+            if(video_url){
+                req_url = `https://graph.facebook.com/v9.0/${id_page_social}/videos?access_token=${fbPageAccessToken}&file_url=${video_url}&description=${postText}&published=false&scheduled_publish_time=${schedule_time}`
+            }
+            else{
+                req_url = `https://graph.facebook.com/v9.0/${id_page_social}/feed?access_token=${fbPageAccessToken}&published=false&scheduled_publish_time=${schedule_time}&message=${postText}`;
+            }
+            
         }
         const response = await axios({
             url: encodeURI(req_url),
@@ -181,6 +201,7 @@ exports.post_schedule = async function(req, res) {
                 "id_job_describe": null,
                 "id_post_social": response?.data?.id,
                 "url_image": image_url,
+                "url_video": video_url,
                 "url_post_social": "https://facebook.com/"+response?.data?.post_id,
                 "state": '1',
                 "content": postText,
@@ -190,10 +211,15 @@ exports.post_schedule = async function(req, res) {
                 "create_time": moment().add(7, 'hours'),
             }
             if(image_url == null){
-                newPost.url_post_social = "https://facebook.com/" +  response?.data?.id;
-                const idArray = response?.data?.id.split("_");
-                response.data.id = idArray[1];
-                newPost.id_post_social = idArray[1];
+                if(video_url == null){
+                    newPost.url_post_social = "https://facebook.com/" +  response?.data?.id;
+                    const idArray = response?.data?.id.split("_");
+                    response.data.id = idArray[1];
+                    newPost.id_post_social = idArray[1];
+                }
+                else{
+                    newPost.url_post_social = "https://facebook.com/" + id_page_social + "_" + response?.data?.id;
+                }
             }
             if(image_url){
                 if (response?.data?.post_id == undefined){
@@ -205,7 +231,6 @@ exports.post_schedule = async function(req, res) {
                 let returnpost = await social_db.getSocialByPostSocialID(response?.data?.id);
                 return res.status(200).json(returnpost)
             }
-            return res.status(200).json(true);
         }
     }
     return res.status(403).json(false);
@@ -213,12 +238,12 @@ exports.post_schedule = async function(req, res) {
 
 exports.post_video = async function(req, res) {
     //Post schedule post
-    let postText = "upload video"
-    let id_kol = req.body?.id_kol;
+    let postText = req.body.content;
+    let id_kol = req.jwtDecoded.data?.id;
     let id_page_social = req.body?.id_page_social;
     let minutes = 15;
     const time = Math.round((new Date().getTime() + minutes * 60 * 1000) / 1000);
-    let video_url = 'https://res.cloudinary.com/kolcloudinary/video/upload/v1653907535/18188888888888.mp4';
+    let video_url = req.body.video_url;
     let fbPageAccessToken = await social_db.getPageAccessByIDpageKol(id_kol, id_page_social);
     if(fbPageAccessToken && id_page_social){
         let req_url = "";
@@ -381,31 +406,26 @@ exports.create_draft = async function(req, res) {
     let video_url = req.body?.video_url;
     //let id_page = req.body?.id_page;
     let create_time = moment().add(7, 'hours');
-    let fbPageAccessToken = await social_db.getPageAccessByIDpageKol(id_kol, id_page_social);
-    if(fbPageAccessToken && id_page_social){
-        
-        let newPost = {
-            "id_kol": id_kol,
-            "id_page": null,
-            "id_page_social": null,
-            "id_job_describe": null,
-            "id_post_social": null,
-            "url_image": image_url,
-            "url_video": video_url,
-            "url_post_social": null,
-            "state": '0',
-            "content": postText,
-            "type_social": '1',
-            "type_schedule": '0',
-            "schedule_time": null,
-            "create_time": create_time,
-        }
-        let addpost = await social_db.addNewPostSocial(newPost);
-        if(addpost){
-            let returnpost = await social_db.getDraftPostByCreateTimeIdKol(create_time, id_kol);
-            return res.status(200).json(returnpost)
-        }
-        return res.status(403).json(false);
+    let newPost = {
+        "id_kol": id_kol,
+        "id_page": null,
+        "id_page_social": null,
+        "id_job_describe": null,
+        "id_post_social": null,
+        "url_image": image_url,
+        "url_video": video_url,
+        "url_post_social": null,
+        "state": '0',
+        "content": postText,
+        "type_social": '1',
+        "type_schedule": '0',
+        "schedule_time": null,
+        "create_time": create_time,
+    }
+    let addpost = await social_db.addNewPostSocial(newPost);
+    if(addpost){
+        let returnpost = await social_db.getDraftPostByCreateTimeIdKol(create_time, id_kol);
+        return res.status(200).json(returnpost)
     }
     return res.status(403).json(false);
 }
@@ -467,6 +487,7 @@ exports.get_list_publish_post_done = async function(req, res) {
     
     let list_done = await social_db.getListPublishPostDone(id_kol);
     //console.log(" list getListPublishPostDone: ", list_done)
+    /*
     if(list_done.length > 0){
         let fbPageAccessToken = await social_db.getPageAccessByIDpageKol(id_kol, list_done[0].id_page_social );
         for(i = 0; i < list_done.length; i++){
@@ -481,7 +502,7 @@ exports.get_list_publish_post_done = async function(req, res) {
                 list_done[i].count_comment = response.data.comments.summary.total_count;
             }
         }
-    }
+    }*/
     if(list_done){
         return res.status(200).json(list_done)
     }
@@ -496,5 +517,28 @@ exports.get_list_publish_post_waiting = async function(req, res) {
     if(list_wait){
         return res.status(200).json(list_wait)
     }
+    return res.status(403).json(false);
+}
+
+exports.count_like_comment = async function(req, res) {
+    let id_kol = req.jwtDecoded.data?.id;
+    let id_page_social = req.body.id_page_social;
+    let id_post_social = req.body.id_page_social;
+    let fbPageAccessToken = await social_db.getPageAccessByIDpageKol(id_kol, id_page_social );
+    if(fbPageAccessToken){
+        let req_url = `https://graph.facebook.com/v9.0/${id_page_social}_${id_post_social}?access_token=${fbPageAccessToken}&fields=comments.limit(0).summary(true),likes.limit(0).summary(true)`;
+        let response = await axios({
+            url: encodeURI(req_url),
+            method: "get",
+        });
+    
+        if(response?.data){
+            let result = {};
+            result.count_like = response.data.likes.summary.total_count;
+            result.count_comment = response.data.comments.summary.total_count;
+            return res.status(200).json(result)
+        }
+    }
+    
     return res.status(403).json(false);
 }
