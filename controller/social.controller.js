@@ -471,6 +471,19 @@ exports.delete_post = async function(req, res) {
     return res.status(403).json(false);
 }
 
+exports.logout_fb = async function(req, res) {
+    
+    let id_kol = req.jwtDecoded.data?.id;
+    let logout_account = await social_db.updateStateUserAccount('0', id_kol);
+    if (logout_account){
+        let logout_page = await social_db.updateStatePageAccount('0', id_kol);
+        if(logout_page){
+            return res.status(200).json(true);
+        }
+    }
+    return res.status(403).json(false);
+}
+
 exports.get_list_draft_of_kol = async function(req, res) {
     //let id_kol = req.body?.id_kol;
     let id_kol = req.jwtDecoded.data?.id;

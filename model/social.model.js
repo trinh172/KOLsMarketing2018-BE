@@ -77,6 +77,7 @@ module.exports = {
             let today = moment().add(7, 'hours');
             let items = await db('kol_social_page').where({
                 "id_kol": id_kol,
+                "state": "1",
             }).andWhere('time_expired', '>=', today);
             let result = [];
             for (i = 0; i < items.length; i++){
@@ -157,7 +158,7 @@ module.exports = {
     async getUserSocialInfoSecurity(id_kol) {
         try {
             let today = moment().add(7, 'hours');
-            let items = await db('kol_social_account').where("id_kol", id_kol).andWhere('time_expired', '>=', today);
+            let items = await db('kol_social_account').where({"id_kol": id_kol, "state": '1'}).andWhere('time_expired', '>=', today);
             let result = [];
             for (i = 0; i < items.length; i++){
                 let item = {};
@@ -168,6 +169,28 @@ module.exports = {
                 result.push(item);
             }
             return result;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+
+    async updateStateUserAccount(state, id_kol) {
+        try {
+            let items = await db('kol_social_account').where({"id_kol": id_kol}).update('state', state);
+            
+            return true;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+
+    async updateStatePageAccount(state, id_kol) {
+        try {
+            let items = await db('kol_social_page').where({"id_kol": id_kol}).update('state', state);
+            
+            return true;
         } catch (e) {
             console.log(e);
             return false;

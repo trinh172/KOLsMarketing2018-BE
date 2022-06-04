@@ -424,7 +424,7 @@ ALTER TABLE "job_member" ADD CONSTRAINT "jobmember_post" FOREIGN KEY ("id_post")
 -- ----------------------------
 -- Table structure for kol_social_account
 -- ----------------------------
--- state 1: đang chờ đăng, 2: đã đăng thành công, 0: bản nháp 
+-- state 1: đã login, 0 - logout 
 -- type_schedule: 1: có lên lịch, 2: đăng ngay (ko lên lịch)
 -- type_social: mạng xã hội (hiện tại support FB): 1 (Facebook)
 CREATE TABLE "kol_social_account" (
@@ -443,7 +443,7 @@ ALTER TABLE "kol_social_account" ADD CONSTRAINT "kol_social_account_kol" FOREIGN
 -- ----------------------------
 -- Table structure for kol_social_page
 -- ----------------------------
--- state 1: đang chờ đăng, 2: đã đăng thành công, 0: bản nháp 
+-- state 1: đã login, 0 - logout 
 -- type_schedule: 1: có lên lịch, 2: đăng ngay (ko lên lịch)
 -- type_social: mạng xã hội (hiện tại support FB): 1 (Facebook)
 CREATE TABLE "kol_social_page" (
@@ -483,7 +483,6 @@ CREATE TABLE "kol_social_post" (
   "id_kol" int4 NOT NULL,
   "id_page" int4,
   "id_page_social" varchar(50),
-  "id_job_describe" int4,
   "id_post_job" int4,
   "id_post_social" varchar(100),
   "url_image" varchar(150),

@@ -25,4 +25,5 @@ router.post('/publish-a-draft-post-schedule', auth_middle.isKOLs, social.publish
 
 router.post('/update-draft-post', auth_middle.isKOLs, social.update_draft);
 router.delete('/delete-a-post', auth_middle.isKOLs, social.delete_post);
+router.post('/logout-social', auth_middle.isKOLs, social.logout_fb);
 module.exports = router;
