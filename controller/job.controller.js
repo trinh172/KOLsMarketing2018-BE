@@ -145,6 +145,17 @@ exports.delete_job = async function(req, res) {
     return res.status(400).json(false);
 }
 
+exports.delete_member_of_post = async function(req, res) {
+    let id_post = req.body.id_post;
+    let id_kol = req.body.id_kol;
+    let flag = await job_db.delete_member(id_post, id_kol, 1)
+    if (flag){
+        return res.status(200).json(true);
+    }
+    
+    return res.status(400).json(false);
+}
+
 exports.join_job_by_email = async function(req, res) {
     let id_post = req.body.id_post;
     let title = decodeURI(req.body.linkcode);
