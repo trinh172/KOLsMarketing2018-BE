@@ -137,8 +137,9 @@ module.exports = {
         });
         if (items.length==0)
             return null;
+        let brand_info = await this.getUserInfo(items[0].id_brand, 2);
         for (i = 0; i < items.length; i++){
-            items[i].userInfo = await this.getUserInfo(items[i].id_brand, 2);
+            items[i].userInfo = brand_info;
             items[i].image = await this.getImagesOfJob(items[i].id);
         }
         return items;
