@@ -160,3 +160,134 @@ exports.getInvitationMail = async function(sender, invitee_mail, invitationLink,
     </div>
     `;
 };
+
+exports.getOTPmail = async function(email, otp) {
+    return `
+    <div style="margin: 0; padding: 20px; width: 100%; background-color: #efefef">
+        <table
+            border="0"
+            cellpadding="0"
+            cellspacing="0"
+            style="margin: 0 auto; padding: 0; table-layout: fixed"
+        >
+            <tr>
+            <td>
+                <table
+                border="0"
+                cellpadding="0"
+                cellspacing="0"
+                style="
+                    margin: 0 auto;
+                    padding: 0;
+                    table-layout: fixed;
+                    background-color: white;
+                "
+                >
+                <tbody>
+                    <tr
+                    style="
+                        border-collapse: collapse;
+                        border-spacing: 0;
+                        padding: 0;
+                        margin: 0;
+                    "
+                    >
+                    <td
+                        style="
+                        max-width: 500;
+                        width: 600px;
+                        border: 1px solid #e3e3e3;
+                        padding: 25px;
+                        "
+                    >
+                        <table
+                        border="0"
+                        cellpadding="0"
+                        cellspacing="0"
+                        width="100%"
+                        style="width: 100%"
+                        >
+                        <tbody>
+                            <tr>
+                            <td>
+                                Hi <b><i>${email}</b></i>
+                                Dưới đây là mã OTP của bạn:
+                            </td>
+                            </tr>
+                        </tbody>
+                        </table>
+                        <table
+                        border="0"
+                        cellpadding="0"
+                        cellspacing="0"
+                        width="100%"
+                        style="width: 100%"
+                        >
+                        <tbody>
+                            <tr>
+                            <td style="text-align: center; height: 80px">
+                                <b>${otp}</b>
+                            </td>
+                            </tr>
+                        </tbody>
+                        </table>
+                        <table
+                        border="0"
+                        cellpadding="0"
+                        cellspacing="0"
+                        width="100%"
+                        style="width: 100%"
+                        >
+                        <tbody>
+                            <tr>
+                            <td style="text-align: center">
+                                Bạn hãy dùng mã OTP trên để xác nhận đổi mật khẩu mới <br />
+                            </td>
+                            </tr>
+                        </tbody>
+                        </table>
+                        <table
+                        border="0"
+                        cellpadding="0"
+                        cellspacing="0"
+                        width="100%"
+                        style="width: 100%; margin-bottom: 20px"
+                        >
+                        <tbody>
+                            <tr>
+                            <td>
+                                Cảm ơn bạn,<br />
+                                KOLsMarketing System Team
+                            </td>
+                            </tr>
+                        </tbody>
+                        </table>
+                    </td>
+                    </tr>
+                </tbody>
+                </table>
+                <table
+                border="0"
+                cellpadding="0"
+                cellspacing="0"
+                width="100%"
+                style="width: 100%; margin-bottom: 20px; margin-top: 10px"
+                >
+                <tbody>
+                    <tr>
+                    <td style="text-align: center; color: #808080">
+                        Đây là email tự động.
+                        <br />
+                        Bạn không cần trả lời email này. <br />
+                        <br />
+                        <i>KOLsMarketing System - 2022</i>
+                    </td>
+                    </tr>
+                </tbody>
+                </table>
+            </td>
+            </tr>
+        </table>
+    </div>
+    `;
+};

@@ -1,5 +1,6 @@
 const db = require('../utils/connectDB')
 const moment = require('moment');
+const { updatePasswordByEmail } = require('./kols.model');
 module.exports = {
     async all(){
         let items = await db('brands');
@@ -296,8 +297,14 @@ module.exports = {
         }
     },
 
-    updateOTPByEmailBrands(email, OTP){
-        return db('brands').where('email', email).update({'otp': OTP});
+    async updateOTPByEmailBrands(email, OTP){
+        try {
+            await db('brands').where('email', email).update({'otp': OTP});
+            return true
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
     },
 
     updateOTPByIDBrands(id_user, OTP){
@@ -313,6 +320,17 @@ module.exports = {
             return false;
         }
     },
+
+    async updatePasswordByEmail(email, password){
+        try {
+            await db('brands').where('email', email).update({'password': password});
+            return true
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+
      //Find all brands that user like, sap xep theo thu tu ma user like
      async findAllKolsBrandLike(id_brand) {
         const rows = await db('brands_like_kols')

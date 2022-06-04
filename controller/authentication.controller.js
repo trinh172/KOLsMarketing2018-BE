@@ -7,6 +7,7 @@ const nodemailer = require('nodemailer');
 const moment = require('moment')
 const accessTokenLife = process.env.ACCESS_TOKEN_LIFE;
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
+const mailContent = require('../controller/mailContent.controller')
 
 
 exports.kols_register = async function(req, res) {
@@ -87,69 +88,91 @@ exports.is_available_email = async (req, res)=>{
     return res.json(true);
 }
 
-//TODO: Define later
-/*
+
 exports.get_otp = async (req, res) => {
     const email = req.body.email;
-    const rowsUser = await user_db.findUserByEmail(email);
-    if (rowsUser === null)  
-        return res.json(false);
-    // send otp to email
+    const kol_user = await kols_db.findKOLsByEmail(req.body.email);
     let otp = Math.random();
     otp = otp * 1000000;
     otp = parseInt(otp);
+    if (kol_user === null){
+        let brand_user = await brands_db.findBrandsByEmail(req.body.email);
+        if (brand_user === null)  
+            return res.status(404).json(false);
+        else{
+            await brands_db.updateOTPByEmailBrands(email, otp)
+        }
+    }
+    else{
+        await kols_db.updateOTPByEmailKOLs(email, otp);
+    }
+    // send otp to email
     console.log("email, otp to sendOTP:", email, otp);
-    await user_db.updateOTP(email, otp);
+    let content = await mailContent.getOTPmail( email, otp);
     let transporter = nodemailer.createTransport(
         {
-            service: 'gmail',
+            service: "hotmail",
             auth: {
-                user: 'newspaper.vuonghieutrinh@gmail.com',
-                pass: 'vuongthangtrinh'
+              user: 'kolsmarketing@hotmail.com',
+              pass: 'Thangtrinh@kols18'
             },
     });
     
     var mailOptions={
-        from: "newspaper.vuonghieutrinh@gmail.com",
+        from: "kolsmarketing@hotmail.com",
         to: email,
-        subject: "Classroom Clone: Mã OTP cho việc đặt lại mật khẩu",
-        html: `<p>Chào bạn,${email}</p>`+
-        "<h3>Hãy nhập OTP bên dưới để thiết lập lại mật khẩu </h3>"  + 
-        "<h1 style='font-weight:bold;'>" + otp +"</h1>" +
-        "<p>Cảm ơn</p>",
+        subject: "Quên mật khẩu",
+        html: content,
     };
-    
+     
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-            return console.log(error);
+            console.log("Sent email error: ", error);
+            return res.status(404).json(false);
         }
-        else{
-            console.log('mail sent');
-         } 
         console.log('Message sent: %s', info.messageId);   
         console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+        return res.status(200).json(true)
     });
-    return res.json(true);
+
 }
 
-exports.check_otp = async (req, res) => {
+exports.check_otp_brand = async (req, res) => {
     const email = req.body.email;
     const otp = req.body.otp;
     console.log("check otp:", req.body);
-    const row_user = await user_db.findUserByEmail(email);
+    const row_user = await brands_db.findBrandsByEmail(email);
     if (row_user === null || row_user.otp != otp)
-        return res.json(false);
-    await user_db.updateOTP(email, -1);
-    return res.json(true);
+        return res.status(404).json(false);
+    await brands_db.updateOTPByEmailBrands(email, -1);
+    return res.status(200).json(true);
 }
 
-exports.change_password = async (req, res) => {
+exports.check_otp_kol = async (req, res) => {
+    const email = req.body.email;
+    const otp = req.body.otp;
+    console.log("check otp:", req.body);
+    const row_user = await kols_db.findKOLsByEmail(email);
+    if (row_user === null || row_user.otp != otp)
+        return res.status(404).json(false);
+    await kols_db.updateOTPByEmailKOLs(email, -1);
+    return res.status(200).json(true);
+}
+
+exports.change_password_kols = async (req, res) => {
     const hash = bcrypt.hashSync(req.body.password, 10);
     const email = req.body.email;
-    await user_db.updatePassword(email, hash);
-    return res.json(true);
+    await kols_db.updatePasswordByEmail(email, hash);
+    return res.status(200).json(true);
 }
-*/
+
+exports.change_password_brands = async (req, res) => {
+    const hash = bcrypt.hashSync(req.body.password, 10);
+    const email = req.body.email;
+    await brands_db.updatePasswordByEmail(email, hash);
+    return res.status(200).json(true);
+}
+
 exports.kols_signin = async (req, res) => {
     const row_user = await kols_db.findKOLsByEmail(req.body.email);
     

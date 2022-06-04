@@ -252,8 +252,14 @@ module.exports = {
         }
     },
 
-    updateOTPByEmailKOLs(email, OTP){
-        return db('kols').where('email', email).update({'otp': OTP});
+    async updateOTPByEmailKOLs(email, OTP){
+        try {
+            await db('kols').where('email', email).update({'otp': OTP});
+            return true
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
     },
 
     updateOTPByIDKOLs(id_user, OTP){
@@ -269,6 +275,17 @@ module.exports = {
             return false;
         }
     },
+
+    async updatePasswordByEmail(email, password){
+        try {
+            await db('kols').where('email', email).update({'password': password});
+            return true
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+
     async deleteBioUrl(bio_url, id){
         try {
             //insert new images
