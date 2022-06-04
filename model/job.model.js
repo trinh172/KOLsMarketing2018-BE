@@ -34,6 +34,28 @@ module.exports = {
         return null;
     },
 
+    async getBrandName(id_brand){
+        const item = await db('brands').where({
+            id: id_brand
+        });
+        if(item.length>0){
+            return item[0].brand_name;
+        }
+        return '';
+    },
+
+    async getImageCover(id_post){
+        let image_cover = await db('image_post')
+                                .where({
+                                    'id_post': id_post,
+                                    'type': '2'
+                                })
+        if(image_cover.length > 0){
+            return image_cover[0].url;
+        }
+        return '';
+    },
+
     async getImagesOfJob(id_job){
         const items = await db('image_job').where({
             id_job: id_job
@@ -203,5 +225,68 @@ module.exports = {
             console.log(e);
             return false;
         }
+    },
+
+    
+      //Find all post that brand create count recruitment, and still work
+      async findAllPostOfBrand(id_brand) {
+        const rows = await db('posts')
+            .where({
+                "id_writer": id_brand,
+            })
+            .orderBy('write_time', 'desc');
+        let tempcount = 0;
+        while (tempcount < rows.length){
+            let count = await db('job_member')
+                            .where({
+                                "id_post": rows[tempcount].id,
+                                "role": 1
+                            })
+            rows[tempcount].count_member = count.length;
+            let image_cover = await db('image_post')
+                                    .where({
+                                        'id_post': rows[tempcount].id,
+                                        'type': '2'
+                                    })
+            if(image_cover.length > 0){
+                rows[tempcount].image_cover = image_cover[0].url;
+            }else{
+                rows[tempcount].image_cover = null;
+            }
+            tempcount = tempcount + 1;
+        }
+        return rows;
+    },
+
+    //Find all job that kol is member
+    async findAllJobOfKOL(id_kol) {
+        const rows = await db('job_member')
+            .where({
+                "id_user": id_kol,
+                "role": '1'
+            })
+            .orderBy('create_time', 'desc');
+        let tempcount = 0;
+        let result = [];
+        while (tempcount < rows.length){
+            let post_detail = await db('posts')
+                            .where({
+                                "id": rows[tempcount].id_post,
+                            })
+            if(post_detail.length > 0){
+                let temp = {};
+                temp.id = post_detail[0].id;
+                temp.brand_name = await this.getBrandName(post_detail[0].id_writer);
+                temp.image_cover = await this.getImageCover(post_detail[0].id);
+                temp.title = post_detail[0].title;
+                temp.content = post_detail[0].content;
+                temp.requirement = post_detail[0].requirement;
+                temp.write_time = moment(post_detail[0].write_time).format("DD/MM/YYYY HH:mm");
+                temp.time_join_job = moment(rows[tempcount].create_time).format("DD/MM/YYYY HH:mm");
+                result.push(temp);
+            }
+            tempcount = tempcount + 1;
+        }
+        return result;
     },
 }

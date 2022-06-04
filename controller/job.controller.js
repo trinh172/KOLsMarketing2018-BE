@@ -209,3 +209,19 @@ exports.send_invite_mail = async function(req, res) {
         return res.status(404).json(false)
     }
 }
+
+exports.getAllPostOfBrand = async function(req, res) {
+    let flag = await job_db.findAllPostOfBrand(req.jwtDecoded.data.id);
+    if (flag){
+        return res.status(200).json(flag);
+    }
+    return res.status(400).json(false);
+}
+
+exports.getAllJobOfKOL = async function(req, res) {
+    let flag = await job_db.findAllJobOfKOL(req.jwtDecoded.data.id);
+    if (flag){
+        return res.status(200).json(flag);
+    }
+    return res.status(400).json(false);
+}
