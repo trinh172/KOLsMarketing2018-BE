@@ -425,3 +425,27 @@ exports.get12SuggestPost = async function(req, res) {
     }
     
 }
+
+exports.activePost = async function(req, res) {
+    let id_post = req.body.id_post;
+    if(id_post){
+        let flag = await post_db.updateStateOfPost( id_post, '1');
+        if (flag){
+            console.log("Check activePost successfully: ", flag);
+            return res.status(200).json(flag);
+        }
+    }
+    return res.status(400).json(false);
+}
+
+exports.unactivePost = async function(req, res) {
+    let id_post = req.body.id_post;
+    if(id_post){
+        let flag = await post_db.updateStateOfPost( id_post, '0');
+        if (flag){
+            console.log("Check unactivePost successfully: ", flag);
+            return res.status(200).json(flag);
+        }
+    }
+    return res.status(400).json(false);
+}

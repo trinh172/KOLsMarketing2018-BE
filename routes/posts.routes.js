@@ -36,4 +36,7 @@ router.get('/get-post-user-recruitment', auth_middle.isKOLs, posts.getAllPostKol
 router.post('/is-available-title', posts.checkAvailableTittle);
 router.post('/get-detail-post/:id', posts.getDetailPost);
 router.post('/check-formdata', posts.add_post);
+
+router.patch('/unactive-post', auth_middle.isBrand, posts.unactivePost);
+router.patch('/active-post', auth_middle.isBrand, posts.activePost);
 module.exports = router;

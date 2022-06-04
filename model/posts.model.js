@@ -755,5 +755,17 @@ module.exports = {
             return false;
         }
        
-    }
+    },
+
+    async updateStateOfPost(id_post, state) {
+        try {
+            await db('posts').where({
+                'id_post': id_post,
+            }).update("state", state);
+            return true
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
 }
