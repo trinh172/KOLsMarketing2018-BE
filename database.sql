@@ -389,7 +389,7 @@ CREATE TABLE "job_comment" (
     MAXVALUE 2147483647
     START 30
     ),
-  "id_post" int4 NOT NULL,
+  "id_job" int4 NOT NULL,
   "id_user" int4 NOT NULL,
   "role" char NOT NULL DEFAULT '1',
   "content" varchar(500) NOT NULL,
@@ -398,7 +398,7 @@ CREATE TABLE "job_comment" (
   PRIMARY KEY ("id")
 ) 
 ;
-ALTER TABLE "job_comment" ADD CONSTRAINT "jobcomment_post" FOREIGN KEY ("id_post") REFERENCES "posts" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "job_comment" ADD CONSTRAINT "jobcomment_describe" FOREIGN KEY ("id_job") REFERENCES "job_describe" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- ----------------------------
 -- Table structure for job_member
