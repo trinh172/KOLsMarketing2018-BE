@@ -10,13 +10,13 @@ const contentMail = require('./mailContent.controller')
 const config = require('../config/const.config');
 
 exports.add_job_describe = async function(req, res) {
-    console.log("Check job image already upload: ", req.body.files);
-    let list_images = req.body.files;
+    console.log("Check job image already upload: ", req.body?.files);
+    let list_images = req.body?.files;
     //Get infor from form at FE 
     let create_time = moment().add(7, 'hours');
     let new_job = {
-        content: req.body.content,
-        id_post: req.body.id_post,
+        content: req.body?.content,
+        id_post: req.body?.id_post,
         id_brand: req.jwtDecoded.data.id,
         create_time: create_time
     };
@@ -57,21 +57,19 @@ exports.add_job_describe = async function(req, res) {
 }
 
 exports.add_job_comment = async function(req, res) {
-    console.log("Check comment image already upload: ", req.body.files);
+    console.log("Check comment image already upload: ", req.body.files, req.body?.id_post);
     //Get infor from form at FE 
     let create_time = moment().add(7, 'hours');
     let new_cmt = {
-        content: req.body.content,
-        id_post: req.body.id_post,
+        content: req.body?.content,
+        id_job: req.body?.id_job,
         id_user: req.jwtDecoded.data.id,
         role: req.jwtDecoded.role,
         create_time: create_time,
         url: req.body.files
     };
     let flag = await job_db.create_job_comment(new_cmt);
-    
-    let added_job = await job_db.findCommentByUserCreatetime(req.jwtDecoded.data.id,req.jwtDecoded.data.role, create_time);
-    if (added_job){
+    if (flag){
         if (req.jwtDecoded.data?.role == '1'){
             let post_info = await post_db.findPostByIDNotDetail(req.body?.id_post);
             if(post_info?.id_writer){
@@ -79,7 +77,7 @@ exports.add_job_comment = async function(req, res) {
                 let new_noti = {
                     "id_user": post_info?.id_writer,
                     "role": '2',
-                    "id_post": req.body.id_post, 
+                    "id_post": req.body?.id_post, 
                     "message": `${req.jwtDecoded.data.full_name} đã bình luận trong công việc của bạn!`,
                     "create_time":  moment().add(7, 'hours'),
                     "status": '0',
@@ -87,9 +85,12 @@ exports.add_job_comment = async function(req, res) {
                 let add_noti = await noti_db.createNotification(new_noti);
             }
         }
-        return res.status(200).json(added_job);
+        return res.status(200).json(new_cmt);
     }
-    res.status(400).json(null);
+    else{
+        return res.status(400).json(new_cmt);
+    }
+    
 }
 
 exports.find_job_in_post = async function(req, res) {
@@ -98,16 +99,21 @@ exports.find_job_in_post = async function(req, res) {
         const sortedActivities = list_job.sort((a, b) => b.create_time - a.create_time)
         return res.status(200).json(sortedActivities);
     }
-    res.status(400).json(null);
+    else{
+        return res.status(400).json([]);
+    }
+    
 }
 
-exports.find_cmt_in_post = async function(req, res) {
-    let list_cmt = await job_db.findCommentByPostID(req.body.id_post);
+exports.find_cmt_in_job = async function(req, res) {
+    let list_cmt = await job_db.findCommentByJobID(req.body?.id_job);
     if (list_cmt){
         const sortedActivities = list_cmt.sort((a, b) => b.create_time - a.create_time)
         return res.status(200).json(sortedActivities);
     }
-    res.status(400).json(null);
+    else{
+        return res.status(400).json([]);
+    }
 }
 
 exports.find_member_in_post = async function(req, res) {
@@ -116,7 +122,9 @@ exports.find_member_in_post = async function(req, res) {
         const sortedActivities = list_member.sort((a, b) => b.state - a.state)
         return res.status(200).json(sortedActivities);
     }
-    res.status(400).json(null);
+    else{
+        return res.status(400).json([]);
+    }
 }
 
 exports.accept_kols_work_done = async function(req, res) {
@@ -124,7 +132,9 @@ exports.accept_kols_work_done = async function(req, res) {
     if (flag){
         return res.status(200).json(true);
     }
-    res.status(400).json(false);
+    else{
+        return res.status(400).json(false);
+    }
 }
 
 exports.reject_kols_work_done = async function(req, res) {
@@ -132,7 +142,9 @@ exports.reject_kols_work_done = async function(req, res) {
     if (flag){
         return res.status(200).json(true);
     }
-    res.status(400).json(false);
+    else{
+        return res.status(400).json(false);
+    }
 }
 
 exports.delete_job = async function(req, res) {
@@ -141,8 +153,9 @@ exports.delete_job = async function(req, res) {
     if (flag){
         return res.status(200).json(true);
     }
-    
-    return res.status(400).json(false);
+    else{
+        return res.status(400).json(false);
+    }
 }
 
 exports.delete_member_of_post = async function(req, res) {

@@ -136,7 +136,7 @@ module.exports = {
             'id_post': id_post
         });
         if (items.length==0)
-            return null;
+            return [];
         let brand_info = await this.getUserInfo(items[0].id_brand, 2);
         for (i = 0; i < items.length; i++){
             items[i].userInfo = brand_info;
@@ -145,12 +145,12 @@ module.exports = {
         return items;
     },
 
-    async findCommentByPostID(id_post){
+    async findCommentByJobID(id_job){
         let items = await db('job_comment').where({
-            'id_post': id_post
+            'id_job': id_job
         });
         if (items.length==0)
-            return null;
+            return [];
 
         for (i = 0; i < items.length; i++){
             items[i].userInfo = await this.getUserInfo(items[i].id_user, items[i].role);
@@ -163,7 +163,7 @@ module.exports = {
             'id_post': id_post
         });
         if (items.length==0)
-            return null;
+            return [];
         for (i = 0; i < items.length; i++){
             items[i].userInfo = await this.getUserInfo(items[i].id_user, items[i].role);
         }
