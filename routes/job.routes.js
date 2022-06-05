@@ -9,7 +9,7 @@ router.delete('/delete-job', auth_middle.isKOLs, job.delete_job);
 router.post('/find-job-of-post', auth_middle.isLogin, job.find_job_in_post);
 
 router.post('/create-comment', auth_middle.isLogin, job.add_job_comment);
-router.post('/find-comment-of-post', auth_middle.isLogin, job.find_cmt_in_post);
+router.post('/find-comment-of-job', auth_middle.isLogin, job.find_cmt_in_job);
 
 router.post('/mark-kol-done-job', auth_middle.isBrand, job.accept_kols_work_done);
 router.post('/mark-kol-not-done-job', auth_middle.isBrand, job.reject_kols_work_done);
