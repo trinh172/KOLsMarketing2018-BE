@@ -101,6 +101,7 @@ exports.post_status_immediately = async function(req, res) {
     let id_kol = req.jwtDecoded.data?.id;
     let id_page_social = req.body?.id_page_social;
     let image_url = req.body?.image_url;
+    let id_post = req.body?.id_post;
     let video_url = req.body?.video_url;
     let id_page = req.body?.id_page;
     let fbPageAccessToken = await social_db.getPageAccessByIDpageKol(id_kol, id_page_social);
@@ -127,7 +128,7 @@ exports.post_status_immediately = async function(req, res) {
                 "id_kol": id_kol,
                 "id_page": id_page,
                 "id_page_social": id_page_social,
-                "id_job_describe": null,
+                "id_post_job": id_post,
                 "id_post_social": response?.data?.id,
                 "url_image": image_url,
                 "url_video": video_url,
@@ -166,6 +167,7 @@ exports.post_schedule = async function(req, res) {
     let postText = req.body?.content;
     let id_kol = req.jwtDecoded.data?.id;
     let id_page_social = req.body?.id_page_social;
+    let id_post = req.body?.id_post;
     let image_url = req.body?.image_url;
     let video_url = req.body?.video_url;
     let id_page = req.body?.id_page;
@@ -198,7 +200,7 @@ exports.post_schedule = async function(req, res) {
                 "id_kol": id_kol,
                 "id_page": id_page,
                 "id_page_social": id_page_social,
-                "id_job_describe": null,
+                "id_post_job": id_post,
                 "id_post_social": response?.data?.id,
                 "url_image": image_url,
                 "url_video": video_url,
@@ -400,6 +402,7 @@ exports.create_draft = async function(req, res) {
     //Post fb immediately
     //let accessToken = req.body.fbUser;
     let postText = req.body?.postText;
+    let id_post = req.body?.id_post;
     let id_kol = req.jwtDecoded.data?.id;
     //let id_page_social = req.body?.id_page_social;
     let image_url = req.body?.image_url;
@@ -410,7 +413,7 @@ exports.create_draft = async function(req, res) {
         "id_kol": id_kol,
         "id_page": null,
         "id_page_social": null,
-        "id_job_describe": null,
+        "id_post_job": id_post,
         "id_post_social": null,
         "url_image": image_url,
         "url_video": video_url,
@@ -443,7 +446,6 @@ exports.update_draft = async function(req, res) {
     let update = {
         "id_page": null,
         "id_page_social": null,
-        "id_job_describe": null,
         "url_image": image_url,
         "url_video": video_url,
         "content": postText,

@@ -33,6 +33,17 @@ module.exports = {
         }
         return null;
     },
+
+    async getPostTitle(idpost){
+        const item = await db('posts').where({
+            id: idpost
+        });
+        if(item.length>0){
+            return item[0].title;
+        }
+        return '';
+    },
+
     async getListPageByIDKols(id_kol) {
         try {
             let items = await db('kol_social_page').where("id_kol", id_kol);
@@ -103,6 +114,7 @@ module.exports = {
             for( i = 0; i < items.length; i++){
                 items[i].stt = i + 1;
                 items[i].create_time = moment(items[i].create_time).format("DD/MM/YYYY HH:mm");
+                items[i].post_info = await this.getPostTitle(items[i].id_post_job)
             }
             if (items)
                 return items;
@@ -124,6 +136,7 @@ module.exports = {
             for( i = 0; i < publish_post_done.length; i++){
                 publish_post_done[i].schedule_time = moment(publish_post_done[i].schedule_time).format("DD/MM/YYYY HH:mm");
                 publish_post_done[i].page_name = await this.getPageNameByPageSocialID(publish_post_done[i].id_page_social);
+                publish_post_done[i].post_info = await this.getPostTitle(publish_post_done[i].id_post_job)
             }
             if (publish_post_done)
                 return publish_post_done;
@@ -145,6 +158,7 @@ module.exports = {
             for( i = 0; i < publish_post_waiting.length; i++){
                 publish_post_waiting[i].schedule_time = moment(publish_post_waiting[i].schedule_time).format("DD/MM/YYYY HH:mm");
                 publish_post_waiting[i].page_name = await this.getPageNameByPageSocialID(publish_post_waiting[i].id_page_social);
+                publish_post_waiting[i].post_info = await this.getPostTitle(publish_post_waiting[i].id_post_job)
             }
             if (publish_post_waiting)
                 return publish_post_waiting;
