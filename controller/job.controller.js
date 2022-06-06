@@ -81,7 +81,7 @@ exports.add_job_comment = async function(req, res) {
     getUserInfo.avatar = req.jwtDecoded.data.avatar;
     let flag = await job_db.create_job_comment(new_cmt);
     if (flag){
-        new_cmt.getUserInfo = getUserInfo;
+        new_cmt.userInfo = getUserInfo;
         if (req.jwtDecoded.data?.role == '1'){
             let post_info = await post_db.findPostByIDNotDetail(req.body?.id_post);
             if(post_info?.id_writer){
