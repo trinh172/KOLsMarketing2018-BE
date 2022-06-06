@@ -30,6 +30,7 @@ router.get('/get-unactive-post-of-brand', auth_middle.isBrand, posts.getAllUnact
 
 router.post('/get-suggest-post', posts.get12SuggestPost);
 router.post('/get-suggest-post-more', posts.getAllSuggestPost);
+router.post('/get-suggest-post-not-dup-save-recruit', auth_middle.isKOLs, posts.getSuggestNotDupSaveRecruitPost);
 
 router.get('/get-post-user-recruitment', auth_middle.isKOLs, posts.getAllPostKolsRecruitment);
 

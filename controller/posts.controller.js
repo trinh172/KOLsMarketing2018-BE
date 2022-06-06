@@ -426,6 +426,23 @@ exports.get12SuggestPost = async function(req, res) {
     
 }
 
+exports.getSuggestNotDupSaveRecruitPost = async function(req, res) {
+    let list_save_recruit = await post_db.findListIDPostKolSaveRecruit(req.jwtDecoded.data?.id);
+    let values = [];
+    if (list_save_recruit.length > 0){
+        values = list_save_recruit.map(({ id_post }) => id_post);
+    }
+    let flag = await post_db.findSuggestPostNotDupSaveRecruit( req.jwtDecoded.data?.id, values);
+    if (flag){
+        if(flag.length <= 12)
+            return res.status(200).json(flag);
+        let result = await shuffle(flag.slice(0,12), 12);
+        return res.status(200).json(result);
+    }
+    return res.status(400).json([]);
+    
+}
+
 exports.activePost = async function(req, res) {
     let id_post = req.body.id_post;
     if(id_post){

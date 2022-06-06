@@ -339,6 +339,66 @@ module.exports = {
         }
         return result;
     },
+    //Lấy danh sách các bài đăng đề xuất, dựa theo top lượt xem và không trùng các bài đã save/recruit
+    async findSuggestPostNotDupSaveRecruit(iduser, list_id_post){
+        let items = [];
+        if(list_id_post.length > 0){
+            items = await db('posts').where({
+                'state': 1
+            }).andWhere('id', 'not in', list_id_post).orderBy('views', 'desc');
+        }
+        else{
+            items = await db('posts').where({
+                'state': 1
+            }).orderBy('views', 'desc');
+        }
+        let result =[]
+        for (i = 0; i< items.length; i++){
+            let temp = {};
+            temp.id = items[i]?.id;
+            temp.id_writer = items[i]?.id_writer;
+            temp.hot = items[i]?.hot;
+            temp.views = items[i]?.views;
+            temp.max_cast = items[i]?.max_cast;
+            temp.min_cast = items[i]?.min_cast;
+            temp.title = items[i]?.title;
+            temp.image_cover = await this.getImageCover(items[i]?.id);
+            if(iduser && items[i]?.id){
+                let like = await db('kols_like_post')
+                .where({
+                    'id_kol': iduser,
+                    'id_post': items[i]?.id,
+                });
+                if(like.length > 0)
+                    temp.likePost = true;
+                else temp.likePost = false;
+            }
+            else temp.likePost = false;
+            temp.address = await this.getAddressName(items[i]?.address);
+            temp.brand_name = await this.getBrandName(items[i]?.id_writer);
+            result.push(temp)
+        }
+        return result;
+    },
+    async findListIDPostKolSaveRecruit(id_user){
+        let post_save = await db.select('id_post').from('kols_like_post').where("id_kol", id_user);
+        let post_recruit = await db.select('id_post').from('recruitment').where("id_kols", id_user);
+        let des_array = [];
+        if(post_save.length > 0){
+            if(post_recruit.length > 0){
+                des_array = [...new Set([...post_save, ...post_recruit])];
+            }
+            else{
+                des_array = Array.from(new Set(post_save));
+            }
+        }
+        else{
+            if(post_recruit.length > 0){
+                des_array = Array.from(new Set(post_recruit));
+            }
+        }
+        return des_array;
+    },
 
     async findUnactivePostOfBrands(brand_id){
         let rows = await db('posts').where({
