@@ -138,11 +138,17 @@ module.exports = {
         if (items.length==0)
             return [];
         let brand_info = await this.getUserInfo(items[0].id_brand, 2);
-        for (i = 0; i < items.length; i++){
-            items[i].userInfo = brand_info;
-            items[i].image = await this.getImagesOfJob(items[i].id);
+        if(brand_info){
+            for (i = 0; i < items.length; i++){
+                items[i].userInfo = brand_info;
+                items[i].image = await this.getImagesOfJob(items[i].id);
+            }
+            return items;
         }
-        return items;
+        else{
+            return [];
+        }
+        
     },
 
     async findCommentByJobID(id_job){
