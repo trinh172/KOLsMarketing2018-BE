@@ -21,9 +21,15 @@ exports.add_job_describe = async function(req, res) {
         create_time: create_time
     };
     let flag = await job_db.create_job_describe(new_job);
-    
+    let getUserInfo = {};
+    getUserInfo.email = req.jwtDecoded.data.email;
+    getUserInfo.name = req.jwtDecoded.data.brand_name;
+    getUserInfo.id = req.jwtDecoded.data.id;
+    getUserInfo.role = req.jwtDecoded.data.role;
+    getUserInfo.avatar = req.jwtDecoded.data.avatar;
     let added_job = await job_db.findJobByBrandCreatetime(req.jwtDecoded.data.id, create_time);
     if (added_job){
+        new_job.userInfo = getUserInfo;
         //lưu các ảnh của user up lên trong job
         for (index = 0; index < list_images.length; index++){
             let new_image = {
