@@ -68,8 +68,20 @@ exports.add_job_comment = async function(req, res) {
         create_time: create_time,
         url: req.body.files
     };
+    let getUserInfo = {};
+    getUserInfo.email = req.jwtDecoded.data.email;
+    if (req.jwtDecoded.data.role == '1'){
+        getUserInfo.name = req.jwtDecoded.data.full_name;
+    }
+    else{
+        getUserInfo.name = req.jwtDecoded.data.brand_name;
+    }
+    getUserInfo.id = req.jwtDecoded.data.id;
+    getUserInfo.role = req.jwtDecoded.data.role;
+    getUserInfo.avatar = req.jwtDecoded.data.avatar;
     let flag = await job_db.create_job_comment(new_cmt);
     if (flag){
+        new_cmt.getUserInfo = getUserInfo;
         if (req.jwtDecoded.data?.role == '1'){
             let post_info = await post_db.findPostByIDNotDetail(req.body?.id_post);
             if(post_info?.id_writer){
