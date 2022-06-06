@@ -538,19 +538,24 @@ exports.get_list_publish_post_waiting = async function(req, res) {
 exports.count_like_comment = async function(req, res) {
     let id_kol = req.jwtDecoded.data?.id;
     let id_page_social = req.body.id_page_social;
-    let id_post_social = req.body.id_page_social;
+    let id_post_social = req.body.id_post_social;
     let fbPageAccessToken = await social_db.getPageAccessByIDpageKol(id_kol, id_page_social );
     if(fbPageAccessToken){
-        let req_url = `https://graph.facebook.com/v9.0/${id_page_social}_${id_post_social}?access_token=${fbPageAccessToken}&fields=comments.limit(0).summary(true),likes.limit(0).summary(true)`;
+        let req_url = `https://graph.facebook.com/v9.0/${id_page_social}_${id_post_social}?access_token=${fbPageAccessToken}&fields=comments.limit(0).summary(true),likes.limit(0).summary(true),shares`;
         let response = await axios({
             url: encodeURI(req_url),
             method: "get",
         });
     
         if(response?.data){
+            console.log("Count like, share, comment: ", response.data);
             let result = {};
             result.count_like = response.data.likes.summary.total_count;
             result.count_comment = response.data.comments.summary.total_count;
+            result.count_share = 0;
+            if(response.data?.shares){
+                result.count_share = response.data?.shares.count;
+            }
             return res.status(200).json(result)
         }
     }
