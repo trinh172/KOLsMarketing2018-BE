@@ -64,7 +64,7 @@ exports.add_job_comment = async function(req, res) {
         content: req.body?.content,
         id_job: req.body?.id_job,
         id_user: req.jwtDecoded.data.id,
-        role: req.jwtDecoded.role,
+        role: req.jwtDecoded.data.role,
         create_time: create_time,
         url: req.body.files
     };
