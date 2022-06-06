@@ -139,11 +139,22 @@ module.exports = {
             return [];
         let brand_info = await this.getUserInfo(items[0].id_brand, 2);
         if(brand_info){
+            
+            let result = [];
             for (i = 0; i < items.length; i++){
-                items[i].userInfo = brand_info;
-                items[i].image = await this.getImagesOfJob(items[i].id);
+                let image = await this.getImagesOfJob(items[i].id);
+                let temp = {
+                    content: items[i].content,
+                    create_time: items[i].create_time,
+                    id: items[i].id,
+                    id_brand: items[i].id_brand,
+                    id_post: items[i].id_post,
+                    userInfo: brand_info,
+                    image: image,
+                };
+                result.push(temp);
             }
-            return items;
+            return result;
         }
         else{
             return [];
