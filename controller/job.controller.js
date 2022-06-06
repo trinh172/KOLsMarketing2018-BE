@@ -120,8 +120,8 @@ exports.find_job_in_post = async function(req, res) {
 exports.find_cmt_in_job = async function(req, res) {
     let list_cmt = await job_db.findCommentByJobID(req.body?.id_job);
     if (list_cmt){
-        const sortedActivities = list_cmt.sort((a, b) => b.create_time - a.create_time)
-        return res.status(200).json(sortedActivities);
+        //const sortedActivities = list_cmt.sort((a, b) => a.create_time - b.create_time)
+        return res.status(200).json(list_cmt);
     }
     else{
         return res.status(400).json([]);

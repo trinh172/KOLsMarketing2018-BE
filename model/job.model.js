@@ -148,7 +148,7 @@ module.exports = {
     async findCommentByJobID(id_job){
         let items = await db('job_comment').where({
             'id_job': id_job
-        });
+        }).orderBy("create_time", "asc");
         if (items.length==0)
             return [];
 
