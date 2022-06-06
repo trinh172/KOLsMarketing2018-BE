@@ -29,7 +29,8 @@ exports.add_job_describe = async function(req, res) {
     getUserInfo.avatar = req.jwtDecoded.data.avatar;
     let added_job = await job_db.findJobByBrandCreatetime(req.jwtDecoded.data.id, create_time);
     if (added_job){
-        new_job.userInfo = getUserInfo;
+        added_job.userInfo = getUserInfo;
+        added_job.image = list_images;
         //lưu các ảnh của user up lên trong job
         for (index = 0; index < list_images.length; index++){
             let new_image = {
