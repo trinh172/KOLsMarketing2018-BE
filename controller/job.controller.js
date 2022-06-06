@@ -115,8 +115,8 @@ exports.add_job_comment = async function(req, res) {
 exports.find_job_in_post = async function(req, res) {
     let list_job = await job_db.findJobByPostID(req.body.id_post);
     if (list_job){
-        const sortedActivities = list_job.sort((a, b) => b.create_time - a.create_time)
-        return res.status(200).json(sortedActivities);
+        //const sortedActivities = list_job.sort((a, b) => b.create_time - a.create_time)
+        return res.status(200).json(list_job);
     }
     else{
         return res.status(400).json([]);

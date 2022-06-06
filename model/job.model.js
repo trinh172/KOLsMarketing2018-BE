@@ -134,10 +134,10 @@ module.exports = {
     async findJobByPostID(id_post){
         let items = await db('job_describe').where({
             'id_post': id_post
-        });
+        }).orderBy("create_time", "desc");
         if (items.length==0)
             return [];
-        let brand_info = await this.getUserInfo(items[0].id_brand, 2);
+        const brand_info = await this.getUserInfo(items[0].id_brand, 2);
         if(brand_info){
             
             let result = [];
