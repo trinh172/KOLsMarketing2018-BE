@@ -151,7 +151,7 @@ module.exports = {
             return null;
         let items = [];
         let tempcount = 0;
-        const n = items.length;
+        const n = item.length;
         while(tempcount < n){
             let result = {};
             result.introduce = item[tempcount].introduce;
@@ -172,7 +172,7 @@ module.exports = {
             return null;
         let items = [];
         let tempcount = 0;
-        const n = items.length;
+        const n = item.length;
         while (tempcount < n){
             let result = {};
             result.introduce = item[tempcount].introduce;
