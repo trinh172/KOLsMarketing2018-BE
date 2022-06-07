@@ -132,29 +132,33 @@ module.exports = {
     },
 
     async findJobByPostID(id_post){
-        let items = await db('job_describe').where({
+        let itemss = await db('job_describe').where({
             'id_post': id_post
         }).orderBy("create_time", "desc");
-        if (items.length==0)
+        console.log("itemss: ", itemss);
+        if (itemss.length==0)
             return [];
-        const brand_info = await this.getUserInfo(items[0].id_brand, 2);
+        const brand_info = await this.getUserInfo(itemss[0].id_brand, 2);
+        const n = itemss.length;
         if(brand_info){
-            
-            let result = [];
-            for (i = 0; i < items.length; i++){
-                let image = await this.getImagesOfJob(items[i].id);
-                
-                result.push({
-                    content: items[i].content,
-                    create_time: items[i].create_time,
-                    id: items[i].id,
-                    id_brand: items[i].id_brand,
-                    id_post: items[i].id_post,
+            let result1 = [];
+            let tempcount = 0;
+            while (tempcount < n){
+                const image = await this.getImagesOfJob(itemss[tempcount].id);
+                const temp = {
+                    content: itemss[tempcount]?.content,
+                    create_time: itemss[tempcount]?.create_time,
+                    id: itemss[tempcount]?.id,
+                    id_brand: itemss[tempcount]?.id_brand,
+                    id_post: itemss[tempcount]?.id_post,
                     userInfo: brand_info,
                     image: image,
-                });
+                }
+                result1.push(temp);
+                tempcount = tempcount + 1;
             }
-            return result;
+            
+            return result1;
         }
         else{
             return [];
