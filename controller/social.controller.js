@@ -562,3 +562,43 @@ exports.count_like_comment = async function(req, res) {
     
     return res.status(403).json(false);
 }
+
+exports.count_like_comment_in_job = async function(req, res) {
+    let id_kol = req.body?.id_kol;
+    let id_post = req.body.id_post;
+    let list_post_done = await social_db.getListPublishPostDoneInJob(id_kol, id_post);
+    if(list_post_done.length > 0){
+        const len_arr = list_post_done.length;
+        let count_like = 0;
+        let count_comment = 0;
+        let count_share = 0;
+        let temp_count = 0;
+        let fbPageAccessToken = "";
+        while (temp_count < len_arr){
+            fbPageAccessToken = await social_db.getPageAccessByIDpageKol(id_kol, list_post_done[temp_count].id_page_social);
+            if(fbPageAccessToken){
+                let req_url = `https://graph.facebook.com/v9.0/${list_post_done[temp_count].id_page_social}_${list_post_done[temp_count].id_post_social}?access_token=${fbPageAccessToken}&fields=comments.limit(0).summary(true),likes.limit(0).summary(true),shares`;
+                let response = await axios({
+                    url: encodeURI(req_url),        
+                });
+            
+                if(response?.data){
+                    console.log("Count like, share, comment: ", response.data);
+                    count_like = count_like + response.data.likes.summary.total_count;
+                    count_comment = count_comment + response.data.comments.summary.total_count;
+                    if(response.data?.shares){
+                        count_share = count_share + response.data?.shares.count;
+                    }
+                }
+            }
+            temp_count = temp_count + 1;
+        }
+        return res.status(200).json({
+            count_comment: count_comment,
+            count_like: count_like,
+            count_share: count_share
+        })
+    }
+    
+    return res.status(403).json(null);
+}

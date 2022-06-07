@@ -133,14 +133,34 @@ module.exports = {
                 id_kol: id_kol,
             }).andWhere('schedule_time', '<=', today).whereNot("type_schedule", "0").orderBy('schedule_time', 'desc');
             //console.log("publish_post_done: ", publish_post_done);
-            for( i = 0; i < publish_post_done.length; i++){
-                publish_post_done[i].schedule_time = moment(publish_post_done[i].schedule_time).format("DD/MM/YYYY HH:mm");
-                publish_post_done[i].page_name = await this.getPageNameByPageSocialID(publish_post_done[i].id_page_social);
-                publish_post_done[i].post_info = await this.getPostTitle(publish_post_done[i].id_post_job)
+            let tempcount = 0;
+            const n = publish_post_done.length;
+            while(tempcount < n){
+                publish_post_done[tempcount].schedule_time = moment(publish_post_done[tempcount].schedule_time).format("DD/MM/YYYY HH:mm");
+                publish_post_done[tempcount].page_name = await this.getPageNameByPageSocialID(publish_post_done[tempcount].id_page_social);
+                publish_post_done[tempcount].post_info = await this.getPostTitle(publish_post_done[tempcount].id_post_job);
+                tempcount = tempcount + 1;
             }
             if (publish_post_done)
                 return publish_post_done;
-            return null;
+            return [];
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+    async getListPublishPostDoneInJob(id_kol, id_post) {
+        try {
+            let today = moment().add(7, 'hours');
+
+            let publish_post_done = await db('kol_social_post').where({
+                id_kol: id_kol,
+                id_post_job: id_post
+            }).andWhere('schedule_time', '<=', today).whereNot("type_schedule", "0").orderBy('schedule_time', 'desc');
+            //console.log("publish_post_done: ", publish_post_done)
+            if (publish_post_done)
+                return publish_post_done;
+            return [];
         } catch (e) {
             console.log(e);
             return false;
@@ -162,7 +182,7 @@ module.exports = {
             }
             if (publish_post_waiting)
                 return publish_post_waiting;
-            return null;
+            return [];
         } catch (e) {
             console.log(e);
             return false;
