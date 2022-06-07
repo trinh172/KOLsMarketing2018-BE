@@ -149,16 +149,19 @@ module.exports = {
         let item = await db('brands');
         if (item.length==0)
             return null;
-        let items = []
-        for(i = 0; i < item.length; i++){
+        let items = [];
+        let tempcount = 0;
+        const n = items.length;
+        while(tempcount < n){
             let result = {};
-            result.introduce = item[i].introduce;
-            result.brand_name = item[i].brand_name;
-            result.id = item[i].id;
-            result.avatar = item[i].avatar;
-            result.cover = item[i].cover;
+            result.introduce = item[tempcount].introduce;
+            result.brand_name = item[tempcount].brand_name;
+            result.id = item[tempcount].id;
+            result.avatar = item[tempcount].avatar;
+            result.cover = item[tempcount].cover;
             result.likeBrand = false;
             items.push(result);
+            tempcount = tempcount + 1;
         }
         return items;
     },
@@ -167,23 +170,26 @@ module.exports = {
         let item = await db('brands');
         if (item.length==0)
             return null;
-        let items = []
-        for(i = 0; i < item.length; i++){
+        let items = [];
+        let tempcount = 0;
+        const n = items.length;
+        while (tempcount < n){
             let result = {};
-            result.introduce = item[i].introduce;
-            result.brand_name = item[i].brand_name;
-            result.id = item[i].id;
-            result.avatar = item[i].avatar;
-            result.cover = item[i].cover;
+            result.introduce = item[tempcount].introduce;
+            result.brand_name = item[tempcount].brand_name;
+            result.id = item[tempcount].id;
+            result.avatar = item[tempcount].avatar;
+            result.cover = item[tempcount].cover;
             let like = await db('kols_like_brands')
                 .where({
                     'id_kol': idkol,
-                    'id_brand':  item[i].id,
+                    'id_brand':  item[tempcount].id,
                 });
             if(like.length > 0)
                 result.likeBrand = true;
             else result.likeBrand = false;
             items.push(result);
+            tempcount = tempcount + 1;
         }
         return items;
     },
