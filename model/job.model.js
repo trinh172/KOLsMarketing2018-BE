@@ -143,7 +143,8 @@ module.exports = {
             let result = [];
             for (i = 0; i < items.length; i++){
                 let image = await this.getImagesOfJob(items[i].id);
-                let temp = {
+                
+                result.push({
                     content: items[i].content,
                     create_time: items[i].create_time,
                     id: items[i].id,
@@ -151,8 +152,7 @@ module.exports = {
                     id_post: items[i].id_post,
                     userInfo: brand_info,
                     image: image,
-                };
-                result.push(temp);
+                });
             }
             return result;
         }
