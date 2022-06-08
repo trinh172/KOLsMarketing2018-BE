@@ -325,6 +325,9 @@ exports.publish_draft_immediately = async function(req, res) {
                 }
                 return res.status(200).json(true);
             }
+            else{
+                return res.status(403).json(false);
+            }
         }
     }
     return res.status(403).json(false);
@@ -392,6 +395,8 @@ exports.publish_draft_schedule = async function(req, res) {
                     return res.status(200).json(returnpost)
                 }
                 return res.status(200).json(true);
+            }else{
+                return res.status(403).json(false);
             }
         }
     }
