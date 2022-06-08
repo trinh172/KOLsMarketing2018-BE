@@ -440,7 +440,7 @@ exports.update_draft = async function(req, res) {
     let image_url = req.body?.image_url;
     let video_url = req.body?.video_url;
     //let id_page = req.body?.id_page;
-    let id = req.body?.id_page;
+    let id = req.body?.id;
     let create_time = moment().add(7, 'hours');
 
     let update = {
@@ -455,8 +455,12 @@ exports.update_draft = async function(req, res) {
     if (detail_post_draft){
         let updatepost = await social_db.updatePostByID(id, update);
         if(updatepost){
-            let returnpost = await social_db.getSocialByPostSocialID(response?.data?.id);
-            return res.status(200).json(returnpost)
+           // let returnpost = await social_db.getSocialByPostSocialID(response?.data?.id);
+           detail_post_draft.url_image = image_url;
+           detail_post_draft.url_video = video_url;
+           detail_post_draft.content = postText;
+           detail_post_draft.create_time = create_time;
+            return res.status(200).json(detail_post_draft)
         }
         return res.status(400).json(false);
     }
