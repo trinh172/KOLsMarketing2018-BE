@@ -164,7 +164,7 @@ exports.post_status_immediately = async function(req, res) {
 
 exports.post_schedule = async function(req, res) {
     //Post schedule post
-    let postText = req.body?.content;
+    let postText = req.body?.postText;
     let id_kol = req.jwtDecoded.data?.id;
     let id_page_social = req.body?.id_page_social;
     let id_post = req.body?.id_post;
@@ -341,7 +341,7 @@ exports.publish_draft_immediately = async function(req, res) {
 
 exports.publish_draft_schedule = async function(req, res) {
     //Post schedule post
-    let postText = req.body?.content;
+    let postText = req.body?.postText;
     let id_kol = req.jwtDecoded.data?.id;
     let image_url = req.body?.image_url;
     let video_url = req.body?.video_url;
