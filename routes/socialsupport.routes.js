@@ -10,7 +10,7 @@ router.post('/get-list-draft-of-kol', auth_middle.isKOLs, social.get_list_draft_
 router.post('/get-list-publish-post-done-of-kol', auth_middle.isKOLs, social.get_list_publish_post_done);
 router.post('/get-list-publish-post-wait-of-kol', auth_middle.isKOLs, social.get_list_publish_post_waiting);
 router.post('/get-count-like-comment-share-of-post', auth_middle.isKOLs, social.count_like_comment);
-router.post('/get-count-like-comment-share-of-all-post-in-job', auth_middle.isLogin, social.count_like_comment_in_job);
+router.post('/get-statistic-all-post-of-kol-in-job', auth_middle.isLogin, social.count_like_comment_in_job);
 
 router.post('/validate-user', auth_middle.isKOLs, social.save_user_info);
 router.post('/validate-page', auth_middle.isKOLs, social.save_page_info);

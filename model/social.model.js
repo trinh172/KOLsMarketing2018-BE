@@ -110,11 +110,14 @@ module.exports = {
             let items = await db('kol_social_post').where({
                 id_kol: id_kol,
                 state: '0'
-            });
-            for( i = 0; i < items.length; i++){
-                items[i].stt = i + 1;
-                items[i].create_time = moment(items[i].create_time).format("DD/MM/YYYY HH:mm");
-                items[i].post_info = await this.getPostTitle(items[i].id_post_job)
+            }).orderBy("create_time","desc");
+            const n = items.length;
+            let temp_count = 0;
+            while (temp_count < n){
+                items[temp_count].stt = temp_count + 1;
+                items[temp_count].create_time = moment(items[temp_count].create_time).format("DD/MM/YYYY HH:mm");
+                items[temp_count].post_info = await this.getPostTitle(items[temp_count].id_post_job);
+                temp_count = temp_count + 1;
             }
             if (items)
                 return items;
@@ -193,14 +196,20 @@ module.exports = {
         try {
             let today = moment().add(7, 'hours');
             let items = await db('kol_social_account').where({"id_kol": id_kol, "state": '1'}).andWhere('time_expired', '>=', today);
+            if (items.length <= 0){
+                return [];
+            }
+            const n = items.length;
             let result = [];
-            for (i = 0; i < items.length; i++){
+            let tempcount = 0;
+            while (tempcount < n){
                 let item = {};
-                item.account_name = items[i].account_name;
-                item.id_kol = items[i].id_kol;
-                item.id_user_social = items[i].id_user_social;
-                item.time_expired = items[i].time_expired;
+                item.account_name = items[tempcount].account_name;
+                item.id_kol = items[tempcount].id_kol;
+                item.id_user_social = items[tempcount].id_user_social;
+                item.time_expired = items[tempcount].time_expired;
                 result.push(item);
+                tempcount = tempcount + 1;
             }
             return result;
         } catch (e) {
