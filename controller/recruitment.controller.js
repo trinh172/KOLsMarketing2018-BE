@@ -2,6 +2,7 @@ const brands_db = require('../model/brands.model');
 const recruit_db = require('../model/recruitments.model')
 const job_db = require('../model/job.model');
 const noti_db = require('../model/nofitications.model');
+const post_db = require('../model/posts.model');
 const bcrypt = require('bcryptjs');
 const jwtHelper = require("../utils/jwt.helper");
 const moment = require('moment');
@@ -21,13 +22,16 @@ exports.add_recruitment = async function(req, res) {
         create_time: create_time
     };
     let flag = await recruit_db.create_recruitment(new_recruit)
-    
+    let post_detail = await post_db.findPostByIDNotDetail(req.body.id_post);
     //Tạo notification thông báo cho brand có người mới recruit
     let new_noti = {
         "id_user": req.body.id_brands,
         "role": '2',
         "id_post": req.body.id_post, 
-        "message": `${req.jwtDecoded.data.full_name} đã ứng tuyển cho bài đăng của bạn!`,
+        "message": `đã ứng tuyển cho bài đăng`,
+        "avatar": req.jwtDecoded.data.avatar,
+        "name": req.jwtDecoded.data.full_name,
+        "post_title": post_detail?.title,
         "create_time":  moment().add(7, 'hours'),
 	    "status": '0',
     }
@@ -48,13 +52,18 @@ exports.find_recruitments_in_post = async function(req, res) {
 }
 exports.accept_recruitment = async function(req, res) {
     let flag = await recruit_db.acceptRecruitment(req.body.id_recruit);
+   
     if (flag){
+        let post_detail = await post_db.findPostByIDNotDetail(flag.id_post);
         //Tạo notification thông báo cho kol là đã được duyệt ứng tuyển
         let new_noti = {
             "id_user": flag.id_kols,
             "role": '1',
             "id_post": flag.id_post, 
-            "message": `${req.jwtDecoded.data.full_name} đã đồng ý ứng tuyển của bạn!`,
+            "message": `đã đồng ý ứng tuyển của bạn`,
+            "avatar": req.jwtDecoded.data.avatar,
+            "name": req.jwtDecoded.data.brand_name,
+            "post_title": post_detail?.title,
             "create_time":  moment().add(7, 'hours'),
             "status": '0',
         }

@@ -28,6 +28,7 @@ exports.add_job_describe = async function(req, res) {
     getUserInfo.role = req.jwtDecoded.data.role;
     getUserInfo.avatar = req.jwtDecoded.data.avatar;
     let added_job = await job_db.findJobByBrandCreatetime(req.jwtDecoded.data.id, create_time);
+    let post_detail = await post_db.findPostByIDNotDetail(req.body.id_post);
     if (added_job){
         added_job.userInfo = getUserInfo;
         added_job.image = list_images;
@@ -50,8 +51,11 @@ exports.add_job_describe = async function(req, res) {
                         "id_user": post_member[i].id_user,
                         "role": '1',
                         "id_post": req.body.id_post, 
-                        "message": `${req.jwtDecoded.data.full_name} đã thêm một yêu cầu công việc mới!`,
+                        "message": `đã thêm một yêu cầu công việc mới!`,
                         "create_time":  moment().add(7, 'hours'),
+                        "avatar": req.jwtDecoded.data.avatar,
+                        "name": req.jwtDecoded.data.brand_name,
+                        "post_title": post_detail?.title,
                         "status": '0',
                     }
                     await noti_db.createNotification(new_noti);
@@ -97,8 +101,11 @@ exports.add_job_comment = async function(req, res) {
                     "id_user": post_info?.id_writer,
                     "role": '2',
                     "id_post": req.body?.id_post, 
-                    "message": `${req.jwtDecoded.data.full_name} đã bình luận trong công việc của bạn!`,
+                    "message": `đã bình luận trong công việc của bạn!`,
                     "create_time":  moment().add(7, 'hours'),
+                    "avatar": req.jwtDecoded.data.avatar,
+                    "name": req.jwtDecoded.data.full_name,
+                    "post_title": post_info?.title,
                     "status": '0',
                 }
                 let add_noti = await noti_db.createNotification(new_noti);
