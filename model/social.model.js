@@ -128,6 +128,74 @@ module.exports = {
         }
     },
 
+    async getListDraftOfJob(id_post) {
+        try {
+            let items = await db('kol_social_post').where({
+                id_post_job: id_post,
+                state: '0'
+            }).orderBy("create_time","desc");
+            const n = items.length;
+            let temp_count = 0;
+            while (temp_count < n){
+                items[temp_count].stt = temp_count + 1;
+                items[temp_count].kol_info = await this.getUserInfo(items[temp_count].id_kol, 1);
+                temp_count = temp_count + 1;
+            }
+            if (items)
+                return items;
+            return null;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+
+    async getListPostDoneOfJob(id_post) {
+        try {
+            let today = moment().add(7, 'hours');
+            let items = await db('kol_social_post').where({
+                id_post_job: id_post,
+            }).andWhere('schedule_time', '<=', today).whereNot("type_schedule", "0").orderBy('schedule_time', 'desc');
+
+            const n = items.length;
+            let temp_count = 0;
+            while (temp_count < n){
+                items[temp_count].stt = temp_count + 1;
+                items[temp_count].kol_info = await this.getUserInfo(items[temp_count].id_kol, 1);
+                temp_count = temp_count + 1;
+            }
+            if (items)
+                return items;
+            return null;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+
+    
+    async getListPostScheduleOfJob(id_post) {
+        try {
+            let today = moment().add(7, 'hours');
+            let items = await db('kol_social_post').where({
+                id_post_job: id_post,
+            }).andWhere('schedule_time', '>', today).whereNot("type_schedule", "0").orderBy('schedule_time', 'desc');
+            const n = items.length;
+            let temp_count = 0;
+            while (temp_count < n){
+                items[temp_count].stt = temp_count + 1;
+                items[temp_count].kol_info = await this.getUserInfo(items[temp_count].id_kol, 1);
+                temp_count = temp_count + 1;
+            }
+            if (items)
+                return items;
+            return null;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+
     async getListPublishPostDone(id_kol) {
         try {
             let today = moment().add(7, 'hours');
