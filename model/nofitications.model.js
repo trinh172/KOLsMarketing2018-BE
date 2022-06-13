@@ -84,12 +84,12 @@ module.exports = {
 
     async markAllNotiStatusOf1UserDone(id_user, role, newStatus){
         try {
-            const noti = await db('notifications').where({
+            await db('notifications').where({
                 id_user: id_user,
                 role: role, 
                 status: '0'
             }).update("status", newStatus);
-            return noti
+            return true
         } catch (e) {
             console.log(e);
             return false;
