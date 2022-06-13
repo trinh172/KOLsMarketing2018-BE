@@ -525,6 +525,9 @@ START 10
   "message" varchar(255),
   "create_time" timestamp,
 	"status" char NOT NULL DEFAULT '0',
+  "avatar" varchar(255),
+  "name" varchar(150),
+  "post_title" varchar(150),
   PRIMARY KEY ("id")
 )
 ;
