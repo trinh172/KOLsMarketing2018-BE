@@ -49,15 +49,7 @@ exports.add_post = async function(req, res) {
             "id_post": added_post.id
         }
         await cate_post_db.add(cate_post)
-        //Xử lý job (member)
-        let new_mem = {
-            'id_post':added_post.id,
-            'id_user': req.jwtDecoded.data.id,
-            'role': 2,
-            'state': 3,
-            'create_time':  moment().add(7, 'hours')
-        }
-        await job_db.create_job_member(new_mem);
+        
         //Xử lý post_images
         if(req.body.files.length>0){
             const new_image = {
@@ -74,14 +66,22 @@ exports.add_post = async function(req, res) {
                 }
                 await image_db.addImagePosts(new_imagedetail);
             }
-            
-            if (result_addimage){
-                /*let detailPost = await post_db.findPostAndBrandByIDPost(added_post.id);
-                if(detailPost){
-                    return res.status(200).json(detailPost);
-                }*/
-                return res.status(200).json({id: added_post.id});
-            }
+        }
+        //Xử lý job (member)
+        let new_mem = {
+            'id_post':added_post.id,
+            'id_user': req.jwtDecoded.data.id,
+            'role': 2,
+            'state': 3,
+            'create_time':  moment().add(7, 'hours')
+        }
+        await job_db.create_job_member(new_mem);
+        if (new_mem){
+            /*let detailPost = await post_db.findPostAndBrandByIDPost(added_post.id);
+            if(detailPost){
+                return res.status(200).json(detailPost);
+            }*/
+            return res.status(200).json({id: added_post.id});
         }
     }
     
