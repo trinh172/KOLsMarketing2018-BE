@@ -86,7 +86,8 @@ module.exports = {
         try {
             const noti = await db('notifications').where({
                 id_user: id_user,
-                role: role
+                role: role, 
+                status: '0'
             }).update("status", newStatus);
             return noti
         } catch (e) {

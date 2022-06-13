@@ -5,4 +5,5 @@ const auth_middle = require('../middleware/auth_middleware');
 
 router.get('/get-all-noti', auth_middle.isLogin, noti.getAllNotificationsOf1User);
 router.post('/mark-read-1noti', auth_middle.isLogin, noti.mark1NotiRead);
+router.post('/mark-read-all-noti', auth_middle.isLogin, noti.markAllNotiDone);
 module.exports = router;
