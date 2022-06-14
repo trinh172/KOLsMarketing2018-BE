@@ -522,6 +522,7 @@ START 10
   "id_user" int4 NOT NULL,
   "role" char NOT NULL,
   "id_post" int4,
+  "id_job_describe" int4 DEFAULT NULL,
   "message" varchar(255),
   "create_time" timestamp,
 	"status" char NOT NULL DEFAULT '0',
