@@ -534,6 +534,7 @@ module.exports = {
                 rows[tempcount].likePost = true;
             tempcount = tempcount + 1;
         }
+        return rows;
     },
 
     async findPostActiveInListAddress(list_address, iduser){
@@ -559,7 +560,7 @@ module.exports = {
                 rows[tempcount].likePost = true;
             tempcount = tempcount + 1;
         }
-        return post;
+        return rows;
     },
 
     //Find new post (1 month) by Category --> từng chuyên mục

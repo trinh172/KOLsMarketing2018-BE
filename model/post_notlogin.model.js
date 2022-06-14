@@ -398,7 +398,7 @@ module.exports = {
             rows[tempcount].likePost = false;
             tempcount = tempcount + 1;
         }
-        return post;
+        return rows;
     },
 
     //Find new post (1 month) by Category --> từng chuyên mục
