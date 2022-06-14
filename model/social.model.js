@@ -401,6 +401,16 @@ module.exports = {
         }
     },
 
+    async updateTypeAccept(id, new_type) {
+        try {
+            let items = await db('kol_social_post').where("id", id).update("type_accept", new_type);
+            return items;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+
     async addNewPostSocial(post) {
         try {
             let items = await db('kol_social_post').insert(post);

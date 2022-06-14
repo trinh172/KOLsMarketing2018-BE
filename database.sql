@@ -470,7 +470,8 @@ ALTER TABLE "kol_social_page" ADD CONSTRAINT "kol_social_page_account" FOREIGN K
 -- ----------------------------
 -- Table structure for kol_social_post
 -- ----------------------------
--- state 1: đang chờ đăng, 2: đã đăng thành công, 0: bản nháp 
+-- state 1: đang chờ đăng, 2: đã đăng thành công, 0: bản nháp
+-- type_accept: thể hiện bài đăng được brand duyệt chưa? 0: đang chờ duyệt, 1: được đồng ý, 2: từ chối
 -- type_schedule: 1: có lên lịch, 2: đăng ngay (ko lên lịch)
 -- type_social: mạng xã hội (hiện tại support FB): 1 (Facebook)
 CREATE TABLE "kol_social_post" (
@@ -492,6 +493,7 @@ CREATE TABLE "kol_social_post" (
   "content" varchar,
   "type_social" char NOT NULL DEFAULT '1',
   "type_schedule" char NOT NULL DEFAULT '1',
+  "type_accept" char NOT NULL DEFAULT '0',
   "schedule_time" timestamp,
   "create_time" timestamp NOT NULL,
   PRIMARY KEY ("id")

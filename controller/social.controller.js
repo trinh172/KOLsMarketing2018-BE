@@ -552,6 +552,36 @@ exports.get_list_schedule_of_job = async function(req, res) {
     return res.status(403).json([]);
 }
 
+exports.accept_draft_post = async function(req, res) {
+    //let id_kol = req.body?.id_kol;
+    let id = req.body?.id;
+    let accept = await social_db.updateTypeAccept(id, '1');
+    if(accept){
+        return res.status(200).json(true)
+    }
+    return res.status(403).json(false);
+}
+
+exports.reject_draft_post = async function(req, res) {
+    let id = req.body?.id;
+    let reject = await social_db.updateTypeAccept(id, '2');
+    if(reject){
+        return res.status(200).json(true)
+    }
+    return res.status(403).json(false);
+}
+
+exports.get_list_schedule_of_job = async function(req, res) {
+    //let id_kol = req.body?.id_kol;
+    let id_post = req.body?.id_post;
+    let list_draft = await social_db.getListPostScheduleOfJob(id_post);
+    console.log(" list schedule in job: ", list_draft)
+    if(list_draft){
+        return res.status(200).json(list_draft)
+    }
+    return res.status(403).json([]);
+}
+
 exports.get_list_publish_post_done = async function(req, res) {
     let id_kol = req.jwtDecoded.data?.id;
     

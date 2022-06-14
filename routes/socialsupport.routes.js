@@ -31,4 +31,6 @@ router.post('/logout-social', auth_middle.isKOLs, social.logout_fb);
 router.post('/get-list-draft-of-job', auth_middle.isBrand, social.get_list_draft_of_job);
 router.post('/get-list-publish-post-done-of-job', auth_middle.isBrand, social.get_list_done_of_job);
 router.post('/get-list-publish-post-schedule-of-job', auth_middle.isBrand, social.get_list_schedule_of_job);
+router.post('/accept-draft-post', auth_middle.isBrand, social.accept_draft_post);
+router.post('/reject-draft-post', auth_middle.isBrand, social.reject_draft_post);
 module.exports = router;
