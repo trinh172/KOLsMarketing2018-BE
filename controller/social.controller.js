@@ -516,7 +516,7 @@ exports.get_list_draft_of_kol = async function(req, res) {
     if(list_draft){
         return res.status(200).json(list_draft)
     }
-    return res.status(403).json(false);
+    return res.status(403).json([]);
 }
 
 exports.get_list_draft_of_job = async function(req, res) {
@@ -527,7 +527,7 @@ exports.get_list_draft_of_job = async function(req, res) {
     if(list_draft){
         return res.status(200).json(list_draft)
     }
-    return res.status(403).json(false);
+    return res.status(403).json([]);
 }
 
 exports.get_list_done_of_job = async function(req, res) {
@@ -538,7 +538,7 @@ exports.get_list_done_of_job = async function(req, res) {
     if(list_draft){
         return res.status(200).json(list_draft)
     }
-    return res.status(403).json(false);
+    return res.status(403).json([]);
 }
 
 exports.get_list_schedule_of_job = async function(req, res) {
@@ -549,7 +549,7 @@ exports.get_list_schedule_of_job = async function(req, res) {
     if(list_draft){
         return res.status(200).json(list_draft)
     }
-    return res.status(403).json(false);
+    return res.status(403).json([]);
 }
 
 exports.get_list_publish_post_done = async function(req, res) {
@@ -576,7 +576,7 @@ exports.get_list_publish_post_done = async function(req, res) {
     if(list_done){
         return res.status(200).json(list_done)
     }
-    return res.status(403).json(false);
+    return res.status(403).json([]);
 }
 
 exports.get_list_publish_post_waiting = async function(req, res) {
@@ -587,7 +587,7 @@ exports.get_list_publish_post_waiting = async function(req, res) {
     if(list_wait){
         return res.status(200).json(list_wait)
     }
-    return res.status(403).json(false);
+    return res.status(403).json([]);
 }
 
 exports.count_like_comment = async function(req, res) {
