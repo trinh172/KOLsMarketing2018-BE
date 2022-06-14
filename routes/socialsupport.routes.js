@@ -9,8 +9,7 @@ router.post('/get-list-page-info', auth_middle.isKOLs, social.get_list_page_of_k
 router.post('/get-list-draft-of-kol', auth_middle.isKOLs, social.get_list_draft_of_kol);
 router.post('/get-list-publish-post-done-of-kol', auth_middle.isKOLs, social.get_list_publish_post_done);
 router.post('/get-list-publish-post-wait-of-kol', auth_middle.isKOLs, social.get_list_publish_post_waiting);
-router.post('/get-count-like-comment-share-of-post', auth_middle.isKOLs, social.count_like_comment);
-router.post('/get-statistic-all-post-of-kol-in-job', auth_middle.isLogin, social.count_like_comment_in_job);
+router.post('/get-count-like-comment-share-of-post', auth_middle.isLogin, social.count_like_comment);
 
 router.post('/validate-user', auth_middle.isKOLs, social.save_user_info);
 router.post('/validate-page', auth_middle.isKOLs, social.save_page_info);
@@ -27,4 +26,9 @@ router.post('/publish-a-draft-post-schedule', auth_middle.isKOLs, social.publish
 router.post('/update-draft-post', auth_middle.isKOLs, social.update_draft);
 router.delete('/delete-a-post', auth_middle.isKOLs, social.delete_post);
 router.post('/logout-social', auth_middle.isKOLs, social.logout_fb);
+
+//routes for brand to manage social post in post_job
+router.post('/get-list-draft-of-job', auth_middle.isBrand, social.get_list_draft_of_job);
+router.post('/get-list-publish-post-done-of-job', auth_middle.isBrand, social.get_list_done_of_job);
+router.post('/get-list-publish-post-schedule-of-job', auth_middle.isBrand, social.get_list_schedule_of_job);
 module.exports = router;

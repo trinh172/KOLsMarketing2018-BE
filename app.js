@@ -51,6 +51,7 @@ var cardkolRouter = require('./routes/cardkols.routes');
 var jobRouter = require('./routes/job.routes');
 var notiRouter = require('./routes/notifications.routes');
 var socialRouter = require('./routes/socialsupport.routes');
+var statisticRouter = require('./routes/statistic.routes');
 
 const AuthMiddleWare = require("./middleware/auth_middleware");
 const { DOMAIN_FE } = require('./config/const.config')
@@ -105,6 +106,7 @@ app.use('/cardkols', cardkolRouter);
 app.use('/jobs', jobRouter);
 app.use('/notifications', notiRouter);
 app.use('/social', socialRouter);
+app.use('/statistic', statisticRouter);
 
 if (!fs.existsSync("./public/images/posts")) {
   fs.mkdirSync("./public/images/posts");
