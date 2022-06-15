@@ -52,6 +52,7 @@ var jobRouter = require('./routes/job.routes');
 var notiRouter = require('./routes/notifications.routes');
 var socialRouter = require('./routes/socialsupport.routes');
 var statisticRouter = require('./routes/statistic.routes');
+var adminRouter = require('./routes/admins.routes');
 
 const AuthMiddleWare = require("./middleware/auth_middleware");
 const { DOMAIN_FE } = require('./config/const.config')
@@ -107,6 +108,7 @@ app.use('/jobs', jobRouter);
 app.use('/notifications', notiRouter);
 app.use('/social', socialRouter);
 app.use('/statistic', statisticRouter);
+app.use('/admins', adminRouter);
 
 if (!fs.existsSync("./public/images/posts")) {
   fs.mkdirSync("./public/images/posts");
