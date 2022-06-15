@@ -1,7 +1,7 @@
 const jwtHelper = require("../utils/jwt.helper");
 const kols_db = require("../model/kols.model");
 const brands_db = require("../model/brands.model");
- 
+const admins_db = require("../model/admins.model");
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
  
 let isAuthor = async (req, res, next) => {
@@ -21,8 +21,10 @@ let isAuthor = async (req, res, next) => {
             if(decoded.data.role == 2){
                 req.jwtDecoded.data = await brands_db.findBrandsByID(decoded.data.id);
             }
-            
-            req.jwtDecoded.data.is_social_login = decoded.data.is_social_login;
+            if(decoded.data.role == 3){
+                req.jwtDecoded.data = await admins_db.findAdminByID(decoded.data.id);
+            }
+            req.jwtDecoded.data.is_social_login = decoded.data?.is_social_login;
             req.jwtDecoded.data.role = decoded.data.role;
             next();
         } catch (error) {
@@ -130,9 +132,41 @@ let isKOLs = async (req, res, next) => {
         return res.status(401).json('401');
     };
 }
+
+let isAdmin = async (req, res, next) => {
+    const tokenFromClient = req.headers["x-access-token"];
+    console.log("Token from client isAdmin, ", tokenFromClient);
+    if (tokenFromClient && tokenFromClient!='null') {
+        try {
+            const decoded = await jwtHelper.verifyToken(tokenFromClient, accessTokenSecret);
+            req.jwtDecoded = {};
+            if(decoded === "expired"){
+                console.log(decoded)
+                return res.status(403).json('403');
+            }
+            if(decoded.data.role == 3){
+                req.jwtDecoded.data = await admins_db.findAdminByID(decoded.data.id);
+                req.jwtDecoded.data.is_social_login = decoded.data.is_social_login;
+                req.jwtDecoded.data.role = decoded.data.role;
+                next();
+            }
+            else{
+                console.log('error 401 isAdmin')
+                return res.status(401).json('401');
+            }
+        } catch (error) {
+            console.log(error)
+            return res.status(400).json('400');
+        }
+    } else {
+        console.log('error 401 isAdmin')
+        return res.status(401).json('401');
+    };
+}
 module.exports = {
     isAuthor: isAuthor,
     isBrand: isBrand,
     isKOLs: isKOLs,
+    isAdmin: isAdmin,
     isLogin: isLogin
 };

@@ -22,4 +22,8 @@ router.post('/google-login', authentication.google_signin);
 
 router.get('/list-province-vn', address_ct.list_province_vn);
 
+//route for admin authenticate
+router.post('/register-admins',authentication.admins_register);
+router.patch('/renew-password-admins', authentication.change_password_admins);
+router.post('/admins-login', authentication.admins_login);
 module.exports = router;

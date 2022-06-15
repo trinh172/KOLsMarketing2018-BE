@@ -1,6 +1,7 @@
 const kols_db = require('../model/kols.model');
 const cardkols_db = require('../model/cardkols.model')
 const brands_db = require('../model/brands.model');
+const admins_db = require('../model/admins.model');
 const bcrypt = require('bcryptjs');
 const jwtHelper = require("../utils/jwt.helper");
 const nodemailer = require('nodemailer');
@@ -56,6 +57,27 @@ exports.brands_register = async function(req, res) {
     return res.json(false);
 }
 
+exports.admins_register = async function(req, res) {
+    //Get infor from form at FE 
+    const hash = bcrypt.hashSync(req.body.password, 10);
+    const user = {
+        password: hash,
+        full_name: req.body.fullname,
+        email: req.body.email,
+        is_super: '0',
+        create_time: moment().add(7, 'hours'),
+        otp: -1
+    }
+    
+    let flag = await admins_db.add(user);
+    if (flag){
+        user.password = "has-password";
+        user.create_time = moment(user.create_time).format("DD/MM/YYYY HH:mm");
+        return res.status(200).json(user);
+    }
+    return res.json(false);
+}
+
 exports.is_available = async (req, res)=>{
     const email = req.body.email;
 
@@ -67,10 +89,13 @@ exports.is_available = async (req, res)=>{
         return res.json ({message: 'Bạn chưa nhập họ tên'});
     const rowsEmailKOLs = await kols_db.findKOLsByEmail(email);
     const rowsEmailBrands = await brands_db.findBrandsByEmail(email);
+    const rowsEmailAdmins = await admins_db.findAdminByEmail(email);
 
     if (rowsEmailKOLs !== null)  
         return res.json({message: 'Email không hợp lệ!'});
     if (rowsEmailBrands !== null)  
+        return res.json({message: 'Email không hợp lệ!'});
+    if (rowsEmailAdmins !== null)  
         return res.json({message: 'Email không hợp lệ!'});
 
     return res.json(true);
@@ -80,11 +105,13 @@ exports.is_available_email = async (req, res)=>{
     const email = req.body.email;
     const rowsEmailKOLs = await kols_db.findKOLsByEmail(email);
     const rowsEmailBrands = await brands_db.findBrandsByEmail(email);
+    const rowsEmailAdmins = await admins_db.findAdminByEmail(email);
     if (rowsEmailKOLs !== null)  
         return res.json(false);
     if (rowsEmailBrands !== null)  
         return res.json(false);
-
+    if (rowsEmailAdmins !== null)  
+        return res.json(false);
     return res.json(true);
 }
 
@@ -173,6 +200,13 @@ exports.change_password_brands = async (req, res) => {
     return res.status(200).json(true);
 }
 
+exports.change_password_admins = async (req, res) => {
+    const hash = bcrypt.hashSync(req.body.password, 10);
+    const email = req.body.email;
+    await admins_db.updatePasswordByEmail(email, hash);
+    return res.status(200).json(true);
+}
+
 exports.kols_signin = async (req, res) => {
     const row_user = await kols_db.findKOLsByEmail(req.body.email);
     
@@ -186,6 +220,15 @@ exports.brands_signin = async (req, res) => {
     const row_user = await brands_db.findBrandsByEmail(req.body.email);
     if (row_user != null) {
         return checkPassword(row_user, req, res, 2);
+    }
+    console.log("Email/Password không đúng")
+    return res.json({'access_token':'error_email'});
+}
+
+exports.admins_login = async (req, res) => {
+    const row_user = await admins_db.findAdminByEmail(req.body.email);
+    if (row_user != null) {
+        return checkPassword(row_user, req, res, 3);
     }
     console.log("Email/Password không đúng")
     return res.json({'access_token':'error_email'});
@@ -237,8 +280,13 @@ async function checkPassword(rows, req, res, role) {
     return res.json({'access_token':'error_password'});
   }
   else{
-    console.log("login thanh cong")
-    return handle_login_successfully(rows, req, res, false, false, role);
+    console.log("login thanh cong");
+    if (role == 3){
+        return handle_login_successfully(rows, req, res, false, true, role);
+    }
+    else{
+        return handle_login_successfully(rows, req, res, false, false, role);
+    }
   }
 }
 async function checkPasswordAdmin(rows, req, res) {
