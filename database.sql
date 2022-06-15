@@ -91,7 +91,26 @@ START 15
 	PRIMARY KEY ("id")
 )
 ;
-
+-- ----------------------------
+-- Table structure for Admin
+-- is_super: 1: phải, 0: ko phải
+-- ----------------------------
+DROP TABLE IF EXISTS admins;
+CREATE TABLE admins (
+  "id" int4 NOT NULL GENERATED ALWAYS AS IDENTITY (
+INCREMENT 1
+MINVALUE  1
+MAXVALUE 2147483647
+START 5
+),
+  "full_name" varchar(255),
+  "password" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+  "is_super" char NOT NULL DEFAULT '0',
+  "email" varchar(255),
+  "create_time" timestamp,
+	"otp" int4
+)
+;
 -- ----------------------------
 -- Table structure for Posts
 -- ----------------------------
@@ -547,8 +566,11 @@ COMMIT;
 -- Records of user
 -- kols pass: kols1234
 -- brand pass: kols1234
+-- admin pass: kols1234
 -- ----------------------------
 BEGIN;
+INSERT INTO admins OVERRIDING SYSTEM VALUE VALUES (1, 'Admin1', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', '1', 'admin1@gmail.com','2022-04-21 13:15:42.579', -1);
+
 INSERT INTO kols OVERRIDING SYSTEM VALUE VALUES (1, 'Phương Xuân', 'kol1@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', null, null, null, null, null, null, null, null, '2022-04-21 13:15:42.579', '1', -1);
 INSERT INTO kols OVERRIDING SYSTEM VALUE VALUES (2, 'Lan Anh', 'kol2@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', null, null, null, null, null, null, null, null, '2022-04-21 13:15:42.579', '1', -1);
 INSERT INTO kols OVERRIDING SYSTEM VALUE VALUES (3, 'Ngọc Trúc', 'kol3@gmail.com', '$2a$10$JCrQY2/RUY.v.jMYkpTr.OckqqALYwMldyUw2E52C1jsLI.i4swYW', null, null, null, null, null, null, null, null, '2022-04-21 13:15:42.579', '1', -1);
