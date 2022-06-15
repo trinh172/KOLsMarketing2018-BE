@@ -4,8 +4,11 @@ const { updatePasswordByEmail } = require('./kols.model');
 module.exports = {
     async all(){
         let items = await db('brands');
-        for(let i = 0; i<items.length; i++){
-            items[i].create_time = moment(items[i].create_time).format("DD/MM/YYYY HH:mm:ss");
+        let temp = 0;
+        while(temp < items.length){
+            items[temp].create_time = moment(items[temp].create_time).format("DD/MM/YYYY HH:mm");
+            items[temp].password = 'has-password';
+            temp = temp + 1;
         }
         return items
     },
@@ -93,6 +96,29 @@ module.exports = {
         items[0].create_time = moment(items[0].create_time).format("DD/MM/YYYY HH:mm:ss");
         items[0].role = '2';
         
+        return items[0];
+    },
+
+    async getBrandsProfileAndCountPost(ID){
+        let items = await db('brands').where('id', ID);
+        let count_post = await db('posts').where('id_writer', ID);
+        if (items.length==0)
+            return null;
+        items[0].password = 'has-password';
+
+        items[0].bio_url = [];
+        let bio = await db("bio_url").where({
+            id_user: ID,
+            role: '2'
+        });
+        if(bio.length > 0){
+            for(i = 0; i< bio.length; i++){
+                items[0].bio_url.push(bio[i].url);
+            }
+        };
+        items[0].create_time = moment(items[0].create_time).format("DD/MM/YYYY HH:mm:ss");
+        items[0].role = '2';
+        items[0].count_posts = count_post.length;
         return items[0];
     },
 
@@ -313,8 +339,14 @@ module.exports = {
         }
     },
 
-    updateOTPByIDBrands(id_user, OTP){
-        return db('brands').where('id', id_user).update({'otp': OTP});
+    async updateOTPByIDBrands(id_user, OTP){
+        try {
+            await db('brands').where('id', id_user).update({'otp': OTP});
+            return true
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
     },
 
     async updatePassword(id, password){

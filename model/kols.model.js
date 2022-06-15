@@ -25,8 +25,19 @@ module.exports = {
 
     async all(){
         let items = await db('kols');
-        for(let i = 0; i<items.length; i++){
-            items[i].create_time = moment(items[i].create_time).format("DD/MM/YYYY HH:mm:ss");
+        let temp = 0;
+        while(temp < items.length){
+            items[temp].create_time = moment(items[temp].create_time).format("DD/MM/YYYY HH:mm:ss");
+            items[temp].password = 'has-password';
+            if (items[temp].address != null){
+                let address = await db("vn_tinhthanhpho").where({
+                    id: items[temp].address
+                });
+                if(address.length > 0){
+                    items[temp].address = address[0].name;
+                };
+            }
+            temp = temp + 1;
         }
         return items
     },
@@ -262,8 +273,14 @@ module.exports = {
         }
     },
 
-    updateOTPByIDKOLs(id_user, OTP){
-        return db('kols').where('id', id_user).update({'otp': OTP});
+    async updateOTPByIDKOLs(id_user, OTP){
+        try {
+            await db('kols').where('id', id_user).update({'otp': OTP});
+            return true
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
     },
 
     async updatePassword(id, password){
