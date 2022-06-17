@@ -18,6 +18,7 @@ router.post('/get-all-member-of-post', auth_middle.isLogin, job.find_member_in_p
 router.delete('/delete-member-of-post', auth_middle.isBrand, job.delete_member_of_post);
 router.post('/join-job-by-email', auth_middle.isKOLs, job.join_job_by_email);
 router.post('/send-invite-job', auth_middle.isBrand, job.send_invite_mail);
+router.post('/is-exist-kol-in-job', auth_middle.isKOLs, job.checkIsExistKolsInJob);
 
 router.get('/get-all-post-of-brand',  auth_middle.isBrand, job.getAllPostOfBrand);
 router.get('/get-all-job-of-kol',  auth_middle.isKOLs, job.getAllJobOfKOL);

@@ -261,6 +261,13 @@ exports.send_invite_mail = async function(req, res) {
         return res.status(404).json(false)
     }
 }
+exports.checkIsExistKolsInJob = async function(req, res) {
+    let flag = await job_db.checkExistKolInJob(req.jwtDecoded.data.id, req.body?.id_post);
+    if (flag){
+        return res.status(200).json(flag);
+    }
+    return res.status(400).json(false);
+}
 
 exports.getAllPostOfBrand = async function(req, res) {
     let flag = await job_db.findAllPostOfBrand(req.jwtDecoded.data.id);

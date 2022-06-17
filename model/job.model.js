@@ -191,6 +191,19 @@ module.exports = {
         return items;
     },
 
+    async checkExistKolInJob(id_kol, id_post){
+        let items = await db('job_member').where({
+            'id_post': id_post,
+            'id_user': id_kol,
+            'role': '1'
+        });
+        if (items.length==0)
+            return false;
+        else{
+            return true;
+        }
+    },
+
     async markDoneJob(id_post, id_kol){
         try {
             await db('job_member').where({
