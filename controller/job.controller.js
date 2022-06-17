@@ -261,6 +261,22 @@ exports.send_invite_mail = async function(req, res) {
         return res.status(404).json(false)
     }
 }
+
+
+exports.generate_link = async function(req, res) {
+    let id_post = req.body.id_post;
+
+    let job = await post_db.findPostByIDNotDetail(id_post);
+    if (job){
+        let link_invite = config.DOMAIN_FE + "invitejob/" + id_post + "/" + encodeURI(job.title);
+        console.log("join job link: ", link_invite);
+        return res.status(200).json(link_invite)
+    }
+    else{
+        return res.status(404).json('');
+    }
+}
+
 exports.checkIsExistKolsInJob = async function(req, res) {
     let flag = await job_db.checkExistKolInJob(req.jwtDecoded.data.id, req.body?.id_post);
     if (flag){
