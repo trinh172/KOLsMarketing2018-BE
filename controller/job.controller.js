@@ -17,6 +17,7 @@ exports.add_job_describe = async function(req, res) {
     let new_job = {
         content: req.body?.content,
         id_post: req.body?.id_post,
+        type: req.body?.type,
         id_brand: req.jwtDecoded.data.id,
         create_time: create_time
     };

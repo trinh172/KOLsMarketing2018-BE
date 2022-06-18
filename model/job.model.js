@@ -147,6 +147,7 @@ module.exports = {
                 const image = await this.getImagesOfJob(itemss[tempcount].id);
                 const temp = {
                     content: itemss[tempcount]?.content,
+                    type: itemss[tempcount]?.type,
                     create_time: itemss[tempcount]?.create_time,
                     id: itemss[tempcount]?.id,
                     id_brand: itemss[tempcount]?.id_brand,
