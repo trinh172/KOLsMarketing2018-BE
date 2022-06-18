@@ -50,7 +50,6 @@ exports.save_user_info = async function(req, res) {
                 method: "get",
         });
         let array_page = list_page.data?.data;
-        console.log("get all page: ", array_page);
         let result_page = [];
         for (i = 0; i < array_page.length; i++){
             let newPage = {
@@ -102,6 +101,7 @@ exports.post_status_immediately = async function(req, res) {
     let id_page_social = req.body?.id_page_social;
     let image_url = req.body?.image_url;
     let id_post = req.body?.id_post;
+    let id_job = req.body?.id_job;
     let video_url = req.body?.video_url;
     let id_page = req.body?.id_page;
     let fbPageAccessToken = await social_db.getPageAccessByIDpageKol(id_kol, id_page_social);
@@ -129,6 +129,7 @@ exports.post_status_immediately = async function(req, res) {
                 "id_page": id_page,
                 "id_page_social": id_page_social,
                 "id_post_job": id_post,
+                "id_job_describe": id_job,
                 "id_post_social": response?.data?.id,
                 "url_image": image_url,
                 "url_video": video_url,
@@ -171,6 +172,7 @@ exports.post_schedule = async function(req, res) {
     let image_url = req.body?.image_url;
     let video_url = req.body?.video_url;
     let id_page = req.body?.id_page;
+    let id_job = req.body?.id_job;
     let schedule_time = req.body?.time;
     let fbPageAccessToken = await social_db.getPageAccessByIDpageKol(id_kol, id_page_social);
      
@@ -201,6 +203,7 @@ exports.post_schedule = async function(req, res) {
                 "id_page": id_page,
                 "id_page_social": id_page_social,
                 "id_post_job": id_post,
+                "id_job_describe": id_job,
                 "id_post_social": response?.data?.id,
                 "url_image": image_url,
                 "url_video": video_url,
@@ -425,13 +428,14 @@ exports.create_draft = async function(req, res) {
     //let id_page_social = req.body?.id_page_social;
     let image_url = req.body?.image_url;
     let video_url = req.body?.video_url;
-    //let id_page = req.body?.id_page;
+    let id_job = req.body?.id_job;
     let create_time = moment().add(7, 'hours');
     let newPost = {
         "id_kol": id_kol,
         "id_page": null,
         "id_page_social": null,
         "id_post_job": id_post,
+        "id_job_describe": id_job,
         "id_post_social": null,
         "url_image": image_url,
         "url_video": video_url,
@@ -467,6 +471,7 @@ exports.update_draft = async function(req, res) {
         "url_image": image_url,
         "url_video": video_url,
         "content": postText,
+        "type_accept": '0',
         "create_time": create_time,
     }
     let detail_post_draft = await social_db.getDraftPostByID(id);
@@ -519,10 +524,44 @@ exports.get_list_draft_of_kol = async function(req, res) {
     return res.status(403).json([]);
 }
 
-exports.get_list_draft_of_job = async function(req, res) {
+exports.get_list_draft_of_post = async function(req, res) {
     //let id_kol = req.body?.id_kol;
     let id_post = req.body?.id_post;
-    let list_draft = await social_db.getListDraftOfJob(id_post);
+    let list_draft = await social_db.getListDraftOfPost(id_post);
+    console.log(" list draft in post: ", list_draft)
+    if(list_draft){
+        return res.status(200).json(list_draft)
+    }
+    return res.status(403).json([]);
+}
+
+exports.get_list_done_of_post = async function(req, res) {
+    //let id_kol = req.body?.id_kol;
+    let id_post = req.body?.id_post;
+    let list_done = await social_db.getListPostDoneOfPost(id_post);
+    console.log(" list done in post: ", list_done)
+    if(list_done){
+        return res.status(200).json(list_done)
+    }
+    return res.status(403).json([]);
+}
+
+exports.get_list_schedule_of_post = async function(req, res) {
+    //let id_kol = req.body?.id_kol;
+    let id_post = req.body?.id_post;
+    let list_schedule = await social_db.getListPostScheduleOfPost(id_post);
+    console.log(" list schedule in post: ", list_schedule)
+    if(list_schedule){
+        return res.status(200).json(list_schedule)
+    }
+    return res.status(403).json([]);
+}
+
+
+exports.get_list_draft_of_job = async function(req, res) {
+    //let id_kol = req.body?.id_kol;
+    let id_job = req.body?.id_job;
+    let list_draft = await social_db.getListDraftOfJob(id_job);
     console.log(" list draft in job: ", list_draft)
     if(list_draft){
         return res.status(200).json(list_draft)
@@ -532,22 +571,22 @@ exports.get_list_draft_of_job = async function(req, res) {
 
 exports.get_list_done_of_job = async function(req, res) {
     //let id_kol = req.body?.id_kol;
-    let id_post = req.body?.id_post;
-    let list_draft = await social_db.getListPostDoneOfJob(id_post);
-    console.log(" list done in job: ", list_draft)
-    if(list_draft){
-        return res.status(200).json(list_draft)
+    let id_job = req.body?.id_job;
+    let list_done = await social_db.getListPostDoneOfJob(id_job);
+    console.log(" list done in job: ", list_done)
+    if(list_done){
+        return res.status(200).json(list_done)
     }
     return res.status(403).json([]);
 }
 
 exports.get_list_schedule_of_job = async function(req, res) {
     //let id_kol = req.body?.id_kol;
-    let id_post = req.body?.id_post;
-    let list_draft = await social_db.getListPostScheduleOfJob(id_post);
-    console.log(" list schedule in job: ", list_draft)
-    if(list_draft){
-        return res.status(200).json(list_draft)
+    let id_job = req.body?.id_job;
+    let list_schedule = await social_db.getListPostScheduleOfJob(id_job);
+    console.log(" list schedule in job: ", list_schedule)
+    if(list_schedule){
+        return res.status(200).json(list_schedule)
     }
     return res.status(403).json([]);
 }
@@ -555,7 +594,9 @@ exports.get_list_schedule_of_job = async function(req, res) {
 exports.accept_draft_post = async function(req, res) {
     //let id_kol = req.body?.id_kol;
     let id = req.body?.id;
-    let accept = await social_db.updateTypeAccept(id, '1');
+    let review = req.body?.review;
+    let accept = await social_db.updateTypeAccept(id, review, '1');
+    let updatereview = await social_db.updateReviewOfDraftPost(id, review);
     if(accept){
         return res.status(200).json(true)
     }
@@ -565,6 +606,8 @@ exports.accept_draft_post = async function(req, res) {
 exports.reject_draft_post = async function(req, res) {
     let id = req.body?.id;
     let reject = await social_db.updateTypeAccept(id, '2');
+    let review = req.body?.review;
+    let updatereview = await social_db.updateReviewOfDraftPost(id, review);
     if(reject){
         return res.status(200).json(true)
     }
