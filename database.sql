@@ -363,6 +363,7 @@ ALTER TABLE "message" ADD CONSTRAINT "message_room" FOREIGN KEY ("id_room") REFE
 
 -- ----------------------------
 -- Table structure for job_describe
+-- type 1: chỉ thông báo, 2: có nút nộp bài
 -- ----------------------------
 CREATE TABLE "job_describe" (
    "id" int4 NOT NULL GENERATED ALWAYS AS IDENTITY (
@@ -373,7 +374,8 @@ CREATE TABLE "job_describe" (
     ),
   "id_post" int4 NOT NULL,
   "id_brand" int4 NOT NULL,
-  "content" varchar(500) NOT NULL,
+  "content" varchar NOT NULL,
+  "type" char NOT NULL DEFAULT '1',
   "create_time" timestamp NOT NULL,
   PRIMARY KEY ("id")
 ) 
@@ -504,12 +506,14 @@ CREATE TABLE "kol_social_post" (
   "id_page" int4,
   "id_page_social" varchar(50),
   "id_post_job" int4,
+  "id_job_describe" int4,
   "id_post_social" varchar(100),
   "url_image" varchar(150),
   "url_video" varchar(150),
   "url_post_social" varchar(150),
   "state" char NOT NULL DEFAULT '1',
   "content" varchar,
+  "review" varchar,
   "type_social" char NOT NULL DEFAULT '1',
   "type_schedule" char NOT NULL DEFAULT '1',
   "type_accept" char NOT NULL DEFAULT '0',
@@ -520,7 +524,7 @@ CREATE TABLE "kol_social_post" (
 ;
 ALTER TABLE "kol_social_post" ADD CONSTRAINT "kol_social_post_kol" FOREIGN KEY ("id_kol") REFERENCES "kols" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
 --ALTER TABLE "kol_social_post" ADD CONSTRAINT "kol_social_post_page" FOREIGN KEY ("id_page") REFERENCES "kol_social_page" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
---ALTER TABLE "kol_social_post" ADD CONSTRAINT "kol_social_post_job" FOREIGN KEY ("id_job_describe") REFERENCES "job_describe" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "kol_social_post" ADD CONSTRAINT "kol_social_post_job" FOREIGN KEY ("id_job_describe") REFERENCES "job_describe" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- ----------------------------
 -- Records of categories
