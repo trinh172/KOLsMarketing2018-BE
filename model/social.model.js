@@ -127,7 +127,28 @@ module.exports = {
             return false;
         }
     },
-
+    async getListDraftOf1KolInPost(id_post, id_kol) {
+        try {
+            let items = await db('kol_social_post').where({
+                id_post_job: id_post,
+                id_kol: id_kol,
+                state: '0',
+            }).whereNotNull("id_job_describe").orderBy("create_time","desc");
+            const n = items.length;
+            let temp_count = 0;
+            while (temp_count < n){
+                items[temp_count].stt = temp_count + 1;
+                items[temp_count].kol_info = await this.getUserInfo(items[temp_count].id_kol, 1);
+                temp_count = temp_count + 1;
+            }
+            if (items)
+                return items;
+            return null;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
     async getListDraftOfPost(id_post) {
         try {
             let items = await db('kol_social_post').where({

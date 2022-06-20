@@ -26,6 +26,7 @@ router.post('/publish-a-draft-post-schedule', auth_middle.isKOLs, social.publish
 router.post('/update-draft-post', auth_middle.isKOLs, social.update_draft);
 router.delete('/delete-a-post', auth_middle.isKOLs, social.delete_post);
 router.post('/logout-social', auth_middle.isKOLs, social.logout_fb);
+router.post('/get-list-draft-of-1kol-in-post', auth_middle.isKOLs, social.get_list_draft_of_1kol_in_post);
 
 //routes for brand to manage social post in post_job
 //route lấy các bài đăng của kols trong công việc lớn, phải truyền id_post

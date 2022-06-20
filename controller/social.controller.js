@@ -513,6 +513,18 @@ exports.logout_fb = async function(req, res) {
     return res.status(403).json(false);
 }
 
+exports.get_list_draft_of_1kol_in_post = async function(req, res) {
+    //let id_kol = req.body?.id_kol;
+    let id_post = req.body?.id_post;
+    let id_kol = req.jwtDecoded.data.id;
+    let list_draft = await social_db.getListDraftOf1KolInPost(id_post, id_kol);
+    console.log(" list draft in post: ", list_draft)
+    if(list_draft){
+        return res.status(200).json(list_draft)
+    }
+    return res.status(403).json([]);
+}
+
 exports.get_list_draft_of_kol = async function(req, res) {
     //let id_kol = req.body?.id_kol;
     let id_kol = req.jwtDecoded.data?.id;
