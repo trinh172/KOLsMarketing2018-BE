@@ -607,7 +607,7 @@ exports.accept_draft_post = async function(req, res) {
     //let id_kol = req.body?.id_kol;
     let id = req.body?.id;
     let review = req.body?.review;
-    let accept = await social_db.updateTypeAccept(id, review, '1');
+    let accept = await social_db.updateTypeAccept(id, '1');
     let updatereview = await social_db.updateReviewOfDraftPost(id, review);
     if(accept){
         return res.status(200).json(true)
