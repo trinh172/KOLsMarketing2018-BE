@@ -64,12 +64,16 @@ exports.edit_info = async function(req, res) {
     if(check_dup_email.id != req.jwtDecoded.data.id){
         return res.status(400).json("Email không khả dụng");
     }
+    let address = req.body?.address;
+    if (req.body?.address == ""){
+        address = null;
+    }
     let new_info = {
         birth: req.body.birth,
         gender: req.body.gender,
         phone: req.body.phone,
         mail: req.body.mail,
-        address: req.body.address
+        address: address
     }
     let flag = await kols_db.updateInfo(new_info, req.jwtDecoded.data.id);
     if (flag){
