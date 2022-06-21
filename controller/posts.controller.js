@@ -298,7 +298,7 @@ exports.getAllPostKolsLikes = async function(req, res) {
         console.log("getAllPostKolsLikes: ", flag);
         return res.json(flag);
     }
-    return res.status(400).json(false);
+    return res.status(400).json([]);
 }
 
 exports.getAllPostKolsRecruitment = async function(req, res) {
@@ -307,7 +307,7 @@ exports.getAllPostKolsRecruitment = async function(req, res) {
         console.log("getAllPostKols Recruitment: ", flag);
         return res.json(flag);
     }
-    return res.status(400).json(false);
+    return res.status(400).json([]);
 }
 
 exports.kolGetAllActivePostOfBrand = async function(req, res) {
@@ -317,14 +317,14 @@ exports.kolGetAllActivePostOfBrand = async function(req, res) {
         if (flag){
             return res.status(200).json(flag);
         }
-        return res.status(400).json(false);
+        return res.status(400).json([]);
     }
     else{
         let flag = await post_unlogin_db.findActivePostOfBrands(id_brand, false);
         if (flag){
             return res.status(200).json(flag);
         }
-        return res.status(400).json(false);
+        return res.status(400).json([]);
     }
 }
 
@@ -339,7 +339,7 @@ exports.kolGet2ActivePostOfBrand = async function(req, res) {
             let result = await shuffle(flag, 2);
             return res.status(200).json(result);
         }
-        return res.status(400).json(false);
+        return res.status(400).json([]);
     }
     else{
         let flag = await post_unlogin_db.findActivePostOfBrands(id_brand, id_current);
@@ -349,7 +349,7 @@ exports.kolGet2ActivePostOfBrand = async function(req, res) {
             let result = await shuffle(flag, 2);
             return res.status(200).json(result);
         }
-        return res.status(400).json(false);
+        return res.status(400).json([]);
     }
     
 }
@@ -361,7 +361,7 @@ exports.getAllActivePostOfBrand = async function(req, res) {
         //const sortedActivities = flag.sort((a, b) => b.write_time - a.write_time);
         return res.json(flag);
     }
-    return res.status(400).json(false);
+    return res.status(400).json([]);
 }
 exports.getAllUnactivePostOfBrand = async function(req, res) {
     let flag = await post_db.findUnactivePostOfBrands(req.jwtDecoded.data.id);
@@ -369,7 +369,7 @@ exports.getAllUnactivePostOfBrand = async function(req, res) {
         //console.log("getAllUnactivePostOfBrand: ", flag);
         return res.json(flag);
     }
-    return res.status(400).json(false);
+    return res.status(400).json([]);
 }
 
 exports.kolsUnlikePost = async function(req, res) {
@@ -397,7 +397,7 @@ exports.getAllSuggestPost = async function(req, res) {
         if (flag){
             return res.status(200).json(flag);
         }
-        return res.status(400).json(false);
+        return res.status(400).json([]);
     }
 }
 
@@ -411,7 +411,7 @@ exports.get12SuggestPost = async function(req, res) {
             let result = await shuffle(flag.slice(0,12), 12);
             return res.status(200).json(result);
         }
-        return res.status(400).json(false);
+        return res.status(400).json([]);
     }
     else{
         let flag = await post_unlogin_db.findSuggestPost( id_current);
@@ -421,7 +421,7 @@ exports.get12SuggestPost = async function(req, res) {
             let result = await shuffle(flag.slice(0,12), 12);
             return res.status(200).json(result);
         }
-        return res.status(400).json(false);
+        return res.status(400).json([]);
     }
     
 }
