@@ -20,8 +20,21 @@ exports.count_job_of_kol = async function(req, res) {
 exports.count_all_post_of_brand_per_month = async function(req, res) {
     let id_brand = req.jwtDecoded.data?.id;
     let result = await statistic_db.countPostOfBrandPerMonth(id_brand);
-    
-    return res.status(200).json(result);
+    if(result.length > 0){
+        let temp = 0;
+        let new_array = [];
+        while (temp < result.length){
+            let new_obj = {
+                'time': result[temp].mon + ' - ' + result[temp].yyyy,
+                'total': result[temp].total
+            }
+            new_array.push(new_obj);
+            temp = temp + 1;
+        }
+        return res.status(200).json(new_array)
+    }
+    return res.status(400).json([]);
+
 }
 exports.count_like_share_cmt_per_post = async function(req, res) {
     let id_brand = req.jwtDecoded.data?.id;
