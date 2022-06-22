@@ -325,6 +325,23 @@ module.exports = {
         }
     },
 
+    async getListPublishPostDoneInPostOfBrand(id_post) {
+        try {
+            let today = moment().add(7, 'hours');
+
+            let publish_post_done = await db('kol_social_post').where({
+                id_post_job: id_post
+            }).andWhere('schedule_time', '<=', today).whereNot("type_schedule", "0").orderBy('schedule_time', 'desc');
+            //console.log("publish_post_done: ", publish_post_done)
+            if (publish_post_done)
+                return publish_post_done;
+            return [];
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+
     async getListPostScheduleWaiting(id_kol) {
         try {
             let today = moment().add(7, 'hours');

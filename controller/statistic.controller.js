@@ -20,7 +20,58 @@ exports.count_job_of_kol = async function(req, res) {
 exports.count_all_post_of_brand_per_month = async function(req, res) {
     let id_brand = req.jwtDecoded.data?.id;
     let result = await statistic_db.countPostOfBrandPerMonth(id_brand);
+    
     return res.status(200).json(result);
+}
+exports.count_like_share_cmt_per_post = async function(req, res) {
+    let id_brand = req.jwtDecoded.data?.id;
+    //lấy ra các post của brand
+    //với mỗi post tìm ra các bài đăng và thực hiện cộng like, share, cmt của bài đăng đó
+    let array_post = await post_db.findAllPostOfBrands(id_brand);
+    let result = [];
+    if(array_post.length > 0){
+        let temp_c = 0;
+        while (temp_c < array_post.length){
+            let list_social_post_done = await social_db.getListPublishPostDoneInPostOfBrand( array_post[temp_c].id);
+            if(list_social_post_done.length > 0){
+                const len_arr = list_social_post_done.length;
+                let count_like = 0;
+                let count_comment = 0;
+                let count_share = 0;
+                let temp_count = 0;
+                let fbPageAccessToken = "";
+                while (temp_count < len_arr){
+                    fbPageAccessToken = await social_db.getPageAccessByIDpageKol(list_social_post_done[temp_count].id_kol, list_social_post_done[temp_count].id_page_social);
+                    if(fbPageAccessToken){
+                        let req_url = `https://graph.facebook.com/v9.0/${list_social_post_done[temp_count].id_page_social}_${list_social_post_done[temp_count].id_post_social}?access_token=${fbPageAccessToken}&fields=comments.limit(0).summary(true),likes.limit(0).summary(true),shares`;
+                        let response = await axios({
+                            url: encodeURI(req_url),        
+                        });
+                    
+                        if(response?.data){
+                            console.log("Count like, share, comment: ", response.data);
+                            count_like = count_like + response.data.likes.summary.total_count;
+                            count_comment = count_comment + response.data.comments.summary.total_count;
+                            if(response.data?.shares){
+                                count_share = count_share + response.data?.shares.count;
+                            }
+                        }
+                    }
+                    temp_count = temp_count + 1;
+                }
+                result.push({
+                    post_title: array_post[temp_c].title,
+                    count_comment: count_comment,
+                    count_like: count_like,
+                    count_share: count_share
+                });
+                
+            }
+            temp_c = temp_c + 1;
+        }
+        return res.status(200).json(result);
+    }
+    return res.status(400).json([]);
 }
 exports.count_kol_work_with_brand = async function(req, res) {
     let id_brand = req.jwtDecoded.data?.id;

@@ -238,8 +238,8 @@ module.exports = {
     async findAllPostOfBrands(brand_id){
         let items = await db('posts').where('id_writer', brand_id);
         if (items.length==0)
-            return null;
-        return items[0];
+            return [];
+        return items;
     },
     async findActivePostOfBrands(brand_id){
         let items = await db('posts').where({

@@ -16,6 +16,7 @@ router.post('/count-brand-kol-like', auth_middle.isKOLs, statistic.number_brand_
 //router.post('/count-social-post-for-each-job', auth_middle.isBrand, social.count_like_comment_in_job);
 
 router.post('/count-post-of-brand-per-month', auth_middle.isBrand, statistic.count_all_post_of_brand_per_month);
+router.post('/count-like-share-cmt-per-post', auth_middle.isBrand, statistic.count_like_share_cmt_per_post);
 router.post('/count-kol-work-with-brand', auth_middle.isBrand, statistic.count_kol_work_with_brand);
 router.post('/count-recruitment-of-brand', auth_middle.isBrand, statistic.count_recruit_of_brand);
 
