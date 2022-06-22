@@ -210,6 +210,28 @@ module.exports = {
         return items[0];
     },
 
+    async findActivePostByIDPost(ID, iduser){
+        let items = await db('posts').where({
+                                        'id': ID,
+                                        'state': 1
+                                    });
+        if (items.length == 0)
+            return null;
+        items[0].brand = await this.getBrandInfo(items[0].id_writer);
+        items[0].image_cover = await this.getImageCover(ID);
+        items[0].address = await this.getAddressName(items[0].address);
+        items[0].write_time = moment(items[0].write_time).format("DD/MM/YYYY HH:mm");
+        let like = await db('kols_like_post')
+                .where({
+                    'id_kol': iduser,
+                    'id_post':  items[0].id,
+                });
+        if(like.length > 0)
+            items[0].likePost = true;
+        else items[0].likePost = false;
+        return items[0];
+    },
+
     async findAllPostByIDPostInTime(ID, day_ago, iduser){
         let items = await db('posts').where({
                                         'id': ID
@@ -563,9 +585,8 @@ module.exports = {
         return rows;
     },
 
-    //Find new post (1 month) by Category --> từng chuyên mục
+    //Find new post by Category --> từng chuyên mục
     async findNewPostByCategory(id_category, iduser) {
-        let day_ago = moment().subtract(30, "days");
         const rows = await db('post_categories')
             .where({
                 id_cate: id_category,
@@ -573,7 +594,7 @@ module.exports = {
         let result = [];
         let tempcount = 0;
         while (tempcount < rows.length){
-            let item = await this.findActivePostByIDPostInTime(rows[tempcount].id_post, day_ago, iduser);
+            let item = await this.findActivePostByIDPost(rows[tempcount].id_post, iduser);
             if(item != null){
                 result.push(item);
             }
