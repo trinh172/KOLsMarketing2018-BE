@@ -27,10 +27,10 @@ exports.count_kol_work_with_brand = async function(req, res) {
     let result = await statistic_db.countKOLWorkWithBrand(id_brand);
     console.log("count kol: ", result)
     if(result.length == 0)
-        return res.status(200).json({count_recruitment: 0})
+        return res.status(200).json(0)
     else{
         let des_array = Array.from(new Set(result));
-        return res.status(200).json({count_recruitment: des_array.length});
+        return res.status(200).json(des_array.length);
     }
 }
 //social post
