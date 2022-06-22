@@ -90,63 +90,67 @@ module.exports = {
             role2: role
         });
         let result = [];
-        for(i=0; i<case1.length; i++){
+        let temp1 = 0;
+        while(temp1 < case1.length){
             let item = {};
-            item.id_room = case1[i].id;
-            if(case1[i].role2 == 1){
-                let userInfo = await this.getUserInfo(case1[i].id_user2, 1)
+            item.id_room = case1[temp1].id;
+            if(case1[temp1].role2 == 1){
+                let userInfo = await this.getUserInfo(case1[temp1].id_user2, 1)
                 let state = await db("check_read_room").where({
-                    id_room: case1[i].id,
+                    id_room: case1[temp1]?.id,
                     id_user: user,
                     role: role
                 })
-                item.state = state[0].state;
+                item.state = state[0]?.state;
                 item.userInfo = userInfo;
-                item.create_time = case1[i].time;
-                item.last_message = await this.findNewestMessageInroom(case1[i].id);
+                item.create_time = case1[temp1]?.time;
+                item.last_message = await this.findNewestMessageInroom(case1[temp1].id);
             }
-            if(case1[i].role2 == 2){
-                let userInfo = await this.getUserInfo(case1[i].id_user2, 2)
+            if(case1[temp1].role2 == 2){
+                let userInfo = await this.getUserInfo(case1[temp1].id_user2, 2)
                 item.userInfo = userInfo;
                 let state = await db("check_read_room").where({
-                    id_room: case1[i].id,
+                    id_room: case1[temp1]?.id,
                     id_user: user,
                     role: role
                 })
-                item.state = state[0].state;
-                item.create_time = case1[i].time;
-                item.last_message = await this.findNewestMessageInroom(case1[i].id);
+                item.state = state[0]?.state;
+                item.create_time = case1[temp1]?.time;
+                item.last_message = await this.findNewestMessageInroom(case1[temp1].id);
             }
             result.push(item);
+            temp1 = temp1 + 1;
         }
-        for(i=0; i<case2.length; i++){
+        let temp2 = 0;
+        while(temp2 < case2.length){
             let item = {};
-            item.id_room = case2[i].id;
-            if(case2[i].role1 == 1){
-                let userInfo = await this.getUserInfo(case2[i].id_user1, 1)
+            item.id_room = case2[temp2].id;
+            if(case2[temp2].role1 == 1){
+                let userInfo = await this.getUserInfo(case2[temp2].id_user1, 1)
                 item.userInfo = userInfo;
                 let state = await db("check_read_room").where({
-                    id_room: case2[i].id,
+                    id_room: case2[temp2]?.id,
                     id_user: user,
                     role: role
                 })
-                item.state = state[0].state;
-                item.create_time = case2[i].time;
-                item.last_message = await this.findNewestMessageInroom(case2[i].id);
+                item.state = state[0]?.state;
+                item.create_time = case2[temp2].time;
+                item.last_message = await this.findNewestMessageInroom(case2[temp2].id);
             }
-            if(case2[i].role1 == 2){
-                let userInfo = await this.getUserInfo(case2[i].id_user1, 2)
+            if(case2[temp2].role1 == 2){
+                let userInfo = await this.getUserInfo(case2[temp2].id_user1, 2)
                 item.userInfo = userInfo;
                 let state = await db("check_read_room").where({
-                    id_room: case2[i].id,
+                    id_room: case2[temp2]?.id,
                     id_user: user,
                     role: role
                 })
-                item.state = state[0].state;
-                item.create_time = case2[i].time;
-                item.last_message = await this.findNewestMessageInroom(case2[i].id);
+                item.state = state[0]?.state;
+                item.create_time = case2[temp2].time;
+                item.last_message = await this.findNewestMessageInroom(case2[temp2].id);
             }
             result.push(item);
+            temp2 = temp2 + 1;
         }
 
         if (result.length > 0)
