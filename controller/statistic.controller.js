@@ -52,24 +52,11 @@ exports.count_like_share_cmt_per_post = async function(req, res) {
                 let count_comment = 0;
                 let count_share = 0;
                 let temp_count = 0;
-                let fbPageAccessToken = "";
                 while (temp_count < len_arr){
-                    fbPageAccessToken = await social_db.getPageAccessByIDpageKol(list_social_post_done[temp_count].id_kol, list_social_post_done[temp_count].id_page_social);
-                    if(fbPageAccessToken){
-                        let req_url = `https://graph.facebook.com/v9.0/${list_social_post_done[temp_count].id_page_social}_${list_social_post_done[temp_count].id_post_social}?access_token=${fbPageAccessToken}&fields=comments.limit(0).summary(true),likes.limit(0).summary(true),shares`;
-                        let response = await axios({
-                            url: encodeURI(req_url),        
-                        });
+                    count_like = count_like + list_social_post_done[temp_count].count_like;
+                    count_comment = count_comment + list_social_post_done[temp_count].count_comment;
+                    count_share = count_share + list_social_post_done[temp_count].count_share;
                     
-                        if(response?.data){
-                            console.log("Count like, share, comment: ", response.data);
-                            count_like = count_like + response.data.likes.summary.total_count;
-                            count_comment = count_comment + response.data.comments.summary.total_count;
-                            if(response.data?.shares){
-                                count_share = count_share + response.data?.shares.count;
-                            }
-                        }
-                    }
                     temp_count = temp_count + 1;
                 }
                 result.push({

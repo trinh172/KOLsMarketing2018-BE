@@ -546,7 +546,8 @@ module.exports = {
             let items = await db('kol_social_post').where("id", id).update({
                 count_like: like,
                 count_share: share,
-                count_comment: cmt
+                count_comment: cmt,
+                update_time: moment().add(7, 'hours')
             });
             return true;
         } catch (e) {
