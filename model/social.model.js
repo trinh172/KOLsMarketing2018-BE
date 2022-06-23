@@ -283,6 +283,23 @@ module.exports = {
         }
     },
 
+    async getListPublishPostDoneOfKolNotDetail(id_kol) {
+        try {
+            let today = moment().add(7, 'hours');
+
+            let publish_post_done = await db('kol_social_post').where({
+                id_kol: id_kol,
+            }).andWhere('schedule_time', '<=', today).whereNot("type_schedule", "0").orderBy('schedule_time', 'desc');
+            
+            if (publish_post_done)
+                return publish_post_done;
+            return [];
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+
     async getListPublishPostDone(id_kol) {
         try {
             let today = moment().add(7, 'hours');
@@ -524,7 +541,19 @@ module.exports = {
             return false;
         }
     },
-
+    async updateLikeShareOf1SocialPost(id, like, share, cmt) {
+        try {
+            let items = await db('kol_social_post').where("id", id).update({
+                count_like: like,
+                count_share: share,
+                count_comment: cmt
+            });
+            return true;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
     async addNewPostSocial(post) {
         try {
             let items = await db('kol_social_post').insert(post);

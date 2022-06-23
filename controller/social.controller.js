@@ -603,6 +603,50 @@ exports.get_list_schedule_of_job = async function(req, res) {
     return res.status(403).json([]);
 }
 
+exports.updateLikeShareCmt1Kol = async function(req, res) {
+    //let id_kol = req.body?.id_kol;
+    let id_kol = req.jwtDecoded.data?.id;
+    let list_done = await social_db.getListPublishPostDoneOfKolNotDetail(id_kol);
+    
+    if(list_done.length > 0){
+        const len_arr = list_done.length;
+        let count_like = 0;
+        let count_comment = 0;
+        let count_share = 0;
+        let temp_count = 0;
+        let fbPageAccessToken = "";
+        while (temp_count < len_arr){
+            count_share = 0;
+            fbPageAccessToken = await social_db.getPageAccessByIDpageKol(list_done[temp_count].id_kol, list_done[temp_count].id_page_social);
+            if(fbPageAccessToken){
+                let req_url = `https://graph.facebook.com/v9.0/${list_done[temp_count].id_page_social}_${list_done[temp_count].id_post_social}?access_token=${fbPageAccessToken}&fields=comments.limit(0).summary(true),likes.limit(0).summary(true),shares`;
+                let response = await axios({
+                    url: encodeURI(req_url),        
+                });
+            
+                if(response?.data){
+                    console.log("Count like, share, comment: ", response.data);
+                    count_like = response.data.likes.summary.total_count;
+                    count_comment = response.data.comments.summary.total_count;
+                    if(response.data?.shares){
+                        count_share = response.data?.shares.count;
+                    }
+                    let flag = await social_db.updateLikeShareOf1SocialPost(list_done[temp_count].id, count_like, count_share, count_comment);
+                    if (flag){
+                        list_done[temp_count].count_like = count_like;
+                        list_done[temp_count].count_comment = count_comment;
+                        list_done[temp_count].count_share = count_share;
+                    }
+                }
+            }
+            temp_count = temp_count + 1;
+        }
+        return res.status(200).json(list_done);
+        
+    }
+    return res.status(400).json([]);
+}
+
 exports.accept_draft_post = async function(req, res) {
     //let id_kol = req.body?.id_kol;
     let id = req.body?.id;
