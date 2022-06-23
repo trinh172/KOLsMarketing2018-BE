@@ -370,7 +370,7 @@ CREATE TABLE "job_describe" (
     INCREMENT 1
     MINVALUE  1
     MAXVALUE 2147483647
-    START 10
+    START 30
     ),
   "id_post" int4 NOT NULL,
   "id_brand" int4 NOT NULL,
@@ -517,6 +517,10 @@ CREATE TABLE "kol_social_post" (
   "type_social" char NOT NULL DEFAULT '1',
   "type_schedule" char NOT NULL DEFAULT '1',
   "type_accept" char NOT NULL DEFAULT '0',
+  "count_like" int4 NOT NULL DEFAULT 0,
+  "count_share" int4 NOT NULL DEFAULT 0,
+  "count_comment" int4 NOT NULL DEFAULT 0,
+  "update_time" timestamp,
   "schedule_time" timestamp,
   "create_time" timestamp NOT NULL,
   PRIMARY KEY ("id")
