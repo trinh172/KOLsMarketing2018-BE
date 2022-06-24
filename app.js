@@ -1,41 +1,14 @@
-/*var express = require('express')
-const http = require("http");
-var app = express();
-const server = http.createServer(app);
 
-const socketIo = require("socket.io")(server, {
-    cors: {
-        origin: "*",
-    }
-  }); 
-  //Thêm cors để tránh exception
-
-
-socketIo.on("connection", (socket) => { ///Handle khi có connect từ client tới
-  console.log("New client connected" + socket.id); 
-
-  socket.on("sendDataClient", function(data) { // Handle khi có sự kiện tên là sendDataClient từ phía client
-    socketIo.emit("sendDataServer", { data });// phát sự kiện  có tên sendDataServer cùng với dữ liệu tin nhắn từ phía server
-  })
-
-  socket.on("disconnect", () => {
-    console.log("Client disconnected"); // Khi client disconnect thì log ra terminal.
-  });
-});
-
-server.listen(3000, () => {
-    console.log('Server đang chay tren cong 3000');
-});*/
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var fs = require('fs');
 const cors = require('cors');
-const { Server } =  require("socket.io");
-const mySocket =  require("./socket/socket") ;
+//const { Server } =  require("socket.io");
+//const mySocket =  require("./socket/socket") ;
 const http = require("http");
+//const CronJob = require('node-cron');
 
 require('dotenv').config();
 
@@ -62,8 +35,6 @@ var app = express();
 const server = new http.Server(app);
 
 console.log('process.env.PORT', process.env.PORT);
-// const io_router = require('./socket/index')(io);
-// app.use(io_router);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -74,25 +45,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-//Init io
-/*const io = new Server(server, {
-  cors: {
-      origin: '*',
-  }
-});
-
-//require socket
-mySocket(io);
-
-//set io for app
-app.set("io", io);*/
-
 app.use(express.static(path.join(__dirname, 'public'))); //FE show ảnh src="localhost://3000/public/images/posts/name.jpg"
 
-// app.use(cors({
-//   credentials: true, 
-//   origin: DOMAIN_FE.substring(0, DOMAIN_FE.length - 1)
-// }));
 app.use(cors());
 
 app.use('/', authen_author);
@@ -110,9 +64,6 @@ app.use('/social', socialRouter);
 app.use('/statistic', statisticRouter);
 app.use('/admins', adminRouter);
 
-if (!fs.existsSync("./public/images/posts")) {
-  fs.mkdirSync("./public/images/posts");
-}
 //app.use(AuthMiddleWare.isBrand);
 app.use('/brands', brandRouter);
 
@@ -139,3 +90,14 @@ let io = require('socket.io')(server);
 
 // initialize my socketio module and pass it the io instance
 require('./socket/socket')(io);
+//cron.schedule('00 00 00 * *', () => {console.log("Task is running every minute " + new Date())});
+/*const job1 = new CronJob('00 00 00 * * *', function() {
+	const d = new Date();
+	console.log('Midnight:', d);
+});
+const job2 = new CronJob('00 30 11 * * *', function() {
+	const d = new Date();
+	console.log('buoi trua:', d);
+});
+job1.start();
+job2.start();*/

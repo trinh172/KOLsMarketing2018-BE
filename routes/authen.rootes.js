@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const authentication = require('../controller/authentication.controller');
-const brands_ct = require('../controller/brands.controller');
+const social_ct = require('../controller/social.controller');
 const address_ct = require('../controller/address.controller');
 
 router.post('/is-available',authentication.is_available);
@@ -21,6 +21,7 @@ router.post('/brands-login', authentication.brands_signin);
 router.post('/google-login', authentication.google_signin);
 
 router.get('/list-province-vn', address_ct.list_province_vn);
+router.get('/update-social-info', social_ct.updateLikeShareCmtAllSocialPost);
 
 //route for admin authenticate
 router.post('/register-admins',authentication.admins_register);

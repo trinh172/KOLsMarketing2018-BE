@@ -300,6 +300,21 @@ module.exports = {
         }
     },
 
+    async getAllPublishPostDone() {
+        try {
+            let today = moment().add(7, 'hours');
+
+            let publish_post_done = await db('kol_social_post').where('schedule_time', '<=', today).whereNot("type_schedule", "0").orderBy('schedule_time', 'desc');
+            
+            if (publish_post_done)
+                return publish_post_done;
+            return [];
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+
     async getListPublishPostDone(id_kol) {
         try {
             let today = moment().add(7, 'hours');
