@@ -108,7 +108,8 @@ START 5
   "is_super" char NOT NULL DEFAULT '0',
   "email" varchar(255),
   "create_time" timestamp,
-	"otp" int4
+	"otp" int4,
+  PRIMARY KEY ("id")
 )
 ;
 -- ----------------------------
@@ -131,7 +132,7 @@ CREATE TABLE "posts" (
   "content" varchar NOT NULL,
   "requirement" varchar,
   "benefit" varchar,
-  "address" varchar(50),
+  "address" varchar(5),
   "write_time" timestamp NOT NULL,
   "views" int4 NOT NULL DEFAULT '0',
   "hot" char NOT NULL DEFAULT '0',
@@ -210,23 +211,7 @@ CREATE TABLE "post_categories" (
   CONSTRAINT "PostCate2" FOREIGN KEY ("id_cate") REFERENCES "categories" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 ) 
 ;
--- ----------------------------
--- Table structure for Image_Recruitment
--- ----------------------------
-CREATE TABLE "image_recruitment" (
-  "id" int4 NOT NULL GENERATED ALWAYS AS IDENTITY (
-    INCREMENT 1
-    MINVALUE  1
-    MAXVALUE 2147483647
-    START 30
-    ),
-  "id_recruitment" int4 NOT NULL,
-  "url" varchar(255) NOT NULL,
-  "type" char NOT NULL DEFAULT '1',
-  PRIMARY KEY ("id"),
-  CONSTRAINT "recruit_image" FOREIGN KEY ("id_recruitment") REFERENCES "recruitment" ("id") ON DELETE CASCADE ON UPDATE CASCADE
-) 
-;
+
 -- ----------------------------
 -- Table structure for Image_Post, type = 2: cover, type = 1: detail picture
 -- ----------------------------
@@ -708,3 +693,4 @@ INSERT INTO "vn_tinhthanhpho" ("id", "name", "type", "slug") VALUES
 ('96',	'Cà Mau',	'Tỉnh',	'CAMAU');
 COMMIT;
 ALTER TABLE "kols" ADD CONSTRAINT "KolsAddress" FOREIGN KEY ("address") REFERENCES "vn_tinhthanhpho" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "posts" ADD CONSTRAINT "PostsAddress" FOREIGN KEY ("address") REFERENCES "vn_tinhthanhpho" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
