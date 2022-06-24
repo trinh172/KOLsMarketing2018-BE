@@ -82,14 +82,15 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
 server.listen(process.env.PORT, () => {
   console.log(`Server is listening at PORT ${process.env.PORT}`);
 });
-
 let io = require('socket.io')(server);
 
 // initialize my socketio module and pass it the io instance
 require('./socket/socket')(io);
+
 //cron.schedule('00 00 00 * *', () => {console.log("Task is running every minute " + new Date())});
 /*const job1 = new CronJob('00 00 00 * * *', function() {
 	const d = new Date();
