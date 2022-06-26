@@ -606,7 +606,7 @@ exports.get_list_schedule_of_job = async function(req, res) {
 exports.updateLikeShareCmt1Kol = async function(req, res) {
     //let id_kol = req.body?.id_kol;
     let id_kol = req.jwtDecoded.data?.id;
-    let list_done = await social_db.getListPublishPostDoneOfKolNotDetail(id_kol);
+    let list_done = await social_db.getListPublishPostDone(id_kol);
     
     if(list_done.length > 0){
         const len_arr = list_done.length;

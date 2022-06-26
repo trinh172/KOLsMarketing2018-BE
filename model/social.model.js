@@ -44,6 +44,21 @@ module.exports = {
         return '';
     },
 
+    async getBrandNameByIDPost(idpost){
+        const item = await db('posts').where({
+            id: idpost
+        });
+        if(item.length>0){
+            const brand = await db('brands').where({
+                id: item[0].id_writer
+            });
+            if(brand.length > 0){
+                return brand[0].brand_name;
+            }
+        }
+        return '';
+    },
+
     async getListPageByIDKols(id_kol) {
         try {
             let items = await db('kol_social_page').where("id_kol", id_kol);
@@ -56,10 +71,11 @@ module.exports = {
 
     async getPageAccessByIDpageKol(id_kol, id_page_social) {
         try {
+            let today = moment().add(7, 'hours');
             let items = await db('kol_social_page').where({
                 "id_kol": id_kol,
                 "id_page_social": id_page_social
-            });
+            }).andWhere('time_expired', '>=', today);
             if(items.length > 0)
                 return items[0].page_token;
             else return null;
@@ -116,7 +132,7 @@ module.exports = {
             while (temp_count < n){
                 items[temp_count].stt = temp_count + 1;
                 items[temp_count].create_time = moment(items[temp_count].create_time).format("DD/MM/YYYY HH:mm");
-                items[temp_count].post_info = await this.getPostTitle(items[temp_count].id_post_job);
+                items[temp_count].brand_name = await this.getBrandNameByIDPost(items[temp_count].id_post_job);
                 temp_count = temp_count + 1;
             }
             if (items)
@@ -328,7 +344,7 @@ module.exports = {
             while(tempcount < n){
                 publish_post_done[tempcount].schedule_time = moment(publish_post_done[tempcount].schedule_time).format("DD/MM/YYYY HH:mm");
                 publish_post_done[tempcount].page_name = await this.getPageNameByPageSocialID(publish_post_done[tempcount].id_page_social);
-                publish_post_done[tempcount].post_info = await this.getPostTitle(publish_post_done[tempcount].id_post_job);
+                publish_post_done[tempcount].brand_name = await this.getBrandNameByIDPost(publish_post_done[tempcount].id_post_job);
                 tempcount = tempcount + 1;
             }
             if (publish_post_done)
@@ -385,7 +401,7 @@ module.exports = {
             for( i = 0; i < publish_post_waiting.length; i++){
                 publish_post_waiting[i].schedule_time = moment(publish_post_waiting[i].schedule_time).format("DD/MM/YYYY HH:mm");
                 publish_post_waiting[i].page_name = await this.getPageNameByPageSocialID(publish_post_waiting[i].id_page_social);
-                publish_post_waiting[i].post_info = await this.getPostTitle(publish_post_waiting[i].id_post_job)
+                publish_post_waiting[i].brand_name = await this.getBrandNameByIDPost(publish_post_waiting[i].id_post_job)
             }
             if (publish_post_waiting)
                 return publish_post_waiting;
