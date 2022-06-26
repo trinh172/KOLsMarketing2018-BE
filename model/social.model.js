@@ -133,6 +133,7 @@ module.exports = {
                 items[temp_count].stt = temp_count + 1;
                 items[temp_count].create_time = moment(items[temp_count].create_time).format("DD/MM/YYYY HH:mm");
                 items[temp_count].brand_name = await this.getBrandNameByIDPost(items[temp_count].id_post_job);
+                items[temp_count].post_info = await this.getPostTitle(items[temp_count].id_post_job);
                 temp_count = temp_count + 1;
             }
             if (items)
