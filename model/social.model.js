@@ -346,6 +346,7 @@ module.exports = {
                 publish_post_done[tempcount].schedule_time = moment(publish_post_done[tempcount].schedule_time).format("DD/MM/YYYY HH:mm");
                 publish_post_done[tempcount].page_name = await this.getPageNameByPageSocialID(publish_post_done[tempcount].id_page_social);
                 publish_post_done[tempcount].brand_name = await this.getBrandNameByIDPost(publish_post_done[tempcount].id_post_job);
+                publish_post_done[tempcount].post_info = await this.getPostTitle(publish_post_done[tempcount].id_post_job);
                 tempcount = tempcount + 1;
             }
             if (publish_post_done)
@@ -399,10 +400,11 @@ module.exports = {
                 id_kol: id_kol,
             }).andWhere('schedule_time', '>', today).whereNot("type_schedule", "0").orderBy('schedule_time', 'desc');
             //console.log("publish_post_waiting: ", publish_post_waiting);
-            for( i = 0; i < publish_post_waiting.length; i++){
+            for(let i = 0; i < publish_post_waiting.length; i++){
                 publish_post_waiting[i].schedule_time = moment(publish_post_waiting[i].schedule_time).format("DD/MM/YYYY HH:mm");
                 publish_post_waiting[i].page_name = await this.getPageNameByPageSocialID(publish_post_waiting[i].id_page_social);
-                publish_post_waiting[i].brand_name = await this.getBrandNameByIDPost(publish_post_waiting[i].id_post_job)
+                publish_post_waiting[i].brand_name = await this.getBrandNameByIDPost(publish_post_waiting[i].id_post_job);
+                publish_post_waiting[i].post_info = await this.getPostTitle(publish_post_waiting[i].id_post_job);
             }
             if (publish_post_waiting)
                 return publish_post_waiting;
