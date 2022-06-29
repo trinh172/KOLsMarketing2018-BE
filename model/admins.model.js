@@ -52,4 +52,16 @@ module.exports = {
             return false;
         }
     },
+
+    async updateStatusOfPost(id_post, new_status) {
+        try {
+            await db('posts').where({
+                'id_post': id_post,
+            }).update("status", new_status);
+            return true
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
 }

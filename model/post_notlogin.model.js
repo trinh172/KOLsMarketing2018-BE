@@ -95,7 +95,8 @@ module.exports = {
 
     async allActivePosts(){
         let items = await db('posts').where({
-            'state': 1
+            'state': 1,
+            'status': 1
         });
         for(let i = 0; i<items.length; i++){
             items[i].write_time = moment(items[i].write_time).format("DD/MM/YYYY HH:mm:ss");
@@ -172,7 +173,8 @@ module.exports = {
     async findActivePostByIDPost(ID){
         let items = await db('posts').where({
                                         'id': ID,
-                                        'state': 1
+                                        'state': 1,
+                                        'status': 1
                                     });
         if (items.length == 0)
             return null;
@@ -188,7 +190,8 @@ module.exports = {
     async findActivePostByIDPostInTime(ID, day_ago){
         let items = await db('posts').where({
                                         'id': ID,
-                                        'state': 1
+                                        'state': 1,
+                                        'status': 1
                                     })
                                     .andWhere('write_time', '>=', day_ago);
         if (items.length == 0)
@@ -233,13 +236,15 @@ module.exports = {
         if(id_current){
             items = await db('posts').where({
                 'id_writer': brand_id,
-                'state': 1
+                'state': 1,
+                'status': 1
             }).whereNot('id', id_current);
         }
         else{
             items = await db('posts').where({
                 'id_writer': brand_id,
-                'state': 1
+                'state': 1,
+                'status': 1
             });
         }
         let result = [];
@@ -274,12 +279,14 @@ module.exports = {
         let items = [];
         if(id_current){
             items = await db('posts').where({
-                'state': 1
+                'state': 1,
+                'status': 1
             }).whereNot('id', id_current).orderBy('views', 'desc');
         }
         else{
             items = await db('posts').where({
-                'state': 1
+                'state': 1,
+                'status': 1
             }).orderBy('views', 'desc');
         }
         let result =[]
@@ -304,7 +311,8 @@ module.exports = {
     async findUnactivePostOfBrands(brand_id){
         let items = await db('posts').where({
                                         'id_writer': brand_id,
-                                        'state': 0
+                                        'state': 0,
+                                        'status': 1
                                     });
         return items;
     },
@@ -316,6 +324,7 @@ module.exports = {
         const rows = await db('posts')
             .where({
                 state: 1,
+                status: 1
             })
             .andWhere('write_time', '>=', day_ago)
             .orderBy('views', 'desc')
@@ -346,6 +355,7 @@ module.exports = {
         const rows = await db('posts')
             .where({
                 state: 1,
+                status: 1
             })
             .andWhere('write_time', '>=', day_ago)
             .orderBy('write_time', 'desc')
@@ -438,7 +448,7 @@ module.exports = {
 
     async find60NewestPostModel() {
         const rows = await db('posts')
-            .where("state", '1')
+            .where({"status": '1', "state": '1'})
             .orderBy('write_time', 'desc')
             .limit(60);
         if(rows.length <= 0)
@@ -459,7 +469,7 @@ module.exports = {
 
     async find120NewestPostModel() {
         const rows = await db('posts')
-            .where("state", '1')
+            .where({"status": '1', "state": '1'})
             .orderBy('write_time', 'desc')
             .limit(120);
         if(rows.length <= 0)
@@ -479,7 +489,7 @@ module.exports = {
 
     async find6HighestCastPostModel() {
         const rows = await db('posts')
-            .where("state", '1')
+            .where({"status": '1', "state": '1'})
             .orderBy('min_cast', 'desc')
             .limit(6);
         if(rows.length <= 0)
@@ -499,7 +509,7 @@ module.exports = {
 
     async find30HighestCastPostModel() {
         const rows = await db('posts')
-            .where("state", '1')
+            .where({'status': '1', "state":'1'})
             .orderBy('min_cast', 'desc')
             .limit(30);
         if(rows.length <= 0)

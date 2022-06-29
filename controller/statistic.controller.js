@@ -34,7 +34,6 @@ exports.count_all_post_of_brand_per_month = async function(req, res) {
             new_array.push(new_obj);
             temp = temp + 1;
         }
-        console.log("year array: ", new_array);
         return res.status(200).json(new_array)
     }
     return res.status(400).json([]);
