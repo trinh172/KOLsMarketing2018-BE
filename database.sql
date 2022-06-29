@@ -114,6 +114,8 @@ START 5
 ;
 -- ----------------------------
 -- Table structure for Posts
+-- state: 1: đang active, 0: unactive
+-- status: 1: ko bị block, 0: bị block
 -- ----------------------------
 CREATE TABLE "posts" (
   "id" int4 NOT NULL GENERATED ALWAYS AS IDENTITY (
@@ -129,6 +131,7 @@ CREATE TABLE "posts" (
   "min_cast" int4 NOT NULL,
   "max_cast" int4,
   "state" char NOT NULL DEFAULT '1',
+  "status" char NOT NULL DEFAULT '1',
   "content" varchar NOT NULL,
   "requirement" varchar,
   "benefit" varchar,
