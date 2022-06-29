@@ -88,3 +88,36 @@ exports.updateotp = async function(req, res) {
     }
     return res.status(400).json(false);
 }
+
+exports.get_list_post_of_1cate = async function(req, res) {
+    const id_cate = req.params.id;
+    const list_post = await admins_db.getListPostByCategory(id_cate);
+    return res.status(200).json(list_post);
+}
+
+exports.update_cate_name = async function(req, res) {
+    const id_cate = req.params.id_cate;
+    const cate_name = req.params.cate_name;
+    const update_name = await admins_db.updateCategoryName(id_cate, cate_name);
+    if (update_name){
+        return res.status(200).json(update_name);
+    }
+    return res.status(400).json(false);
+}
+
+exports.get_all_post = async function(req, res) {
+    const list_post = await admins_db.getAllPost();
+    return res.status(200).json(list_post);
+}
+
+exports.block_post = async function(req, res) {
+    const id_post = req.body.id_post;
+    const result = await admins_db.updateStatusOfPost(id_post, '0');
+    return res.status(200).json(result);
+}
+
+exports.unblock_post = async function(req, res) {
+    const id_post = req.body.id_post;
+    const result = await admins_db.updateStatusOfPost(id_post, '1');
+    return res.status(200).json(result);
+}
