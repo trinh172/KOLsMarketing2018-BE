@@ -16,7 +16,7 @@ router.get('/get-list-post-of-1cate/:id', auth_middle.isAdmin, admin.get_list_po
 router.post('/edit-category-name', auth_middle.isAdmin, admin.update_cate_name);
 router.post('/add-new-category', auth_middle.isAdmin, admin.add_new_cate);  
 
-router.post('/get-all-post', auth_middle.isAdmin, admin.get_all_post); 
+router.get('/get-all-post', auth_middle.isAdmin, admin.get_all_post); 
 router.post('/block-post', auth_middle.isAdmin, admin.block_post); 
 router.post('/unblock-post', auth_middle.isAdmin, admin.unblock_post); 
 module.exports = router;

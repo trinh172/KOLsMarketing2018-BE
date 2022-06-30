@@ -13,7 +13,31 @@ module.exports = {
         }
         return items
     },
+    async getImageCover(id_post){
+        const item = await db('image_post').where({
+            'id_post': id_post,
+            'type': '2'
+        })
+        if(item.length>0){
+            return item[0].url;
+        }
+        else
+            return null;
+    },
 
+    async getAddressName(id){
+        if(id){
+            const item = await db('vn_tinhthanhpho').where({
+                'id': id
+            })
+            if(item.length>0){
+                return item[0].name;
+            }
+            else
+                return null;
+        }
+        return null;
+    },
     async getBrandInfo(iduser){
         const item = await db('brands').where({
             id: iduser
@@ -74,7 +98,10 @@ module.exports = {
                                             id: rows[tempcount].id_post,
                                         });
             if(item != null){
-                result.push(item);
+                item[0].brand_info = await this.getBrandInfo(item[0].id_writer);
+                item[0].image_cover = await this.getImageCover(item[0].id);
+                item[0].address = await this.getAddressName(item[0].address);
+                result.push(item[0]);
             }
             tempcount = tempcount + 1;
         }
@@ -87,7 +114,8 @@ module.exports = {
         let tempcount = 0;
         while (tempcount < rows.length){
             rows[tempcount].brand_info = await this.getBrandInfo(rows[tempcount].id_writer);
-            
+            rows[tempcount].image_cover = await this.getImageCover(rows[tempcount].id);
+            rows[tempcount].address = await this.getAddressName(rows[tempcount].address);
             tempcount = tempcount + 1;
         }
         return rows;
