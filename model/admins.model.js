@@ -110,7 +110,7 @@ module.exports = {
 
     //Find all post by Category --> từng chuyên mục
     async getAllPost() {
-        const rows = await db('posts');
+        const rows = await db('posts').orderBy('id', "asc");
         let tempcount = 0;
         while (tempcount < rows.length){
             rows[tempcount].brand_info = await this.getBrandInfo(rows[tempcount].id_writer);
@@ -120,7 +120,6 @@ module.exports = {
         }
         return rows;
     },
-
     async updatePasswordByEmail(email, password){
         try {
             await db('admins').where('email', email).update({'password': password});
@@ -142,10 +141,29 @@ module.exports = {
             return false;
         }
     },
+
+    async updateHotOfPost(id_post, new_hot) {
+        try {
+            await db('posts').where({
+                'id': id_post,
+            }).update("hot", new_hot);
+            return true
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+
     async getAllCate() {
         try {
-            let list_cate = await db('categories');
-            return list_cate;
+            const rows = await db('categories');
+            let tempcount = 0;
+            while (tempcount < rows.length){
+                let list_post = await db('post_categories').where('id_cate', rows[tempcount].id);
+                rows[tempcount].count_posts = list_post.length;
+                tempcount = tempcount + 1;
+            }
+            return rows;
         } catch (e) {
             console.log(e);
             return [];

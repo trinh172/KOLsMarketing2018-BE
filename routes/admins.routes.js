@@ -12,11 +12,14 @@ router.get('/get-list-kols', auth_middle.isAdmin, admin.get_list_kols);
 router.get('/get-list-admins', auth_middle.isAdmin, admin.get_list_admins);
 router.post('/updateotp',  auth_middle.isAdmin, admin.updateotp);
 
+router.get('/get-list-cate', auth_middle.isAdmin, admin.get_all_cate);
 router.get('/get-list-post-of-1cate/:id', auth_middle.isAdmin, admin.get_list_post_of_1cate);
 router.post('/edit-category-name', auth_middle.isAdmin, admin.update_cate_name);
 router.post('/add-new-category', auth_middle.isAdmin, admin.add_new_cate);  
 
 router.get('/get-all-post', auth_middle.isAdmin, admin.get_all_post); 
+router.post('/set-post-hot', auth_middle.isAdmin, admin.set_hot_post); 
+router.post('/set-post-not-hot', auth_middle.isAdmin, admin.set_not_hot_post); 
 router.post('/block-post', auth_middle.isAdmin, admin.block_post); 
 router.post('/unblock-post', auth_middle.isAdmin, admin.unblock_post); 
 module.exports = router;

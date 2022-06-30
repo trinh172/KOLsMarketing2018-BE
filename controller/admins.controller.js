@@ -95,7 +95,10 @@ exports.get_list_post_of_1cate = async function(req, res) {
     const list_post = await admins_db.getListPostByCategory(id_cate);
     return res.status(200).json(list_post);
 }
-
+exports.get_all_cate = async function(req, res) {
+    const list_cate = await admins_db.getAllCate();
+    return res.status(200).json(list_cate);
+}
 exports.update_cate_name = async function(req, res) {
     const id_cate = req.body.id_cate;
     const cate_name = req.body.cate_name;
@@ -130,5 +133,17 @@ exports.block_post = async function(req, res) {
 exports.unblock_post = async function(req, res) {
     const id_post = req.body.id_post;
     const result = await admins_db.updateStatusOfPost(id_post, '1');
+    return res.status(200).json(result);
+}
+
+exports.set_hot_post = async function(req, res) {
+    const id_post = req.body.id_post;
+    const result = await admins_db.updateHotOfPost(id_post, '1');
+    return res.status(200).json(result);
+}
+
+exports.set_not_hot_post = async function(req, res) {
+    const id_post = req.body.id_post;
+    const result = await admins_db.updateHotOfPost(id_post, '0');
     return res.status(200).json(result);
 }
