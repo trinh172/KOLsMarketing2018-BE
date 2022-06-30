@@ -4,7 +4,8 @@ const admins_db = require('../model/admins.model');
 const bcrypt = require('bcryptjs');
 const jwtHelper = require("../utils/jwt.helper");
 const nodemailer = require('nodemailer');
-const moment = require('moment')
+const moment = require('moment');
+const { all } = require('../model/kols.model');
 const accessTokenLife = process.env.ACCESS_TOKEN_LIFE;
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
 
@@ -96,11 +97,21 @@ exports.get_list_post_of_1cate = async function(req, res) {
 }
 
 exports.update_cate_name = async function(req, res) {
-    const id_cate = req.params.id_cate;
-    const cate_name = req.params.cate_name;
+    const id_cate = req.body.id_cate;
+    const cate_name = req.body.cate_name;
     const update_name = await admins_db.updateCategoryName(id_cate, cate_name);
     if (update_name){
         return res.status(200).json(update_name);
+    }
+    return res.status(400).json(false);
+}
+
+exports.add_new_cate = async function(req, res) {
+    const cate_name = req.body.cate_name;
+    const add_cate = await admins_db.addNewCate(cate_name);
+    if (add_cate){
+        let all_cate = await admins_db.getAllCate();
+        return res.status(200).json(all_cate);
     }
     return res.status(400).json(false);
 }

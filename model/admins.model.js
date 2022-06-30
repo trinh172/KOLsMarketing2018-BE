@@ -114,7 +114,15 @@ module.exports = {
             return false;
         }
     },
-
+    async getAllCate() {
+        try {
+            let list_cate = await db('categories');
+            return list_cate;
+        } catch (e) {
+            console.log(e);
+            return [];
+        }
+    },
     async updateCategoryName(id_cate, new_name) {
         try {
             await db('categories').where({
@@ -122,6 +130,15 @@ module.exports = {
             }).update("name", new_name);
             let list_cate = await db('categories');
             return list_cate;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+    async addNewCate(cate_name){
+        try {
+            await db('categories').insert({name: cate_name});
+            return true
         } catch (e) {
             console.log(e);
             return false;
