@@ -49,7 +49,7 @@ exports.count_like_share_cmt_per_post = async function(req, res) {
         let temp_c = 0;
         while (temp_c < array_post.length){
             let list_social_post_done = await social_db.getListPublishPostDoneInPostOfBrand( array_post[temp_c].id);
-            if(list_social_post_done.length > 0){
+            if(list_social_post_done.length >= 0){
                 const len_arr = list_social_post_done.length;
                 let count_like = 0;
                 let count_comment = 0;
