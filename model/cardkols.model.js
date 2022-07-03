@@ -67,7 +67,8 @@ module.exports = {
     async getAllCardKolsLikeInfo(id_brand){
         try {
             let items = await db('card_kols').where("state", "1");
-            for (i = 0; i < items.length; i++){
+            let i = 0;
+            while (i < items.length){
                 let detail = await db("kols").where('id', items[i].id_kol);
 
                 if(items[i].phone == '1')
@@ -107,6 +108,7 @@ module.exports = {
                 }
                 items[i].full_name = detail[0].full_name;
                 items[i].avatar = detail[0].avatar;
+                i = i + 1;
             }
             return items;
         } catch (e) {

@@ -83,6 +83,12 @@ module.exports = {
                 items[0].bio_url.push(bio[i].url);
             }
         };
+        let count_follow = await db("brands_like_kols").where({
+            id_kol: ID
+        });
+        if(count_follow.length > 0){
+            items[0].follows = count_follow.length
+        };
         items[0].create_time = moment(items[0].create_time).format("DD/MM/YYYY HH:mm:ss");
         items[0].role = '1';
         
@@ -338,7 +344,7 @@ module.exports = {
             };
             let bio = await db("bio_url").where({
                 id_user: ID,
-                role: '2'
+                role: '1'
             });
             if(bio.length > 0){
                 for(i = 0; i< bio.length; i++){

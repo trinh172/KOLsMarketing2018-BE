@@ -37,7 +37,7 @@ START 10
   "phone" varchar(15),
   "gender" varchar(15),
   "avatar" varchar(255),
-  "follows" int4,
+  "follows" int4 NOT NULL DEFAULT '0',
   "introduce" varchar(1000),
   "birthday" timestamp,
 	"create_time" timestamp NOT NULL,
