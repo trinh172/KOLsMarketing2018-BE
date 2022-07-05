@@ -11,6 +11,7 @@ router.post('/edit-address',auth_middle.isBrand, brands.edit_address);
 router.post('/edit-email',auth_middle.isBrand, brands.edit_email);
 router.post('/edit-phone',auth_middle.isBrand, brands.edit_phone);
 router.post('/edit-description',auth_middle.isBrand, brands.edit_description);
+router.post('/edit-gender',auth_middle.isBrand, brands.edit_gender);
 
 router.post('/update-avatar',auth_middle.isBrand, brands.update_avatar);
 router.post('/update-cover',auth_middle.isBrand, brands.update_cover);

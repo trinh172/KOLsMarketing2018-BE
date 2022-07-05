@@ -239,7 +239,15 @@ module.exports = {
             return false;
         }
     },
-
+    async updateGender(gender, id){
+        try {
+            await db('brands').where('id', id).update({'gender': gender});
+            return true
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
     async updateBrandname(brandname, id){
         try {
             await db('brands').where('id', id).update({'brand_name': brandname});

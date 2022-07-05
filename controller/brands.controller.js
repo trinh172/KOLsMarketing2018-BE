@@ -120,7 +120,16 @@ exports.edit_description = async function(req, res) {
     
     return res.status(400).json(false);
 }
-
+exports.edit_gender = async function(req, res) {
+    //Get infor from form at FE 
+    let new_gender = req.body.gender;
+    let flag = await brands_db.updateGender(new_gender, req.jwtDecoded.data.id);
+    if (flag){
+        return res.status(200).json(new_gender);
+    }
+    
+    return res.status(400).json(false);
+}
 exports.edit_password = async function(req, res) {
     //Get infor from form at FE 
     const ret = bcrypt.compareSync(req.body.old_password, req.jwtDecoded.data.password);
