@@ -24,12 +24,25 @@ exports.count_all_post_of_brand_per_month = async function(req, res) {
         let temp = 0;
         let new_array = [];
         let array_year = Array.from(new Set(result.map(item=>item.yyyy)));
-
+        
         while (temp < array_year.length){
             let statistic_array = await result.filter((year) => year.yyyy === array_year[temp]);
+            if(statistic_array.length < 12){
+                let temp_m = 1;
+                while (temp_m <= 12){
+                    let temp_array = statistic_array.filter((month_year) => month_year.mon == temp_m);
+                    if(temp_array.length <= 0){
+                        statistic_array.push({'yyyy': array_year[temp],
+                                            'mon': temp_m,
+                                            'total': 0})
+                    }
+                    temp_m = temp_m + 1;
+                }
+            }
+            let sort_array = statistic_array.sort((a, b) => a.mon - b.mon);
             let new_obj = {
                 'year': array_year[temp],
-                'statistic': statistic_array
+                'statistic': sort_array
             }
             new_array.push(new_obj);
             temp = temp + 1;
