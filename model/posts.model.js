@@ -857,7 +857,7 @@ module.exports = {
     async updateStateOfPost(id_post, state) {
         try {
             await db('posts').where({
-                'id_post': id_post,
+                'id': id_post,
             }).update("state", state);
             return true
         } catch (e) {
