@@ -134,7 +134,6 @@ exports.get_otp = async (req, res) => {
         await kols_db.updateOTPByEmailKOLs(email, otp);
     }
     // send otp to email
-    console.log("email, otp to sendOTP:", email, otp);
     let content = await mailContent.getOTPmail( email, otp);
     let transporter = nodemailer.createTransport(
         {
@@ -238,9 +237,7 @@ exports.admins_login = async (req, res) => {
 
 exports.google_signin = async (req, res) => {
     
-    console.log("signin:", req.body);
     let row_user = await kols_db.findKOLsByEmail(req.body.email);
-    console.log("row_user:",row_user);
     if (row_user == null) {
         let hash = bcrypt.hashSync(req.body.password, 10);
         const new_user ={
@@ -255,19 +252,6 @@ exports.google_signin = async (req, res) => {
     row_user = await kols_db.findKOLsByEmail(req.body.email);
     return handle_login_successfully(row_user, req, res, true, false, 1);
 }
-/*
-exports.brand_google_signin = async (req, res) => {
-    console.log("signin:", req.body);
-    let row_user = await user_db.findUserByUsername(req.body.username);
-    console.log("row_user:",row_user);
-    if (row_user == null) {
-        const new_user = req.body;
-        new_user.password = bcrypt.hashSync(req.body.password, 10);
-        await user_db.addNewUser(new_user);
-    }
-    row_user = await user_db.findUserByUsername(req.body.username);
-    return handle_login_successfully(row_user, req, res, true, false);
-}*/
 
 async function checkPassword(rows, req, res, role) {
   const ret = bcrypt.compareSync(req.body.password, rows.password);

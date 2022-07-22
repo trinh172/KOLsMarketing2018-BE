@@ -10,7 +10,6 @@ const contentMail = require('./mailContent.controller')
 const config = require('../config/const.config');
 
 exports.add_job_describe = async function(req, res) {
-    console.log("Check job image already upload: ", req.body?.files);
     let list_images = req.body?.files;
     //Get infor from form at FE 
     let create_time = moment().add(7, 'hours');
@@ -70,7 +69,6 @@ exports.add_job_describe = async function(req, res) {
 }
 
 exports.add_job_comment = async function(req, res) {
-    console.log("Check comment image already upload: ", req.body.files, req.body?.id_post);
     //Get infor from form at FE 
     let create_time = moment().add(7, 'hours');
     let new_cmt = {
@@ -228,9 +226,7 @@ exports.send_invite_mail = async function(req, res) {
     let job = await post_db.findPostByIDNotDetail(id_post);
     if (job){
         let link_invite = config.DOMAIN_FE + "invitejob/" + id_post + "/" + encodeURI(job.title);
-        console.log("invite link: ", link_invite);
         let content = await contentMail.getInvitationMail(req.jwtDecoded.data.full_name, email, link_invite, job.title);
-        console.log(typeof(content));
         let transporter = nodemailer.createTransport(
             {
                 service: "hotmail",
@@ -250,7 +246,7 @@ exports.send_invite_mail = async function(req, res) {
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
                 console.log("Sent email error: ", error);
-                return res.json(false);
+                return res.status(400).json(false);
             }
             console.log('Message sent: %s', info.messageId);   
             console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
@@ -270,7 +266,6 @@ exports.generate_link = async function(req, res) {
     let job = await post_db.findPostByIDNotDetail(id_post);
     if (job){
         let link_invite = config.DOMAIN_FE + "invitejob/" + id_post + "/" + encodeURI(job.title);
-        console.log("join job link: ", link_invite);
         return res.status(200).json(link_invite)
     }
     else{

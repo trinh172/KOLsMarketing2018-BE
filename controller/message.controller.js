@@ -12,7 +12,6 @@ exports.openRoom = async function(req, res) {
     else {
         let addsuccess = await mess_db.addRoom2User(req.jwtDecoded.data.id, req.jwtDecoded.data.role, req.body.iduser, req.body.role);
         if (addsuccess == true){
-            console.log(" vao add room success nha nha....", req.jwtDecoded.data?.id, req.jwtDecoded.data?.role, req.body?.iduser, req.body?.role );
             let newRoom = await mess_db.findRoomBy2User(req.jwtDecoded.data?.id, req.jwtDecoded.data?.role, req.body?.iduser, req.body?.role);
             await mess_db.add_check_read_room(newRoom.id, req.jwtDecoded.data?.id, req.jwtDecoded.data?.role);
             await mess_db.add_check_read_room(newRoom.id, req.body?.iduser, req.body?.role);

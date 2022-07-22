@@ -150,7 +150,6 @@ module.exports = {
         items[0].list_categories = list_cate;
         items[0].write_time = moment(items[i].write_time).format("DD/MM/YYYY HH:mm");
         items[0].likePost = false;
-        console.log("Detail Post model: ", items[0]);
         return items[0];
     },
 
@@ -165,7 +164,6 @@ module.exports = {
         items[0].address = await this.getAddressName(items[0].address);
         items[0].write_time = moment(items[0].write_time).format("DD/MM/YYYY HH:mm");
         items[0].likePost = false;
-        console.log("Detail Post and brand in model: ", items[0]);
         return items[0];
     },
 
@@ -203,7 +201,6 @@ module.exports = {
         items[0].address = await this.getAddressName(items[0].address);
         items[0].write_time = moment(items[0].write_time).format("DD/MM/YYYY HH:mm");
         items[0].likePost = false;
-        console.log("Detail Post and brand in model: ", items[0]);
         return items[0];
     },
 
@@ -221,7 +218,6 @@ module.exports = {
         items[0].address = await this.getAddressName(items[0].address);
         items[0].write_time = moment(items[0].write_time).format("DD/MM/YYYY HH:mm");
         items[0].likePost = false;
-        console.log("Detail Post and brand in model: ", items[0]);
         return items[0];
     },
 
@@ -360,7 +356,6 @@ module.exports = {
             .andWhere('write_time', '>=', day_ago)
             .orderBy('write_time', 'desc')
             .limit(10);
-        //console.log(rows);
         if(rows.length <= 0)
             return null;
         let tempcount = 0;
@@ -463,7 +458,6 @@ module.exports = {
             rows[tempcount].likePost = false;
             tempcount = tempcount + 1;
         }
-        console.log("60 bai post notlogin nè: ", rows[0]);
         return rows;
     },
 

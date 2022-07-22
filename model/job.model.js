@@ -135,7 +135,6 @@ module.exports = {
         let itemss = await db('job_describe').where({
             'id_post': id_post
         }).orderBy("create_time", "desc");
-        console.log("itemss: ", itemss);
         if (itemss.length==0)
             return [];
         const brand_info = await this.getUserInfo(itemss[0].id_brand, 2);

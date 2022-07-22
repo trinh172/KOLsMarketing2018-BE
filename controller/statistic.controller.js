@@ -92,7 +92,6 @@ exports.count_like_share_cmt_per_post = async function(req, res) {
 exports.count_kol_work_with_brand = async function(req, res) {
     let id_brand = req.jwtDecoded.data?.id;
     let result = await statistic_db.countKOLWorkWithBrand(id_brand);
-    console.log("count kol: ", result)
     if(result.length == 0)
         return res.status(200).json(0)
     else{
@@ -152,10 +151,8 @@ exports.get_user_social_info = async function(req, res) {
 }
 
 exports.get_list_draft_of_kol = async function(req, res) {
-    //let id_kol = req.body?.id_kol;
     let id_kol = req.jwtDecoded.data?.id;
     let list_draft = await social_db.getListDraftOfKol(id_kol);
-    console.log(" list draft: ", list_draft)
     if(list_draft){
         return res.status(200).json(list_draft)
     }
@@ -166,23 +163,7 @@ exports.get_list_publish_post_done = async function(req, res) {
     let id_kol = req.jwtDecoded.data?.id;
     
     let list_done = await social_db.getListPublishPostDone(id_kol);
-    //console.log(" list getListPublishPostDone: ", list_done)
-    /*
-    if(list_done.length > 0){
-        let fbPageAccessToken = await social_db.getPageAccessByIDpageKol(id_kol, list_done[0].id_page_social );
-        for(i = 0; i < list_done.length; i++){
-            let req_url = `https://graph.facebook.com/v9.0/${list_done[i].id_page_social}_${list_done[i].id_post_social}?access_token=${fbPageAccessToken}&fields=comments.limit(0).summary(true),likes.limit(0).summary(true)`;
-            let response = await axios({
-                url: encodeURI(req_url),
-                method: "get",
-            });
-
-            if(response?.data){
-                list_done[i].count_like = response.data.likes.summary.total_count;
-                list_done[i].count_comment = response.data.comments.summary.total_count;
-            }
-        }
-    }*/
+    
     if(list_done){
         return res.status(200).json(list_done)
     }
@@ -193,7 +174,6 @@ exports.get_list_publish_post_waiting = async function(req, res) {
     let id_kol = req.jwtDecoded.data?.id;
     
     let list_wait = await social_db.getListPostScheduleWaiting(id_kol);
-    console.log(" list getListPostScheduleWaiting: ", list_wait)
     if(list_wait){
         return res.status(200).json(list_wait)
     }

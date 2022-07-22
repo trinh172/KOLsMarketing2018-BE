@@ -43,9 +43,7 @@ exports.edit_description = async function(req, res) {
 exports.edit_password = async function(req, res) {
     //Get infor from form at FE 
     const ret = bcrypt.compareSync(req.body.old_password, req.jwtDecoded.data.password);
-    console.log(ret);
     if (ret===false){
-      console.log("Password cũ không đúng")
       return res.status(403).json({'error':'Password cũ không đúng'});
     }
     if(ret === true){
@@ -142,8 +140,7 @@ exports.kolsLikeBrand = async function(req, res) {
     if(id_brand){
         let flag = await kols_db.kolsLikeBrand(req.jwtDecoded.data.id, id_brand);
         if (flag){
-            console.log("Check like brand successfully: ", flag);
-            return res.json(flag);
+            return res.status(200).json(flag);
         }
     }
     return res.status(400).json(false);
@@ -152,8 +149,7 @@ exports.kolsLikeBrand = async function(req, res) {
 exports.getAllBrandsKolsLikes = async function(req, res) {
     let flag = await kols_db.findAllBrandsKolsLike(req.jwtDecoded.data.id);
     if (flag){
-        console.log("getAllBrandsKolsLikes: ", flag);
-        return res.json(flag);
+        return res.status(200).json(flag);
     }
     return res.status(400).json(false);
 }
@@ -163,8 +159,7 @@ exports.kolsUnlikeBrand = async function(req, res) {
     if(id_brand){
         let flag = await kols_db.kolsUnlikeBrand(req.jwtDecoded.data.id, id_brand);
         if (flag){
-            console.log("Check unlike brand successfully: ", flag);
-            return res.json(flag);
+            return res.status(200).json(flag);
         }
     }
     return res.status(400).json(false);

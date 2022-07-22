@@ -8,7 +8,6 @@ const jwtHelper = require("../utils/jwt.helper");
 const moment = require('moment');
 
 exports.add_recruitment = async function(req, res) {
-    console.log("Check many-images already upload: ", req.body.files);
     //Get infor from form at FE 
     let create_time = moment().add(7, 'hours');
 

@@ -22,8 +22,6 @@ var shuffle = function(array, n) {
  };
 
 exports.add_post = async function(req, res) {
-    console.log("Check many-images already upload: ", req.body.files);
-    console.log("Check title already upload: ", req.body.title);
     //Get infor from form at FE 
     let new_post = {
         title: req.body.title,
@@ -43,7 +41,6 @@ exports.add_post = async function(req, res) {
     let added_post = await post_db.findPostByBrandTitle(req.jwtDecoded.data.id, req.body.title);
     if (added_post){
         //Xử lý post_categories
-        console.log("List cate of post: ", req.body.selectedCate)
         let cate_post = {
             "id_cate":req.body.selectedCate,
             "id_post": added_post.id
@@ -77,10 +74,6 @@ exports.add_post = async function(req, res) {
         }
         await job_db.create_job_member(new_mem);
         if (new_mem){
-            /*let detailPost = await post_db.findPostAndBrandByIDPost(added_post.id);
-            if(detailPost){
-                return res.status(200).json(detailPost);
-            }*/
             return res.status(200).json({id: added_post.id});
         }
     }
@@ -262,8 +255,7 @@ exports.getDetailPost = async function(req, res) {
                 flag.views = flag.views + 1;
                 await post_db.updateView(flag.views, id_post);
                 flag.recruitment = await recruit_db.findRecruitmentByKolsPost(req.jwtDecoded.data?.id, id_post);
-                console.log("Check detail info of post in controller: ", flag);
-                return res.json(flag);
+                return res.status(200).json(flag);
             }
         }
         else{
@@ -271,8 +263,7 @@ exports.getDetailPost = async function(req, res) {
             if (flag){
                 flag.views = flag.views + 1;
                 await post_db.updateView(flag.views, id_post);
-                console.log("Check detail info of post in controller: ", flag);
-                return res.json(flag);
+                return res.status(200).json(flag);
             }
         }
     }
@@ -285,8 +276,7 @@ exports.kolsLikePost = async function(req, res) {
     if(id_post){
         let flag = await post_db.kolsLikePost(req.jwtDecoded.data.id, id_post);
         if (flag){
-            console.log("Check like successfully: ", flag);
-            return res.json(flag);
+            return res.status(200).json(flag);
         }
     }
     return res.status(400).json(false);
@@ -295,8 +285,7 @@ exports.kolsLikePost = async function(req, res) {
 exports.getAllPostKolsLikes = async function(req, res) {
     let flag = await post_db.findAllPostsKolsLike(req.jwtDecoded.data.id);
     if (flag){
-        console.log("getAllPostKolsLikes: ", flag);
-        return res.json(flag);
+        return res.status(200).json(flag);
     }
     return res.status(400).json([]);
 }
@@ -304,8 +293,7 @@ exports.getAllPostKolsLikes = async function(req, res) {
 exports.getAllPostKolsRecruitment = async function(req, res) {
     let flag = await post_db.findAllPostsKolsRecruitment(req.jwtDecoded.data.id);
     if (flag){
-        console.log("getAllPostKols Recruitment: ", flag);
-        return res.json(flag);
+        return res.status(200).json(flag);
     }
     return res.status(400).json([]);
 }
@@ -357,17 +345,14 @@ exports.kolGet2ActivePostOfBrand = async function(req, res) {
 exports.getAllActivePostOfBrand = async function(req, res) {
     let flag = await post_db.findAllActivePostsRecruitmentBrand(req.jwtDecoded.data.id);
     if (flag){
-        //console.log("getAllActivePostOfBrand and count recruitment: ", flag);
-        //const sortedActivities = flag.sort((a, b) => b.write_time - a.write_time);
-        return res.json(flag);
+        return res.status(200).json(flag);
     }
     return res.status(400).json([]);
 }
 exports.getAllUnactivePostOfBrand = async function(req, res) {
     let flag = await post_db.findUnactivePostOfBrands(req.jwtDecoded.data.id);
     if (flag){
-        //console.log("getAllUnactivePostOfBrand: ", flag);
-        return res.json(flag);
+        return res.status(200).json(flag);
     }
     return res.status(400).json([]);
 }
@@ -377,8 +362,7 @@ exports.kolsUnlikePost = async function(req, res) {
     if(id_post){
         let flag = await post_db.kolsUnlikePost(req.jwtDecoded.data.id, id_post);
         if (flag){
-            console.log("Check unlike successfully: ", flag);
-            return res.json(flag);
+            return res.status(200).json(flag);
         }
     }
     return res.status(400).json(false);
@@ -448,7 +432,6 @@ exports.activePost = async function(req, res) {
     if(id_post){
         let flag = await post_db.updateStateOfPost( id_post, '1');
         if (flag){
-            console.log("Check activePost successfully: ", flag);
             return res.status(200).json(flag);
         }
     }
@@ -460,7 +443,6 @@ exports.unactivePost = async function(req, res) {
     if(id_post){
         let flag = await post_db.updateStateOfPost( id_post, '0');
         if (flag){
-            console.log("Check unactivePost successfully: ", flag);
             return res.status(200).json(flag);
         }
     }

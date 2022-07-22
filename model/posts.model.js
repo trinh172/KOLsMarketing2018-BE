@@ -159,7 +159,6 @@ module.exports = {
         }
         items[0].list_categories = list_cate;
         items[0].write_time = moment(items[i].write_time).format("DD/MM/YYYY HH:mm");
-        console.log("Detail Post model: ", items[0]);
         return items[0];
     },
 
@@ -181,7 +180,6 @@ module.exports = {
         if(like.length > 0)
             items[0].likePost = true;
         else items[0].likePost = false;
-        console.log("Detail Post and brand in model: ", items[0]);
         return items[0];
     },
 
@@ -208,7 +206,6 @@ module.exports = {
         if(like.length > 0)
             items[0].likePost = true;
         else items[0].likePost = false;
-        console.log("Detail Post and brand in model: ", items[0]);
         return items[0];
     },
 
@@ -257,7 +254,6 @@ module.exports = {
         if(like.length > 0)
         items[0].likePost = true;
         else  items[0].likePost = false;
-        console.log("Detail Post and brand in model: ", items[0]);
         return items[0];
     },
 
@@ -510,7 +506,6 @@ module.exports = {
             .andWhere('write_time', '>=', day_ago)
             .orderBy('write_time', 'desc')
             .limit(10);
-        //console.log(rows);
         if(rows.length <= 0)
             return null;
         let tempcount = 0;
@@ -711,7 +706,6 @@ module.exports = {
             else rows[tempcount].likePost = false;
             tempcount = tempcount + 1;
         }
-        console.log("60 bai post nè: ", rows[0]);
         return rows;
     },
 

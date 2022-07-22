@@ -133,10 +133,8 @@ exports.edit_gender = async function(req, res) {
 exports.edit_password = async function(req, res) {
     //Get infor from form at FE 
     const ret = bcrypt.compareSync(req.body.old_password, req.jwtDecoded.data.password);
-    console.log(ret);
     if (ret===false){
-      console.log("Password cũ không đúng")
-      return res.json({'error':'Password cũ không đúng'});
+      return res.status(403).json({'error':'Password cũ không đúng'});
     }
     if(ret === true){
         const hash = bcrypt.hashSync(req.body.password, 10);
@@ -154,7 +152,7 @@ exports.edit_email = async function(req, res) {
     //Check duplicate email
     let check_dup_email = await brands_db.findBrandsByEmail(new_email);
     if(check_dup_email.id != req.jwtDecoded.data.id){
-        return res.status(400).json({"error": "Email không khả dụng"});
+        return res.status(403).json({"error": "Email không khả dụng"});
     }
     let flag = await brands_db.updateEmail(new_email, req.jwtDecoded.data.id);
     if (flag){
@@ -224,8 +222,7 @@ exports.brandLikeKol = async function(req, res) {
     if(id_kol){
         let flag = await brands_db.brandLikeKol(req.jwtDecoded.data.id, id_kol);
         if (flag){
-            console.log("Check like kol successfully: ", flag);
-            return res.json(flag);
+            return res.status(200).json(flag);
         }
     }
     return res.status(400).json(false);
@@ -234,7 +231,6 @@ exports.brandLikeKol = async function(req, res) {
 exports.getAllKolsBrandLike = async function(req, res) {
     let flag = await brands_db.findAllKolsBrandLike(req.jwtDecoded.data.id)
     if (flag){
-        console.log("getAllKolsBrandLike: ", flag);
         return res.json(flag);
     }
     return res.status(400).json(false);
@@ -245,8 +241,7 @@ exports.brandUnlikeKols = async function(req, res) {
     if(id_kol){
         let flag = await brands_db.brandUnlikeKol(req.jwtDecoded.data.id, id_kol);
         if (flag){
-            console.log("Check unlike kol successfully: ", flag);
-            return res.json(flag);
+            return res.status(200).json(flag);
         }
     }
     return res.status(400).json(false);

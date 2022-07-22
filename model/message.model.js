@@ -169,7 +169,6 @@ module.exports = {
 
     async addRoom2User(user1, role1, user2, role2){
         try {
-            console.log("nay la trong model add room: ", user1, role1, user2, role2)
             await db('room').insert({
                 id_user1: user1,
                 role1: role1,

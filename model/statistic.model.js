@@ -51,7 +51,6 @@ module.exports = {
                             where id_writer = ${id_brand}
                             group by 1,2`
         const item = await db.raw(query_raw);
-        //console.log(item);
         
         return item?.rows;
     },
@@ -74,7 +73,6 @@ module.exports = {
         else{
             return [];
         }
-        console.log("value: ", values)
         let item = await db.select("id_user").from('job_member').where('id_post', 'in', values).andWhere('role', '1');
         return item;
     },
@@ -241,7 +239,6 @@ module.exports = {
             let publish_post_done = await db('kol_social_post').where({
                 id_kol: id_kol,
             }).andWhere('schedule_time', '<=', today).whereNot("type_schedule", "0").orderBy('schedule_time', 'desc');
-            //console.log("publish_post_done: ", publish_post_done);
             let tempcount = 0;
             const n = publish_post_done.length;
             while(tempcount < n){
@@ -266,7 +263,6 @@ module.exports = {
                 id_kol: id_kol,
                 id_post_job: id_post
             }).andWhere('schedule_time', '<=', today).whereNot("type_schedule", "0").orderBy('schedule_time', 'desc');
-            //console.log("publish_post_done: ", publish_post_done)
             if (publish_post_done)
                 return publish_post_done;
             return [];
@@ -283,7 +279,6 @@ module.exports = {
             let publish_post_waiting = await db('kol_social_post').where({
                 id_kol: id_kol,
             }).andWhere('schedule_time', '>', today).whereNot("type_schedule", "0").orderBy('schedule_time', 'desc');
-            //console.log("publish_post_waiting: ", publish_post_waiting);
             for( i = 0; i < publish_post_waiting.length; i++){
                 publish_post_waiting[i].schedule_time = moment(publish_post_waiting[i].schedule_time).format("DD/MM/YYYY HH:mm");
                 publish_post_waiting[i].page_name = await this.getPageNameByPageSocialID(publish_post_waiting[i].id_page_social);

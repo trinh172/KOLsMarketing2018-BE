@@ -22,7 +22,6 @@ exports.get_user_social_info = async function(req, res) {
 }
 
 exports.save_user_info = async function(req, res) {
-    //const accessToken = "EAAItHe6QJV8BAFpQLVXDfmZACaSX9SbW78PGWwHNe6D1poIqtk3EL6A28AhxM9u0SZAsLVq9BVFqkFcJMcavtzEHLnGEtODZAxBokgAZARtBjmWJkakecEbDfqXWoBKbt7Yqvy6SYS82C3tvBgYP1oV2zItZBly6sHwyeOkWTya77dVnO64MyvhN5djHGnYUUt1F3ct3ciZC86k0gSaz2G";
     let accessToken = req.body.fbUser;
     let id_kol = req.jwtDecoded.data?.id;
     let expired = req.body.expired;
@@ -31,7 +30,6 @@ exports.save_user_info = async function(req, res) {
                 "https://graph.facebook.com/v9.0/me?fields=id,name&access_token=" + accessToken,
             method: "get",
     });
-    console.log("User info: ", data);
     
     if(data){
         let new_user = {
@@ -89,13 +87,11 @@ exports.save_page_info = async function(req, res) {
                 "https://graph.facebook.com/v9.0/1432909660463031/accounts?access_token=" + accessToken,
             method: "get",
     });
-    console.log("page info: ", data);
-    return res.json(data);
+    return res.status(200).json(data);
 }
 
 exports.post_status_immediately = async function(req, res) {
     //Post fb immediately
-    //let accessToken = req.body.fbUser;
     let postText = req.body?.postText;
     let id_kol = req.jwtDecoded.data?.id;
     let id_page_social = req.body?.id_page_social;
@@ -178,7 +174,6 @@ exports.post_schedule = async function(req, res) {
      
     if(fbPageAccessToken && id_page_social){
         let req_url = "";
-        console.log("Image: ", image_url);
         if (image_url){
             req_url = `https://graph.facebook.com/v9.0/${id_page_social}/photos?access_token=${fbPageAccessToken}&published=false&scheduled_publish_time=${schedule_time}&message=${postText}&url=${image_url}`
         }
@@ -196,7 +191,6 @@ exports.post_schedule = async function(req, res) {
             method: "post",
         });
         if(response?.data?.id){
-            console.log(" schedule post: ", response.data);
             
             let newPost = {
                 "id_kol": id_kol,
@@ -260,7 +254,6 @@ exports.post_video = async function(req, res) {
                 method: "post",
             });
             if(response?.data?.id){
-                console.log(" schedule post: ", response.data);
                 return res.status(200).json(true);
             }
         }
@@ -270,7 +263,6 @@ exports.post_video = async function(req, res) {
 }
 
 exports.publish_draft_immediately = async function(req, res) {
-    //Post schedule post
     let image_url = req.body?.image_url;
     let video_url = req.body?.video_url;
     let postText = req.body?.postText;
@@ -278,7 +270,6 @@ exports.publish_draft_immediately = async function(req, res) {
     let id_page_social = req.body?.id_page_social;
     let id_page = req.body?.id_page;
     let detail_post_draft = await social_db.getDraftPostByID(id);
-    console.log("Draft info: ", detail_post_draft)
     if(detail_post_draft){
         let fbPageAccessToken = await social_db.getPageAccessByIDpageKol(detail_post_draft?.id_kol,id_page_social);
         if(fbPageAccessToken && id_page_social){
@@ -299,8 +290,6 @@ exports.publish_draft_immediately = async function(req, res) {
                 method: "post",
             });
             if(response?.data?.id){
-                console.log(" immediately draft post: ", response.data);
-                console.log(" immediately draft post check id: ", response.data.id);
                 let update = {
                     "id_post_social": response.data.id,
                     "id_page_social": id_page_social,
@@ -373,7 +362,6 @@ exports.publish_draft_schedule = async function(req, res) {
                 method: "post",
             });
             if(response?.data?.id){
-                console.log(" schedule draft post: ", response.data);
                 let update = {
                     "id_post_social": response?.data?.id,
                     "id_page_social": id_page_social,
@@ -420,12 +408,10 @@ exports.publish_draft_schedule = async function(req, res) {
 }
 
 exports.create_draft = async function(req, res) {
-    //Post fb immediately
-    //let accessToken = req.body.fbUser;
+    
     let postText = req.body?.postText;
     let id_post = req.body?.id_post;
     let id_kol = req.jwtDecoded.data?.id;
-    //let id_page_social = req.body?.id_page_social;
     let image_url = req.body?.image_url;
     let video_url = req.body?.video_url;
     let id_job = req.body?.id_job;
@@ -458,10 +444,8 @@ exports.create_draft = async function(req, res) {
 exports.update_draft = async function(req, res) {
 
     let postText = req.body?.postText;
-    //let id_page_social = req.body?.id_page_social;
     let image_url = req.body?.image_url;
     let video_url = req.body?.video_url;
-    //let id_page = req.body?.id_page;
     let id = req.body?.id;
     let create_time = moment().add(7, 'hours');
 
@@ -478,7 +462,6 @@ exports.update_draft = async function(req, res) {
     if (detail_post_draft){
         let updatepost = await social_db.updatePostByID(id, update);
         if(updatepost){
-           // let returnpost = await social_db.getSocialByPostSocialID(response?.data?.id);
            detail_post_draft.url_image = image_url;
            detail_post_draft.url_video = video_url;
            detail_post_draft.content = postText;
@@ -514,11 +497,9 @@ exports.logout_fb = async function(req, res) {
 }
 
 exports.get_list_draft_of_1kol_in_post = async function(req, res) {
-    //let id_kol = req.body?.id_kol;
     let id_post = req.body?.id_post;
     let id_kol = req.jwtDecoded.data.id;
     let list_draft = await social_db.getListDraftOf1KolInPost(id_post, id_kol);
-    console.log(" list draft in post: ", list_draft)
     if(list_draft){
         return res.status(200).json(list_draft)
     }
@@ -526,10 +507,8 @@ exports.get_list_draft_of_1kol_in_post = async function(req, res) {
 }
 
 exports.get_list_draft_of_kol = async function(req, res) {
-    //let id_kol = req.body?.id_kol;
     let id_kol = req.jwtDecoded.data?.id;
     let list_draft = await social_db.getListDraftOfKol(id_kol);
-    console.log(" list draft: ", list_draft)
     if(list_draft){
         return res.status(200).json(list_draft)
     }
@@ -537,10 +516,8 @@ exports.get_list_draft_of_kol = async function(req, res) {
 }
 
 exports.get_list_draft_of_post = async function(req, res) {
-    //let id_kol = req.body?.id_kol;
     let id_post = req.body?.id_post;
     let list_draft = await social_db.getListDraftOfPost(id_post);
-    console.log(" list draft in post: ", list_draft)
     if(list_draft){
         return res.status(200).json(list_draft)
     }
@@ -548,10 +525,8 @@ exports.get_list_draft_of_post = async function(req, res) {
 }
 
 exports.get_list_done_of_post = async function(req, res) {
-    //let id_kol = req.body?.id_kol;
     let id_post = req.body?.id_post;
     let list_done = await social_db.getListPostDoneOfPost(id_post);
-    console.log(" list done in post: ", list_done)
     if(list_done){
         return res.status(200).json(list_done)
     }
@@ -559,10 +534,8 @@ exports.get_list_done_of_post = async function(req, res) {
 }
 
 exports.get_list_schedule_of_post = async function(req, res) {
-    //let id_kol = req.body?.id_kol;
     let id_post = req.body?.id_post;
     let list_schedule = await social_db.getListPostScheduleOfPost(id_post);
-    console.log(" list schedule in post: ", list_schedule)
     if(list_schedule){
         return res.status(200).json(list_schedule)
     }
@@ -571,10 +544,8 @@ exports.get_list_schedule_of_post = async function(req, res) {
 
 
 exports.get_list_draft_of_job = async function(req, res) {
-    //let id_kol = req.body?.id_kol;
     let id_job = req.body?.id_job;
     let list_draft = await social_db.getListDraftOfJob(id_job);
-    console.log(" list draft in job: ", list_draft)
     if(list_draft){
         return res.status(200).json(list_draft)
     }
@@ -585,7 +556,6 @@ exports.get_list_done_of_job = async function(req, res) {
     //let id_kol = req.body?.id_kol;
     let id_job = req.body?.id_job;
     let list_done = await social_db.getListPostDoneOfJob(id_job);
-    console.log(" list done in job: ", list_done)
     if(list_done){
         return res.status(200).json(list_done)
     }
@@ -593,10 +563,8 @@ exports.get_list_done_of_job = async function(req, res) {
 }
 
 exports.get_list_schedule_of_job = async function(req, res) {
-    //let id_kol = req.body?.id_kol;
     let id_job = req.body?.id_job;
     let list_schedule = await social_db.getListPostScheduleOfJob(id_job);
-    console.log(" list schedule in job: ", list_schedule)
     if(list_schedule){
         return res.status(200).json(list_schedule)
     }
@@ -604,7 +572,6 @@ exports.get_list_schedule_of_job = async function(req, res) {
 }
 
 exports.updateLikeShareCmt1Kol = async function(req, res) {
-    //let id_kol = req.body?.id_kol;
     let id_kol = req.jwtDecoded.data?.id;
     let list_done = await social_db.getListPublishPostDone(id_kol);
     
@@ -625,7 +592,6 @@ exports.updateLikeShareCmt1Kol = async function(req, res) {
                 });
             
                 if(response?.data){
-                    console.log("Count like, share, comment: ", response.data);
                     count_like = response.data.likes.summary.total_count;
                     count_comment = response.data.comments.summary.total_count;
                     if(response.data?.shares){
@@ -649,7 +615,6 @@ exports.updateLikeShareCmt1Kol = async function(req, res) {
 
 
 exports.updateLikeShareCmtAllSocialPost = async function(req, res) {
-    //let id_kol = req.body?.id_kol;
     
     let list_done = await social_db.getAllPublishPostDone();
     
@@ -670,7 +635,6 @@ exports.updateLikeShareCmtAllSocialPost = async function(req, res) {
                 });
             
                 if(response?.data){
-                    console.log("Count like, share, comment: ", response.data);
                     count_like = response.data.likes.summary.total_count;
                     count_comment = response.data.comments.summary.total_count;
                     if(response.data?.shares){
@@ -715,7 +679,6 @@ exports.get_list_schedule_of_job = async function(req, res) {
     //let id_kol = req.body?.id_kol;
     let id_post = req.body?.id_post;
     let list_draft = await social_db.getListPostScheduleOfJob(id_post);
-    console.log(" list schedule in job: ", list_draft)
     if(list_draft){
         return res.status(200).json(list_draft)
     }
@@ -726,23 +689,7 @@ exports.get_list_publish_post_done = async function(req, res) {
     let id_kol = req.jwtDecoded.data?.id;
     
     let list_done = await social_db.getListPublishPostDone(id_kol);
-    //console.log(" list getListPublishPostDone: ", list_done)
-    /*
-    if(list_done.length > 0){
-        let fbPageAccessToken = await social_db.getPageAccessByIDpageKol(id_kol, list_done[0].id_page_social );
-        for(i = 0; i < list_done.length; i++){
-            let req_url = `https://graph.facebook.com/v9.0/${list_done[i].id_page_social}_${list_done[i].id_post_social}?access_token=${fbPageAccessToken}&fields=comments.limit(0).summary(true),likes.limit(0).summary(true)`;
-            let response = await axios({
-                url: encodeURI(req_url),
-                method: "get",
-            });
-
-            if(response?.data){
-                list_done[i].count_like = response.data.likes.summary.total_count;
-                list_done[i].count_comment = response.data.comments.summary.total_count;
-            }
-        }
-    }*/
+    
     if(list_done){
         return res.status(200).json(list_done)
     }
@@ -753,7 +700,6 @@ exports.get_list_publish_post_waiting = async function(req, res) {
     let id_kol = req.jwtDecoded.data?.id;
     
     let list_wait = await social_db.getListPostScheduleWaiting(id_kol);
-    console.log(" list getListPostScheduleWaiting: ", list_wait)
     if(list_wait){
         return res.status(200).json(list_wait)
     }
