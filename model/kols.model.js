@@ -16,6 +16,18 @@ module.exports = {
             result.avatar = item[0].avatar;
             result.cover = item[0].cover;
             result.address = item[0].address;
+            let count_followers = await db('kols_like_brands')
+                                        .where({
+                                            id_brand: iduser,
+                                        })
+            result.count_followers = count_followers.length;
+            let count_posts = await db('posts')
+                                        .where({
+                                            id_writer: iduser,
+                                            'status': '1',
+                                            'state': '1',
+                                        })
+            result.count_posts = count_posts.length;
             result.role = '2';
             return result
         }

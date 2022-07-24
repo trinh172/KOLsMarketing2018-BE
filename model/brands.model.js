@@ -49,7 +49,11 @@ module.exports = {
         };
         items[0].create_time = moment(items[0].create_time).format("DD/MM/YYYY HH:mm:ss");
         items[0].role = '1';
-        
+        let count_followers = await db('brands_like_kols')
+                                    .where({
+                                        'id_kol': ID,
+                                    });
+        result.count_followers = count_followers.length;
         return items[0];
     },
 
@@ -101,7 +105,9 @@ module.exports = {
 
     async getBrandsProfileAndCountPost(ID){
         let items = await db('brands').where('id', ID);
-        let count_post = await db('posts').where('id_writer', ID);
+        let count_post = await db('posts').where({'id_writer': ID,
+                                                    'status': '1',
+                                                    'state':'1'});
         if (items.length==0)
             return null;
         items[0].password = 'has-password';
@@ -202,7 +208,8 @@ module.exports = {
             result.count_followers = count_followers.length;
             let count_posts = await db('posts').where({
                                                     'id_writer':  item[tempcount].id,
-                                                    'status': '1'
+                                                    'status': '1',
+                                                    'state': '1'
                                                 });
             result.count_posts = count_posts.length;
             items.push(result);
@@ -232,7 +239,8 @@ module.exports = {
             result.count_followers = count_followers.length;
             let count_posts = await db('posts').where({
                                             'id_writer':  item[tempcount].id,
-                                            'status': '1'
+                                            'status': '1',
+                                            'state': '1'
                                         });
             result.count_posts = count_posts.length;
             let like = await db('kols_like_brands')
