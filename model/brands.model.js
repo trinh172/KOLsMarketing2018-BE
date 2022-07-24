@@ -148,6 +148,11 @@ module.exports = {
             if(like.length > 0)
                 items[0].likeBrand = true;
             else items[0].likeBrand = false;
+            let count_followers = await db('kols_like_brands')
+                                        .where({
+                                            'id_brand':  ID,
+                                        });
+            items[0].count_followers = count_followers.length;
             return items[0];
         }
         let items = await db('brands').where('id', ID);
@@ -167,7 +172,11 @@ module.exports = {
         };
         items[0].create_time = moment(items[0].create_time).format("DD/MM/YYYY HH:mm:ss");
         items[0].role = '2';
-        
+        let count_followers = await db('kols_like_brands')
+                                        .where({
+                                            'id_brand':  ID,
+                                        });
+        items[0].count_followers = count_followers.length;
         return items[0];
     },
 
@@ -186,6 +195,16 @@ module.exports = {
             result.avatar = item[tempcount].avatar;
             result.cover = item[tempcount].cover;
             result.likeBrand = false;
+            let count_followers = await db('kols_like_brands')
+                                        .where({
+                                            'id_brand':  item[tempcount].id,
+                                        });
+            result.count_followers = count_followers.length;
+            let count_posts = await db('posts').where({
+                                                    'id_writer':  item[tempcount].id,
+                                                    'status': '1'
+                                                });
+            result.count_posts = count_posts.length;
             items.push(result);
             tempcount = tempcount + 1;
         }
@@ -206,6 +225,16 @@ module.exports = {
             result.id = item[tempcount].id;
             result.avatar = item[tempcount].avatar;
             result.cover = item[tempcount].cover;
+            let count_followers = await db('kols_like_brands')
+                                        .where({
+                                            'id_brand':  item[tempcount].id,
+                                        });
+            result.count_followers = count_followers.length;
+            let count_posts = await db('posts').where({
+                                            'id_writer':  item[tempcount].id,
+                                            'status': '1'
+                                        });
+            result.count_posts = count_posts.length;
             let like = await db('kols_like_brands')
                 .where({
                     'id_kol': idkol,
