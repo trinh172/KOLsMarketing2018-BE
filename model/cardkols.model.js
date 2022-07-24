@@ -52,7 +52,10 @@ module.exports = {
                 if(items[i].email == '1')
                     items[i].email = detail[0]?.email;
                 else items[i].email = null;
-
+                let count_followers = await db("brands_like_kols").where({
+                    id_kol: items[i].id_kol
+                })
+                items[i].count_followers = count_followers.length;
                 items[i].likeKol = false;
                 items[i].full_name = detail[0].full_name;
                 items[i].avatar = detail[0].avatar;
@@ -106,6 +109,10 @@ module.exports = {
                 if (like.length > 0){
                     items[i].likeKol = true;
                 }
+                let count_followers = await db("brands_like_kols").where({
+                    id_kol: items[i].id_kol
+                })
+                items[i].count_followers = count_followers.length;
                 items[i].full_name = detail[0].full_name;
                 items[i].avatar = detail[0].avatar;
                 i = i + 1;

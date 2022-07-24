@@ -362,6 +362,10 @@ module.exports = {
             
             items[0].create_time = moment(items[0].create_time).format("DD/MM/YYYY HH:mm:ss");
             items[0].role = '1';
+            let count_followers = await db("brands_like_kols").where({
+                id_kol: ID,
+            })
+            items[0].count_followers = count_followers.length;
             let like = await db('brands_like_kols')
                 .where({
                     'id_kol': ID,
@@ -406,7 +410,10 @@ module.exports = {
                 items[0].address = address[0].name;
             };
         }
-        
+        let count_followers = await db("brands_like_kols").where({
+            id_kol: ID,
+        })
+        items[0].count_followers = count_followers.length;
         items[0].create_time = moment(items[0].create_time).format("DD/MM/YYYY HH:mm:ss");
         items[0].role = '1';
         items[0].likeKol = false;
