@@ -53,7 +53,7 @@ module.exports = {
                                     .where({
                                         'id_kol': ID,
                                     });
-        result.count_followers = count_followers.length;
+        items[0].count_followers = count_followers.length;
         return items[0];
     },
 
