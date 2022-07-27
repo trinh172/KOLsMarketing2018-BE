@@ -1,4 +1,5 @@
 
+-- Data mockup for posts
 INSERT INTO public.posts (id, title, gender, id_writer, amount, min_cast, max_cast, state, content, requirement, benefit, address, write_time, views, hot) OVERRIDING SYSTEM VALUE VALUES (10, 'Chụp ảnh feedback sp cho brand váy nữ', 'Nữ', 2, 3, 1000000, 1000000, '1', 'Mình cần 1, 2 bạn nữ xinh xắn style bánh bèo quay video  và chụp ảnh feedback sp cho brand váy nữ.', 'Nữ cao 1m65 trở lên', '', '10', '2022-05-06 15:34:34.003', 0, '0');
 INSERT INTO public.posts (id, title, gender, id_writer, amount, min_cast, max_cast, state, content, requirement, benefit, address, write_time, views, hot) OVERRIDING SYSTEM VALUE VALUES (11, 'Chụp concept ngoại cảnh', 'Nữ', 2, 2, 1200000, 1500000, '1', 'Chụp ảnh ở đèo Hải Vân', 'Cao trên 1m65.
 Nặng dưới 50kg', 'Bên nhãn hàng chịu chi phí di chuyển, makeup, ăn trưa', '20', '2022-05-06 15:39:56.195', 0, '0');
