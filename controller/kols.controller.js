@@ -168,20 +168,23 @@ exports.kolsUnlikeBrand = async function(req, res) {
 exports.brand_get_kol_info = async function(req, res) {
     //Get infor from form at FE 
     let id_kol = req.body?.id_kol;
-    if(req?.jwtDecoded?.data?.id && req?.jwtDecoded?.data?.role == 2){
-        let flag = await kols_db.brandGetKolsInfo(id_kol,req?.jwtDecoded?.data?.id);
-        if (flag){
-            return res.status(200).json(flag);
+    if(id_kol){
+        if(req?.jwtDecoded?.data?.id && req?.jwtDecoded?.data?.role == 2){
+            let flag = await kols_db.brandGetKolsInfo(id_kol,req?.jwtDecoded?.data?.id);
+            if (flag){
+                return res.status(200).json(flag);
+            }
+            return res.status(400).json(false);
         }
-        return res.status(400).json(false);
-    }
-    else{
-        let flag = await kols_db.brandGetKolsInfo(id_kol, null);
-        if (flag){
-            return res.status(200).json(flag);
+        else{
+            let flag = await kols_db.brandGetKolsInfo(id_kol, null);
+            if (flag){
+                return res.status(200).json(flag);
+            }
+            
+            return res.status(400).json(false);
         }
-        
-        return res.status(400).json(false);
     }
+    return res.status(404).json([])
     
 }
