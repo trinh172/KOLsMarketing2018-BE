@@ -121,7 +121,7 @@ CREATE TABLE "posts" (
     INCREMENT 1
     MINVALUE  1
     MAXVALUE 2147483647
-    START 40
+    START 150
     ),
   "title" varchar(255) NOT NULL,
   "gender" varchar(50),
@@ -150,7 +150,7 @@ CREATE TABLE "categories" (
     INCREMENT 1
     MINVALUE  1
     MAXVALUE 2147483647
-    START 10
+    START 12
     ),
   "name" varchar(50) NOT NULL,
   PRIMARY KEY ("id"),
@@ -222,7 +222,7 @@ CREATE TABLE "image_post" (
     INCREMENT 1
     MINVALUE  1
     MAXVALUE 2147483647
-    START 40
+    START 150
     ),
   "id_post" int4 NOT NULL,
   "url" varchar(255) NOT NULL,

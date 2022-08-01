@@ -294,7 +294,9 @@ module.exports = {
             });
         }
         let result = [];
-        for (i = 0; i< items.length; i++){
+        let i = 0;
+        while (i < items.length){
+            
             let temp = {};
             temp.id = items[i]?.id;
             temp.id_writer = items[i]?.id_writer;
@@ -327,6 +329,7 @@ module.exports = {
             temp.write_time = moment(items[i]?.write_time).format("DD/MM/YYYY HH:mm");
             temp.address = await this.getAddressName(items[i]?.address);
             result.push(temp);
+            i=i+1;
         }
         return result;
     },
