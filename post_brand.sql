@@ -104,11 +104,11 @@ INSERT INTO public.post_categories (id_post, id_cate) VALUES (27, 3);
 INSERT INTO public.post_categories (id_post, id_cate) VALUES (36, 1);
 INSERT INTO public.post_categories (id_post, id_cate) VALUES (37, 3);
 
-INSERT INTO public.recruitment (id, id_post, id_kols, id_brands, content, state, create_time, url) OVERRIDING SYSTEM VALUE VALUES (1, 12, 1, 2, 'kol1 chưa duyệt', 1, '2022-05-06 17:21:39.194', null);
-INSERT INTO public.recruitment (id, id_post, id_kols, id_brands, content, state, create_time, url) OVERRIDING SYSTEM VALUE VALUES (2, 12, 2, 2, 'kol2 chưa duyệt', 1, '2022-05-06 17:21:39.194', null);
-INSERT INTO public.recruitment (id, id_post, id_kols, id_brands, content, state, create_time, url) OVERRIDING SYSTEM VALUE VALUES (3, 11, 1, 2, 'kol1 chưa duyệt', 1, '2022-05-06 17:21:39.194', null);
-INSERT INTO public.recruitment (id, id_post, id_kols, id_brands, content, state, create_time, url) OVERRIDING SYSTEM VALUE VALUES (4, 12, 3, 2, 'kol3 chưa duyệt', 1, '2022-05-06 17:21:39.194', null);
-INSERT INTO public.recruitment (id, id_post, id_kols, id_brands, content, state, create_time, url) OVERRIDING SYSTEM VALUE VALUES (5, 11, 2, 2, 'kol2 đã duyệt', 2, '2022-05-06 17:21:39.194', null);
+INSERT INTO public.recruitment (id, id_post, id_kols, id_brands, content, state, create_time, url) OVERRIDING SYSTEM VALUE VALUES (1, 12, 1, 2, 'Mình đã có kinh nghiệm chụp ảnh mẫu được 5 năm, fb và tiktok mình có follows hơn 12k', 1, '2022-05-06 17:21:39.194', null);
+INSERT INTO public.recruitment (id, id_post, id_kols, id_brands, content, state, create_time, url) OVERRIDING SYSTEM VALUE VALUES (2, 12, 2, 2, 'Mình là nữ, ở TPHCM, chuyên review các sản phẩm thời trang, mỹ phẩm', 1, '2022-05-06 17:21:39.194', null);
+INSERT INTO public.recruitment (id, id_post, id_kols, id_brands, content, state, create_time, url) OVERRIDING SYSTEM VALUE VALUES (3, 11, 1, 2, 'Mình từng chụp hình cho các shop về thời trang, balo, và 1 số studio nhỏ', 1, '2022-05-06 17:21:39.194', null);
+INSERT INTO public.recruitment (id, id_post, id_kols, id_brands, content, state, create_time, url) OVERRIDING SYSTEM VALUE VALUES (4, 12, 3, 2, 'Mình có hỗ trợ đăng bài lên trang fb, tiktok, đạt KPI shop đề ra, chiều cao 1m70 thích hợp chụp mẫu ảnh.', 1, '2022-05-06 17:21:39.194', null);
+INSERT INTO public.recruitment (id, id_post, id_kols, id_brands, content, state, create_time, url) OVERRIDING SYSTEM VALUE VALUES (5, 11, 2, 2, 'Bạn có thể liên hệ với fb của mình để hợp tác, lượt follows của mình được 40k, sẵn sàng chụp ảnh mẫu, quay video reviews.', 2, '2022-05-06 17:21:39.194', null);
 
 -- job member
 INSERT INTO public.job_member (id, id_post, id_user, role, state, create_time) OVERRIDING SYSTEM VALUE VALUES(15,18,1,'1','1','2022-06-19 21:19:31.771');
