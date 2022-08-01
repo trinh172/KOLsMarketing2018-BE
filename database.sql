@@ -11,7 +11,6 @@ DROP TABLE IF EXISTS job_member;
 DROP TABLE IF EXISTS brands_like_kols;
 DROP TABLE IF EXISTS kols_like_brands;
 DROP TABLE IF EXISTS kols_like_post;
-DROP TABLE IF EXISTS image_recruitment;
 DROP TABLE IF EXISTS image_post;
 DROP TABLE IF EXISTS image_user;
 DROP TABLE IF EXISTS recruitment;
