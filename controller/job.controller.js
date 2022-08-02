@@ -231,13 +231,13 @@ exports.send_invite_mail = async function(req, res) {
             {
                 service: "hotmail",
                 auth: {
-                  user: 'kolsmarketing@hotmail.com',
-                  pass: 'Thangtrinh@kols18'
+                    user: 'kolsmarketingsystem@hotmail.com',
+                    pass: 'Thangtrinh18@'
                 },
         });
         
         var mailOptions={
-            from: "kolsmarketing@hotmail.com",
+            from: "kolsmarketingsystem@hotmail.com",
             to: email,
             subject: "Thư mời tham gia công việc",
             html: content,

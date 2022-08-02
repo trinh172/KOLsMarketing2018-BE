@@ -8,6 +8,7 @@ const nodemailer = require('nodemailer');
 const moment = require('moment')
 const accessTokenLife = process.env.ACCESS_TOKEN_LIFE;
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
+const config = require('../config/const.config');
 const mailContent = require('../controller/mailContent.controller')
 
 
@@ -139,13 +140,13 @@ exports.get_otp = async (req, res) => {
         {
             service: "hotmail",
             auth: {
-              user: 'kolsmarketing@hotmail.com',
-              pass: 'Thangtrinh@kols18'
+              user: 'kolsmarketingsystem@hotmail.com',
+              pass: 'Thangtrinh18@'
             },
     });
     
     var mailOptions={
-        from: "kolsmarketing@hotmail.com",
+        from: "kolsmarketingsystem@hotmail.com",
         to: email,
         subject: "Quên mật khẩu",
         html: content,

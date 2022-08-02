@@ -225,7 +225,7 @@ exports.getOTPmail = async function(email, otp) {
                         >
                         <tbody>
                             <tr>
-                            <td style="text-align: center; height: 80px">
+                            <td style="text-align: center; height: 40px">
                                 <b>${otp}</b>
                             </td>
                             </tr>
